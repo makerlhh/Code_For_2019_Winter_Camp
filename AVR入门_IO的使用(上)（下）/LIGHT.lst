@@ -1,0 +1,116 @@
+Interrupt Vectors
+    00000 940C 002A JMP	__start|__text_start
+
+Program Code (text area)
+__start|__text_start:
+    0002A E5CF      LDI	R28,0x5F
+    0002B E0D4      LDI	R29,4
+    0002C BFCD      OUT	0x3D,R28
+    0002D BFDE      OUT	0x3E,R29
+    0002E 51CE      SUBI	R28,0x1E
+    0002F 40D0      SBCI	R29,0
+    00030 EA0A      LDI	R16,0xAA
+    00031 8308      ST	Y,R16
+    00032 2400      CLR	R0
+    00033 E6E0      LDI	R30,0x60
+    00034 E0F0      LDI	R31,0
+    00035 E010      LDI	R17,0
+    00036 36E0      CPI	R30,0x60
+    00037 07F1      CPC	R31,R17
+    00038 F011      BEQ	0x003B
+    00039 9201      ST	Z+,R0
+    0003A CFFB      RJMP	0x0036
+    0003B 8300      ST	Z,R16
+    0003C E5E4      LDI	R30,0x54
+    0003D E0F0      LDI	R31,0
+    0003E E6A0      LDI	R26,0x60
+    0003F E0B0      LDI	R27,0
+    00040 E010      LDI	R17,0
+    00041 E000      LDI	R16,0
+    00042 BF0B      OUT	0x3B,R16
+    00043 35E4      CPI	R30,0x54
+    00044 07F1      CPC	R31,R17
+    00045 F021      BEQ	0x004A
+    00046 95C8      LPM
+    00047 9631      ADIW	R30,1
+    00048 920D      ST	X+,R0
+    00049 CFF9      RJMP	0x0043
+    0004A 940E 0061 CALL	_main
+_exit:
+    0004C CFFF      RJMP	_exit
+_delay_ms:
+  i                    --> R20
+  j                    --> R22
+  ms                   --> R16
+    0004D 940E 0070 CALL	push_xgsetF000
+FILE: C:\Users\xieweimin\Desktop\light\light.c
+(0001) #include"iom16v.h"
+(0002) 
+(0003) void delay_ms(int ms)//延时函数
+(0004) {
+(0005)    int i,j;
+(0006)    for(i=0;i<ms;i++)
+    0004F 2744      CLR	R20
+    00050 2755      CLR	R21
+    00051 C00A      RJMP	0x005C
+(0007)    {
+(0008)        for(j=0;j<1148;j++);
+    00052 2766      CLR	R22
+    00053 2777      CLR	R23
+    00054 5F6F      SUBI	R22,0xFF
+    00055 4F7F      SBCI	R23,0xFF
+    00056 376C      CPI	R22,0x7C
+    00057 E0E4      LDI	R30,4
+    00058 077E      CPC	R23,R30
+    00059 F3D4      BLT	0x0054
+    0005A 5F4F      SUBI	R20,0xFF
+    0005B 4F5F      SBCI	R21,0xFF
+    0005C 1740      CP	R20,R16
+    0005D 0751      CPC	R21,R17
+    0005E F39C      BLT	0x0052
+    0005F 940C 0075 JMP	pop_xgsetF000
+(0009)    }
+(0010) }
+(0011) 
+(0012) void main()
+(0013) {
+_main:
+    00061 C00C      RJMP	0x006E
+(0014)    while(1)
+(0015)    {
+(0016)       DDRA |= (1<<2);//PA2输出高电平 
+    00062 9AD2      SBI	0x1A,2
+(0017)       PORTA |= (1<<2);
+    00063 9ADA      SBI	0x1B,2
+(0018)       delay_ms(500);
+    00064 EF04      LDI	R16,0xF4
+    00065 E011      LDI	R17,1
+    00066 DFE6      RCALL	_delay_ms
+(0019)       PORTA &= ~(1<<2);
+    00067 98DA      CBI	0x1B,2
+(0020)    
+(0021)       DDRB |= (1<<2);
+    00068 9ABA      SBI	0x17,2
+(0022)       PORTB |= (1<<2);
+    00069 9AC2      SBI	0x18,2
+(0023)       delay_ms(500);
+    0006A EF04      LDI	R16,0xF4
+    0006B E011      LDI	R17,1
+    0006C DFE0      RCALL	_delay_ms
+(0024)       PORTB &= ~(1<<2);
+FILE: <library>
+    0006D 98C2      CBI	0x18,2
+    0006E CFF3      RJMP	0x0062
+    0006F 9508      RET
+push_xgsetF000:
+    00070 937A      ST	-Y,R23
+    00071 936A      ST	-Y,R22
+    00072 935A      ST	-Y,R21
+    00073 934A      ST	-Y,R20
+    00074 9508      RET
+pop_xgsetF000:
+    00075 9149      LD	R20,Y+
+    00076 9159      LD	R21,Y+
+    00077 9169      LD	R22,Y+
+    00078 9179      LD	R23,Y+
+    00079 9508      RET

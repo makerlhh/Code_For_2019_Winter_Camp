@@ -1,0 +1,119 @@
+                        .module light.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile light.c
+ 0000                   .dbfile C:\Users\xieweimin\Desktop\light\light.c
+ 0000                   .dbfunc e delay_ms _delay_ms fV
+ 0000           ;              i -> R20,R21
+ 0000           ;              j -> R22,R23
+ 0000           ;             ms -> R16,R17
+                        .even
+ 0000           _delay_ms::
+ 0000 0E940000          xcall push_xgsetF000
+ 0004                   .dbline -1
+ 0004                   .dbline 4
+ 0004           ; #include"iom16v.h"
+ 0004           ; 
+ 0004           ; void delay_ms(int ms)//延时函数
+ 0004           ; {
+ 0004                   .dbline 6
+ 0004           ;    int i,j;
+ 0004           ;    for(i=0;i<ms;i++)
+ 0004 4427              clr R20
+ 0006 5527              clr R21
+ 0008 0AC0              xjmp L5
+ 000A           L2:
+ 000A                   .dbline 7
+ 000A           ;    {
+ 000A                   .dbline 8
+ 000A           ;        for(j=0;j<1148;j++);
+ 000A 6627              clr R22
+ 000C 7727              clr R23
+ 000E           L6:
+ 000E                   .dbline 8
+ 000E           L7:
+ 000E                   .dbline 8
+ 000E 6F5F              subi R22,255  ; offset = 1
+ 0010 7F4F              sbci R23,255
+ 0012                   .dbline 8
+ 0012 6C37              cpi R22,124
+ 0014 E4E0              ldi R30,4
+ 0016 7E07              cpc R23,R30
+ 0018 D4F3              brlt L6
+ 001A           X0:
+ 001A                   .dbline 9
+ 001A           ;    }
+ 001A           L3:
+ 001A                   .dbline 6
+ 001A 4F5F              subi R20,255  ; offset = 1
+ 001C 5F4F              sbci R21,255
+ 001E           L5:
+ 001E                   .dbline 6
+ 001E 4017              cp R20,R16
+ 0020 5107              cpc R21,R17
+ 0022 9CF3              brlt L2
+ 0024           X1:
+ 0024                   .dbline -2
+ 0024           L1:
+ 0024                   .dbline 0 ; func end
+ 0024 0C940000          xjmp pop_xgsetF000
+ 0028                   .dbsym r i 20 I
+ 0028                   .dbsym r j 22 I
+ 0028                   .dbsym r ms 16 I
+ 0028                   .dbend
+ 0028                   .dbfunc e main _main fV
+                        .even
+ 0028           _main::
+ 0028                   .dbline -1
+ 0028                   .dbline 13
+ 0028           ; }
+ 0028           ; 
+ 0028           ; void main()
+ 0028           ; {
+ 0028 0CC0              xjmp L12
+ 002A           L11:
+ 002A                   .dbline 15
+ 002A           ;    while(1)
+ 002A           ;    {
+ 002A                   .dbline 16
+ 002A           ;       DDRA |= (1<<2);//PA2输出高电平 
+ 002A D29A              sbi 0x1a,2
+ 002C                   .dbline 17
+ 002C           ;       PORTA |= (1<<2);
+ 002C DA9A              sbi 0x1b,2
+ 002E                   .dbline 18
+ 002E           ;       delay_ms(500);
+ 002E 04EF              ldi R16,500
+ 0030 11E0              ldi R17,1
+ 0032 E6DF              xcall _delay_ms
+ 0034                   .dbline 19
+ 0034           ;       PORTA &= ~(1<<2);
+ 0034 DA98              cbi 0x1b,2
+ 0036                   .dbline 21
+ 0036           ;    
+ 0036           ;       DDRB |= (1<<2);
+ 0036 BA9A              sbi 0x17,2
+ 0038                   .dbline 22
+ 0038           ;       PORTB |= (1<<2);
+ 0038 C29A              sbi 0x18,2
+ 003A                   .dbline 23
+ 003A           ;       delay_ms(500);
+ 003A 04EF              ldi R16,500
+ 003C 11E0              ldi R17,1
+ 003E E0DF              xcall _delay_ms
+ 0040                   .dbline 24
+ 0040           ;       PORTB &= ~(1<<2);
+ 0040 C298              cbi 0x18,2
+ 0042                   .dbline 25
+ 0042           ;    }
+ 0042           L12:
+ 0042                   .dbline 14
+ 0042 F3CF              xjmp L11
+ 0044           X2:
+ 0044                   .dbline -2
+ 0044           L10:
+ 0044                   .dbline 0 ; func end
+ 0044 0895              ret
+ 0046                   .dbend
+ 0046           ;    
+ 0046           ; }
+ 0046           ; 
