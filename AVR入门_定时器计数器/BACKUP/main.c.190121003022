@@ -1,0 +1,31 @@
+#include <iom16v.h>
+void port_init(void)
+{
+ DDRA  = 0xff;
+ PORTA = 0x00;
+}
+void timer0_init(void)
+{
+ TCCR0 = 0x00; //stop
+ TCNT0 = 0; //set count /*定时器寄存器开始值*/
+ TCCR0 = 0b00000010;
+}
+
+void main(void){
+int i,j;
+unsigned char x = 0;
+port_init();
+timer0_init();
+while(1){
+  for(i=0;i<10000;i++){
+    while(1){
+           if (TCNT0 == 100 ) {//100us
+               TCNT0 = 0;
+			   break;
+			   }
+		} 
+	}
+	x++;
+	PORTA=x;
+  }
+}

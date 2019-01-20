@@ -1,0 +1,144 @@
+                        .module main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile main.c
+ 0000                   .dbfile D:\dev\AVR\project\timerTeach\main.c
+ 0000                   .dbfunc e port_init _port_init fV
+                        .even
+ 0000           _port_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 6
+ 0000           ; /*二进制秒表示例
+ 0000           ; ATmega16 时钟8MHz
+ 0000           ; */
+ 0000           ; #include <iom16v.h>
+ 0000           ; void port_init(void)
+ 0000           ; {
+ 0000                   .dbline 7
+ 0000           ;  DDRA  = 0xff;
+ 0000 8FEF              ldi R24,255
+ 0002 8ABB              out 0x1a,R24
+ 0004                   .dbline 8
+ 0004           ;  PORTA = 0x00;
+ 0004 2224              clr R2
+ 0006 2BBA              out 0x1b,R2
+ 0008                   .dbline -2
+ 0008           L1:
+ 0008                   .dbline 0 ; func end
+ 0008 0895              ret
+ 000A                   .dbend
+ 000A                   .dbfunc e timer0_init _timer0_init fV
+                        .even
+ 000A           _timer0_init::
+ 000A                   .dbline -1
+ 000A                   .dbline 11
+ 000A           ; }
+ 000A           ; void timer0_init(void)
+ 000A           ; {
+ 000A                   .dbline 12
+ 000A           ;  TCCR0 = 0x00; //stop
+ 000A 2224              clr R2
+ 000C 23BE              out 0x33,R2
+ 000E                   .dbline 13
+ 000E           ;  TCNT0 = 0; //定时器寄存器开始值
+ 000E 22BE              out 0x32,R2
+ 0010                   .dbline 14
+ 0010           ;  TCCR0 = 0b00000010;//选择八分频
+ 0010 82E0              ldi R24,2
+ 0012 83BF              out 0x33,R24
+ 0014                   .dbline -2
+ 0014           L2:
+ 0014                   .dbline 0 ; func end
+ 0014 0895              ret
+ 0016                   .dbend
+ 0016                   .dbfunc e main _main fV
+ 0016           ;              j -> <dead>
+ 0016           ;              x -> R10
+ 0016           ;              i -> R20,R21
+                        .even
+ 0016           _main::
+ 0016                   .dbline -1
+ 0016                   .dbline 17
+ 0016           ; }
+ 0016           ; 
+ 0016           ; void main(void){
+ 0016                   .dbline 19
+ 0016           ;  int i,j;
+ 0016           ;  unsigned char x = 0;
+ 0016 AA24              clr R10
+ 0018                   .dbline 20
+ 0018           ;  port_init();
+ 0018 F3DF              xcall _port_init
+ 001A                   .dbline 21
+ 001A           ;  timer0_init();
+ 001A F7DF              xcall _timer0_init
+ 001C                   .dbline 22
+ 001C           ;  PORTA=x;
+ 001C ABBA              out 0x1b,R10
+ 001E 12C0              xjmp L5
+ 0020           L4:
+ 0020                   .dbline 23
+ 0020           ;  while(1){
+ 0020                   .dbline 24
+ 0020           ;   for(i=0;i<10000;i++){   //1s
+ 0020 4427              clr R20
+ 0022 5527              clr R21
+ 0024                   .dbline 24
+ 0024 06C0              xjmp L12
+ 0026           L11:
+ 0026                   .dbline 25
+ 0026           ;     while(1){
+ 0026                   .dbline 26
+ 0026           ;         if (TCNT0 == 100 ) {   //100us
+ 0026 82B7              in R24,0x32
+ 0028 8436              cpi R24,100
+ 002A 19F4              brne L14
+ 002C           X0:
+ 002C                   .dbline 26
+ 002C                   .dbline 27
+ 002C           ;             TCNT0 = 0;
+ 002C 2224              clr R2
+ 002E 22BE              out 0x32,R2
+ 0030                   .dbline 28
+ 0030           ;                       break;
+ 0030 01C0              xjmp L13
+ 0032           L14:
+ 0032                   .dbline 30
+ 0032           ;                 }
+ 0032           ;          } 
+ 0032           L12:
+ 0032                   .dbline 25
+ 0032 F9CF              xjmp L11
+ 0034           L13:
+ 0034                   .dbline 31
+ 0034           ;       }
+ 0034           L8:
+ 0034                   .dbline 24
+ 0034 4F5F              subi R20,255  ; offset = 1
+ 0036 5F4F              sbci R21,255
+ 0038                   .dbline 24
+ 0038 4031              cpi R20,16
+ 003A E7E2              ldi R30,39
+ 003C 5E07              cpc R21,R30
+ 003E CCF3              brlt L12
+ 0040           X1:
+ 0040                   .dbline 32
+ 0040           ;       x++;
+ 0040 A394              inc R10
+ 0042                   .dbline 33
+ 0042           ;       PORTA=x;
+ 0042 ABBA              out 0x1b,R10
+ 0044                   .dbline 34
+ 0044           ;   }
+ 0044           L5:
+ 0044                   .dbline 23
+ 0044 EDCF              xjmp L4
+ 0046           X2:
+ 0046                   .dbline -2
+ 0046           L3:
+ 0046                   .dbline 0 ; func end
+ 0046 0895              ret
+ 0048                   .dbsym l j 1 I
+ 0048                   .dbsym r x 10 c
+ 0048                   .dbsym r i 20 I
+ 0048                   .dbend
+ 0048           ; }
