@@ -1,0 +1,100 @@
+#include <iom16v.h>
+//#pragma interrupt_handler enter_one:10
+unsigned char data[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0};
+
+void delay(int ms)
+{	
+	TCCR0 = 0x00;
+	TCNT0 = 0;    //8位寄存器00000000  0~255  111111111 
+    TCCR0 = 0x02; //普通工作模式8分频 
+	unsigned char j,u;
+	for (j = 0;j<ms;j++)
+    {	
+	   u = ms();
+	}
+}
+unsigned char ms()
+{
+    unsigned char x = 0;
+	while(1) 
+		{
+	 	   for(i = 0; i<10000; i++)
+	 	     {	  
+			    while(1)
+		    	   {
+		   	 	    if(TCNT0 == 10)
+			 		 {
+			 		  		 TCNT0 = 0;
+							 break;
+			         }
+		     }
+		  x++;
+	    }
+	return x;
+}
+void show_time(int i,int j)
+{	 
+	 int n;
+	 for (n = 0;n<8;n++)
+	{
+	 PORTA |= ~(1<<n);  //位数选择，决定哪一位显示,选择位运算，cpu执行得快,低电平显示位数
+	 PORTB = data[x];
+
+	 delay(1000);
+	}
+}
+int key_press()
+{
+ 	unsigned char j;
+	
+ 	DDRD  |= 0X0F;
+	PORTD |= 0X0F;
+	
+	DDRD  &= ~0X0F; 
+	j = PIND;
+	j = j&0x0f;
+	if(j == 0x0f)
+	return 0;
+	else 
+	return 1;
+}
+int key_scan()
+{ 
+  unsigned char key;
+  delay(10);
+  if (key_press())
+  {
+   	 key = PIND;
+	 key&= 0x0f;
+	switch(key)
+	{
+	   case 0x0e:TCCR0 = 0X02; break;          //start 按下
+	   case 0x0d:TCCR0 = 0;    break;		  //reset 按下
+	   case 0x0b:TCCR0 = 0X02; break;		 //continue 按下
+	   case 0x07:TCCR0 = 0;    break;	    //stop 按下
+	}
+	 while (key_press());     //判断是否按钮松开，避免重复以上循环！
+  }
+  else 
+  return key =10;
+}
+
+
+void main ()
+{
+	TIMSK |= (1<<2);
+	SREG  |= (1<<7);  //中断，当符合（这里选了10）当计数器溢出归零的时候，跳转到enter_one执行一次函数体。
+	
+	DDRA = 0xff;
+	DDRB = 0xff;
+	
+	while (1)
+	{
+	 	 if (key_press())
+		 {
+		  	int i;
+		  	i = key_scan();
+		 }
+	 	show_time(x,5);  
+	}
+}

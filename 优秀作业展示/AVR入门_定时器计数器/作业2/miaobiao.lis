@@ -1,0 +1,1514 @@
+                        .module miaobiao.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile miaobiao.c
+ 0000                   .dbfile D:\protues\miaobiao.c
+ 0000                   .dbfunc e timer_init _timer_init fV
+                        .even
+ 0000           _timer_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 6
+ 0000           ; #include"iom16v.h"
+ 0000           ; //#include"macros.h"
+ 0000           ; //#define  uint  unsigned int
+ 0000           ; #define  uchar unsigned char
+ 0000           ; void timer_init(void)
+ 0000           ; {                   
+ 0000                   .dbline 7
+ 0000           ;  TCCR0 =0x00;     
+ 0000 2224              clr R2
+ 0002 23BE              out 0x33,R2
+ 0004                   .dbline 8
+ 0004           ;  TCNT0 =  0 ;
+ 0004 22BE              out 0x32,R2
+ 0006                   .dbline 9
+ 0006           ;  TCCR0 =0b00000010 ;
+ 0006 82E0              ldi R24,2
+ 0008 83BF              out 0x33,R24
+ 000A                   .dbline -2
+ 000A           L1:
+ 000A                   .dbline 0 ; func end
+ 000A 0895              ret
+ 000C                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\protues\miaobiao.c
+ 0000           _table::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 3F00              .word 63
+                        .area data(ram, con, rel)
+ 0002                   .dbfile D:\protues\miaobiao.c
+ 0002                   .blkb 2
+                        .area idata
+ 0002 0600              .word 6
+                        .area data(ram, con, rel)
+ 0004                   .dbfile D:\protues\miaobiao.c
+ 0004                   .blkb 2
+                        .area idata
+ 0004 5B00              .word 91
+                        .area data(ram, con, rel)
+ 0006                   .dbfile D:\protues\miaobiao.c
+ 0006                   .blkb 2
+                        .area idata
+ 0006 4F00              .word 79
+                        .area data(ram, con, rel)
+ 0008                   .dbfile D:\protues\miaobiao.c
+ 0008                   .blkb 2
+                        .area idata
+ 0008 6600              .word 102
+                        .area data(ram, con, rel)
+ 000A                   .dbfile D:\protues\miaobiao.c
+ 000A                   .blkb 2
+                        .area idata
+ 000A 6D00              .word 109
+                        .area data(ram, con, rel)
+ 000C                   .dbfile D:\protues\miaobiao.c
+ 000C                   .blkb 2
+                        .area idata
+ 000C 7D00              .word 125
+                        .area data(ram, con, rel)
+ 000E                   .dbfile D:\protues\miaobiao.c
+ 000E                   .blkb 2
+                        .area idata
+ 000E 0700              .word 7
+                        .area data(ram, con, rel)
+ 0010                   .dbfile D:\protues\miaobiao.c
+ 0010                   .blkb 2
+                        .area idata
+ 0010 7F00              .word 127
+                        .area data(ram, con, rel)
+ 0012                   .dbfile D:\protues\miaobiao.c
+ 0012                   .blkb 2
+                        .area idata
+ 0012 6F00              .word 111
+                        .area data(ram, con, rel)
+ 0014                   .dbfile D:\protues\miaobiao.c
+ 0014                   .dbsym e table _table A[20:10]I
+ 0014           _table1::
+ 0014                   .blkb 2
+                        .area idata
+ 0014 BF00              .word 191
+                        .area data(ram, con, rel)
+ 0016                   .dbfile D:\protues\miaobiao.c
+ 0016                   .blkb 2
+                        .area idata
+ 0016 8600              .word 134
+                        .area data(ram, con, rel)
+ 0018                   .dbfile D:\protues\miaobiao.c
+ 0018                   .blkb 2
+                        .area idata
+ 0018 DB00              .word 219
+                        .area data(ram, con, rel)
+ 001A                   .dbfile D:\protues\miaobiao.c
+ 001A                   .blkb 2
+                        .area idata
+ 001A CF00              .word 207
+                        .area data(ram, con, rel)
+ 001C                   .dbfile D:\protues\miaobiao.c
+ 001C                   .blkb 2
+                        .area idata
+ 001C E600              .word 230
+                        .area data(ram, con, rel)
+ 001E                   .dbfile D:\protues\miaobiao.c
+ 001E                   .blkb 2
+                        .area idata
+ 001E ED00              .word 237
+                        .area data(ram, con, rel)
+ 0020                   .dbfile D:\protues\miaobiao.c
+ 0020                   .blkb 2
+                        .area idata
+ 0020 FD00              .word 253
+                        .area data(ram, con, rel)
+ 0022                   .dbfile D:\protues\miaobiao.c
+ 0022                   .blkb 2
+                        .area idata
+ 0022 8700              .word 135
+                        .area data(ram, con, rel)
+ 0024                   .dbfile D:\protues\miaobiao.c
+ 0024                   .blkb 2
+                        .area idata
+ 0024 FF00              .word 255
+                        .area data(ram, con, rel)
+ 0026                   .dbfile D:\protues\miaobiao.c
+ 0026                   .blkb 2
+                        .area idata
+ 0026 EF00              .word 239
+                        .area data(ram, con, rel)
+ 0028                   .dbfile D:\protues\miaobiao.c
+ 0028                   .dbsym e table1 _table1 A[20:10]I
+                        .area text(rom, con, rel)
+ 000C                   .dbfile D:\protues\miaobiao.c
+ 000C                   .dbfunc e delay _delay fV
+ 000C           ;              i -> R20,R21
+ 000C           ;              j -> R22,R23
+ 000C           ;             ms -> R16,R17
+                        .even
+ 000C           _delay::
+ 000C 0E940000          xcall push_xgsetF000
+ 0010                   .dbline -1
+ 0010                   .dbline 14
+ 0010           ; }
+ 0010           ; const table[10]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+ 0010           ; const table1[10]={0xbf,0x86,0xdb,0xcf,0xe6,0xed,0xfd,0x87,0xff,0xef};
+ 0010           ; void delay(int ms)
+ 0010           ; {int i,j;
+ 0010                   .dbline 15
+ 0010           ;   for(i=0;i<ms;i++)
+ 0010 4427              clr R20
+ 0012 5527              clr R21
+ 0014 0AC0              xjmp L6
+ 0016           L3:
+ 0016                   .dbline 16
+ 0016           ;    {
+ 0016                   .dbline 17
+ 0016           ;    for(j=0;j<1141;j++);
+ 0016 6627              clr R22
+ 0018 7727              clr R23
+ 001A           L7:
+ 001A                   .dbline 17
+ 001A           L8:
+ 001A                   .dbline 17
+ 001A 6F5F              subi R22,255  ; offset = 1
+ 001C 7F4F              sbci R23,255
+ 001E                   .dbline 17
+ 001E 6537              cpi R22,117
+ 0020 E4E0              ldi R30,4
+ 0022 7E07              cpc R23,R30
+ 0024 D4F3              brlt L7
+ 0026           X0:
+ 0026                   .dbline 18
+ 0026           ;    }
+ 0026           L4:
+ 0026                   .dbline 15
+ 0026 4F5F              subi R20,255  ; offset = 1
+ 0028 5F4F              sbci R21,255
+ 002A           L6:
+ 002A                   .dbline 15
+ 002A 4017              cp R20,R16
+ 002C 5107              cpc R21,R17
+ 002E 9CF3              brlt L3
+ 0030           X1:
+ 0030                   .dbline -2
+ 0030           L2:
+ 0030                   .dbline 0 ; func end
+ 0030 0C940000          xjmp pop_xgsetF000
+ 0034                   .dbsym r i 20 I
+ 0034                   .dbsym r j 22 I
+ 0034                   .dbsym r ms 16 I
+ 0034                   .dbend
+ 0034                   .dbfunc e time _time fV
+ 0034           ;              i -> R16,R17
+                        .even
+ 0034           _time::
+ 0034                   .dbline -1
+ 0034                   .dbline 21
+ 0034           ;  }
+ 0034           ;  void time(void)
+ 0034           ;  {
+ 0034                   .dbline 24
+ 0034           ;    
+ 0034           ;     int i;
+ 0034           ;       for(i=0;i<10;i++)
+ 0034 0027              clr R16
+ 0036 1127              clr R17
+ 0038                   .dbline 25
+ 0038           ;        {                     
+ 0038 06C0              xjmp L17
+ 003A           L16:
+ 003A                   .dbline 27
+ 003A           ;          while(1)
+ 003A           ;           {
+ 003A                   .dbline 28
+ 003A           ;             if(TCNT0==100)
+ 003A 82B7              in R24,0x32
+ 003C 8436              cpi R24,100
+ 003E 19F4              brne L19
+ 0040           X2:
+ 0040                   .dbline 29
+ 0040           ;               {                    //100us
+ 0040                   .dbline 30
+ 0040           ;                  TCNT0=0;
+ 0040 2224              clr R2
+ 0042 22BE              out 0x32,R2
+ 0044                   .dbline 31
+ 0044           ;                  break;
+ 0044 01C0              xjmp L18
+ 0046           L19:
+ 0046                   .dbline 33
+ 0046           ;               } 
+ 0046           ;           }
+ 0046           L17:
+ 0046                   .dbline 26
+ 0046 F9CF              xjmp L16
+ 0048           L18:
+ 0048                   .dbline 34
+ 0048           ;        }
+ 0048           L13:
+ 0048                   .dbline 24
+ 0048 0F5F              subi R16,255  ; offset = 1
+ 004A 1F4F              sbci R17,255
+ 004C                   .dbline 24
+ 004C 0A30              cpi R16,10
+ 004E E0E0              ldi R30,0
+ 0050 1E07              cpc R17,R30
+ 0052 CCF3              brlt L17
+ 0054           X3:
+ 0054                   .dbline -2
+ 0054           L11:
+ 0054                   .dbline 0 ; func end
+ 0054 0895              ret
+ 0056                   .dbsym r i 16 I
+ 0056                   .dbend
+ 0056                   .dbfunc e key_press _key_press fc
+ 0056           ;              j -> R16
+                        .even
+ 0056           _key_press::
+ 0056                   .dbline -1
+ 0056                   .dbline 38
+ 0056           ;    
+ 0056           ; }
+ 0056           ; char key_press(void)
+ 0056           ; {
+ 0056                   .dbline 40
+ 0056           ;     char j;
+ 0056           ;     DDRD|=0X0F;
+ 0056 81B3              in R24,0x11
+ 0058 8F60              ori R24,15
+ 005A 81BB              out 0x11,R24
+ 005C                   .dbline 41
+ 005C           ;       PORTD|=0X0F;
+ 005C 82B3              in R24,0x12
+ 005E 8F60              ori R24,15
+ 0060 82BB              out 0x12,R24
+ 0062                   .dbline 42
+ 0062           ;       DDRD&=0XF0;
+ 0062 81B3              in R24,0x11
+ 0064 807F              andi R24,240
+ 0066 81BB              out 0x11,R24
+ 0068                   .dbline 43
+ 0068           ;       j=PIND;
+ 0068 00B3              in R16,0x10
+ 006A                   .dbline 44
+ 006A           ;       j=j&0X0F;//00001111
+ 006A 0F70              andi R16,15
+ 006C                   .dbline -2
+ 006C           L21:
+ 006C                   .dbline 0 ; func end
+ 006C 0895              ret
+ 006E                   .dbsym r j 16 c
+ 006E                   .dbend
+ 006E                   .dbfunc e scan _scan fV
+ 006E           ;              j -> R14
+ 006E           ;              k -> R22
+ 006E           ;              h -> R12,R13
+ 006E           ;              g -> R10,R11
+ 006E           ;              f -> R20,R21
+ 006E           ;              e -> y+18
+ 006E           ;              d -> y+16
+ 006E           ;              c -> y+14
+ 006E           ;              b -> y+12
+ 006E           ;              a -> y+10
+                        .even
+ 006E           _scan::
+ 006E 0E940000          xcall push_arg4
+ 0072 0E940000          xcall push_xgsetF0FC
+ 0076 4C89              ldd R20,y+20
+ 0078 5D89              ldd R21,y+21
+ 007A AE88              ldd R10,y+22
+ 007C BF88              ldd R11,y+23
+ 007E C88C              ldd R12,y+24
+ 0080 D98C              ldd R13,y+25
+ 0082                   .dbline -1
+ 0082                   .dbline 47
+ 0082           ; }
+ 0082           ; void scan(int a,int b ,int c,int d,int e,int f,int g,int h)
+ 0082           ; {
+ 0082                   .dbline 49
+ 0082           ;       char j,k;//,a,b,c,d,e,f,g,h;
+ 0082           ;     DDRD|=0X0F;
+ 0082 81B3              in R24,0x11
+ 0084 8F60              ori R24,15
+ 0086 81BB              out 0x11,R24
+ 0088                   .dbline 50
+ 0088           ;       PORTD|=0X0F;
+ 0088 82B3              in R24,0x12
+ 008A 8F60              ori R24,15
+ 008C 82BB              out 0x12,R24
+ 008E                   .dbline 51
+ 008E           ;       DDRD&=0XF0;
+ 008E 81B3              in R24,0x11
+ 0090 807F              andi R24,240
+ 0092 81BB              out 0x11,R24
+ 0094                   .dbline 52
+ 0094           ;       j=PIND;
+ 0094 E0B2              in R14,0x10
+ 0096                   .dbline 53
+ 0096           ;       j=j&0X0F;
+ 0096 8E2D              mov R24,R14
+ 0098 8F70              andi R24,15
+ 009A E82E              mov R14,R24
+ 009C                   .dbline 54
+ 009C           ;       if(j==0X0D)
+ 009C 8D30              cpi R24,13
+ 009E A1F5              brne L23
+ 00A0           X4:
+ 00A0                   .dbline 55
+ 00A0           ;        {while(1){
+ 00A0 32C0              xjmp L26
+ 00A2           L25:
+ 00A2                   .dbline 55
+ 00A2                   .dbline 56
+ 00A2           ;       for(k=0;k<8;k++){
+ 00A2 6627              clr R22
+ 00A4 2EC0              xjmp L31
+ 00A6           L28:
+ 00A6                   .dbline 56
+ 00A6                   .dbline 57
+ 00A6           ;         PORTA=~(1<<k);
+ 00A6 01E0              ldi R16,1
+ 00A8 162F              mov R17,R22
+ 00AA 0E940000          xcall lsl8
+ 00AE 202E              mov R2,R16
+ 00B0 2094              com R2
+ 00B2 2BBA              out 0x1b,R2
+ 00B4                   .dbline 58
+ 00B4           ;         if(k%2==0&&k!=0)
+ 00B4 12E0              ldi R17,2
+ 00B6 062F              mov R16,R22
+ 00B8 0E940000          xcall mod8u
+ 00BC 0023              tst R16
+ 00BE 41F4              brne L32
+ 00C0           X5:
+ 00C0 6623              tst R22
+ 00C2 31F0              breq L32
+ 00C4           X6:
+ 00C4                   .dbline 59
+ 00C4           ;       PORTB=table1[0];
+ 00C4 20901400          lds R2,_table1
+ 00C8 30901500          lds R3,_table1+1
+ 00CC 28BA              out 0x18,R2
+ 00CE 05C0              xjmp L33
+ 00D0           L32:
+ 00D0                   .dbline 61
+ 00D0           ;         else
+ 00D0           ;         PORTB=table[0];
+ 00D0 20900000          lds R2,_table
+ 00D4 30900100          lds R3,_table+1
+ 00D8 28BA              out 0x18,R2
+ 00DA           L33:
+ 00DA                   .dbline 62
+ 00DA           ;       delay(1);
+ 00DA 01E0              ldi R16,1
+ 00DC 10E0              ldi R17,0
+ 00DE 96DF              xcall _delay
+ 00E0                   .dbline 63
+ 00E0           ;         DDRD|=0X0F;
+ 00E0 81B3              in R24,0x11
+ 00E2 8F60              ori R24,15
+ 00E4 81BB              out 0x11,R24
+ 00E6                   .dbline 64
+ 00E6           ;         PORTD|=0X0F;
+ 00E6 82B3              in R24,0x12
+ 00E8 8F60              ori R24,15
+ 00EA 82BB              out 0x12,R24
+ 00EC                   .dbline 65
+ 00EC           ;         DDRD&=0XF0;
+ 00EC 81B3              in R24,0x11
+ 00EE 807F              andi R24,240
+ 00F0 81BB              out 0x11,R24
+ 00F2                   .dbline 66
+ 00F2           ;         j=PIND;
+ 00F2 E0B2              in R14,0x10
+ 00F4                   .dbline 67
+ 00F4           ;         j=j&0X0F;
+ 00F4 8E2D              mov R24,R14
+ 00F6 8F70              andi R24,15
+ 00F8 E82E              mov R14,R24
+ 00FA                   .dbline 68
+ 00FA           ;         if(j==0X07){
+ 00FA 8730              cpi R24,7
+ 00FC 09F4              brne L34
+ 00FE           X7:
+ 00FE                   .dbline 68
+ 00FE                   .dbline 69
+ 00FE           ;        zhanshi();
+ 00FE D5D0              xcall _zhanshi
+ 0100                   .dbline 70
+ 0100           ;               }
+ 0100           L34:
+ 0100                   .dbline 71
+ 0100           ;            }
+ 0100           L29:
+ 0100                   .dbline 56
+ 0100 6395              inc R22
+ 0102           L31:
+ 0102                   .dbline 56
+ 0102 6830              cpi R22,8
+ 0104 80F2              brlo L28
+ 0106           X8:
+ 0106                   .dbline 72
+ 0106           ;          }
+ 0106           L26:
+ 0106                   .dbline 55
+ 0106 CDCF              xjmp L25
+ 0108           L23:
+ 0108                   .dbline 74
+ 0108           ;         } 
+ 0108           ;       else if(j==0X0B)
+ 0108 8E2D              mov R24,R14
+ 010A 8B30              cpi R24,11
+ 010C 09F0              breq X16
+ 010E C9C0              xjmp L36
+ 0110           X16:
+ 0110           X9:
+ 0110                   .dbline 75
+ 0110           ;       {while(1){
+ 0110 C7C0              xjmp L39
+ 0112           L38:
+ 0112                   .dbline 75
+ 0112                   .dbline 76
+ 0112           ;        PORTA=~(1<<7);
+ 0112 8FE7              ldi R24,127
+ 0114 8BBB              out 0x1b,R24
+ 0116                   .dbline 77
+ 0116           ;      PORTB=table[h];
+ 0116 80E0              ldi R24,<_table
+ 0118 90E0              ldi R25,>_table
+ 011A F601              movw R30,R12
+ 011C EE0F              lsl R30
+ 011E FF1F              rol R31
+ 0120 E80F              add R30,R24
+ 0122 F91F              adc R31,R25
+ 0124 2080              ldd R2,z+0
+ 0126 3180              ldd R3,z+1
+ 0128 28BA              out 0x18,R2
+ 012A                   .dbline 78
+ 012A           ;      delay(1);
+ 012A 01E0              ldi R16,1
+ 012C 10E0              ldi R17,0
+ 012E 6EDF              xcall _delay
+ 0130                   .dbline 79
+ 0130           ;      PORTA=~(1<<6);
+ 0130 8FEB              ldi R24,191
+ 0132 8BBB              out 0x1b,R24
+ 0134                   .dbline 80
+ 0134           ;      PORTB=table1[g];
+ 0134 80E0              ldi R24,<_table1
+ 0136 90E0              ldi R25,>_table1
+ 0138 F501              movw R30,R10
+ 013A EE0F              lsl R30
+ 013C FF1F              rol R31
+ 013E E80F              add R30,R24
+ 0140 F91F              adc R31,R25
+ 0142 2080              ldd R2,z+0
+ 0144 3180              ldd R3,z+1
+ 0146 28BA              out 0x18,R2
+ 0148                   .dbline 81
+ 0148           ;      delay(1);
+ 0148 01E0              ldi R16,1
+ 014A 10E0              ldi R17,0
+ 014C 5FDF              xcall _delay
+ 014E                   .dbline 82
+ 014E           ;      PORTA=~(1<<5);
+ 014E 8FED              ldi R24,223
+ 0150 8BBB              out 0x1b,R24
+ 0152                   .dbline 83
+ 0152           ;      PORTB=table[f];
+ 0152 80E0              ldi R24,<_table
+ 0154 90E0              ldi R25,>_table
+ 0156 FA01              movw R30,R20
+ 0158 EE0F              lsl R30
+ 015A FF1F              rol R31
+ 015C E80F              add R30,R24
+ 015E F91F              adc R31,R25
+ 0160 2080              ldd R2,z+0
+ 0162 3180              ldd R3,z+1
+ 0164 28BA              out 0x18,R2
+ 0166                   .dbline 84
+ 0166           ;      delay(1);
+ 0166 01E0              ldi R16,1
+ 0168 10E0              ldi R17,0
+ 016A 50DF              xcall _delay
+ 016C                   .dbline 85
+ 016C           ;      PORTA=~(1<<4);
+ 016C 8FEE              ldi R24,239
+ 016E 8BBB              out 0x1b,R24
+ 0170                   .dbline 86
+ 0170           ;      PORTB=table1[e];
+ 0170 80E0              ldi R24,<_table1
+ 0172 90E0              ldi R25,>_table1
+ 0174 EA89              ldd R30,y+18
+ 0176 FB89              ldd R31,y+19
+ 0178 EE0F              lsl R30
+ 017A FF1F              rol R31
+ 017C E80F              add R30,R24
+ 017E F91F              adc R31,R25
+ 0180 2080              ldd R2,z+0
+ 0182 3180              ldd R3,z+1
+ 0184 28BA              out 0x18,R2
+ 0186                   .dbline 87
+ 0186           ;      delay(1);
+ 0186 01E0              ldi R16,1
+ 0188 10E0              ldi R17,0
+ 018A 40DF              xcall _delay
+ 018C                   .dbline 88
+ 018C           ;      PORTA=~(1<<3);
+ 018C 87EF              ldi R24,247
+ 018E 8BBB              out 0x1b,R24
+ 0190                   .dbline 89
+ 0190           ;      PORTB=table[d];
+ 0190 80E0              ldi R24,<_table
+ 0192 90E0              ldi R25,>_table
+ 0194 E889              ldd R30,y+16
+ 0196 F989              ldd R31,y+17
+ 0198 EE0F              lsl R30
+ 019A FF1F              rol R31
+ 019C E80F              add R30,R24
+ 019E F91F              adc R31,R25
+ 01A0 2080              ldd R2,z+0
+ 01A2 3180              ldd R3,z+1
+ 01A4 28BA              out 0x18,R2
+ 01A6                   .dbline 90
+ 01A6           ;      delay(1);
+ 01A6 01E0              ldi R16,1
+ 01A8 10E0              ldi R17,0
+ 01AA 30DF              xcall _delay
+ 01AC                   .dbline 91
+ 01AC           ;      PORTA=~(1<<2);
+ 01AC 8BEF              ldi R24,251
+ 01AE 8BBB              out 0x1b,R24
+ 01B0                   .dbline 92
+ 01B0           ;      PORTB=table1[c];
+ 01B0 80E0              ldi R24,<_table1
+ 01B2 90E0              ldi R25,>_table1
+ 01B4 EE85              ldd R30,y+14
+ 01B6 FF85              ldd R31,y+15
+ 01B8 EE0F              lsl R30
+ 01BA FF1F              rol R31
+ 01BC E80F              add R30,R24
+ 01BE F91F              adc R31,R25
+ 01C0 2080              ldd R2,z+0
+ 01C2 3180              ldd R3,z+1
+ 01C4 28BA              out 0x18,R2
+ 01C6                   .dbline 93
+ 01C6           ;      delay(1);
+ 01C6 01E0              ldi R16,1
+ 01C8 10E0              ldi R17,0
+ 01CA 20DF              xcall _delay
+ 01CC                   .dbline 94
+ 01CC           ;      PORTA=~(1<<1);
+ 01CC 8DEF              ldi R24,253
+ 01CE 8BBB              out 0x1b,R24
+ 01D0                   .dbline 95
+ 01D0           ;      PORTB=table[b];
+ 01D0 80E0              ldi R24,<_table
+ 01D2 90E0              ldi R25,>_table
+ 01D4 EC85              ldd R30,y+12
+ 01D6 FD85              ldd R31,y+13
+ 01D8 EE0F              lsl R30
+ 01DA FF1F              rol R31
+ 01DC E80F              add R30,R24
+ 01DE F91F              adc R31,R25
+ 01E0 2080              ldd R2,z+0
+ 01E2 3180              ldd R3,z+1
+ 01E4 28BA              out 0x18,R2
+ 01E6                   .dbline 96
+ 01E6           ;      delay(1);
+ 01E6 01E0              ldi R16,1
+ 01E8 10E0              ldi R17,0
+ 01EA 10DF              xcall _delay
+ 01EC                   .dbline 97
+ 01EC           ;      PORTA=~(1<<0);
+ 01EC 8EEF              ldi R24,254
+ 01EE 8BBB              out 0x1b,R24
+ 01F0                   .dbline 98
+ 01F0           ;      PORTB=table[a];
+ 01F0 80E0              ldi R24,<_table
+ 01F2 90E0              ldi R25,>_table
+ 01F4 EA85              ldd R30,y+10
+ 01F6 FB85              ldd R31,y+11
+ 01F8 EE0F              lsl R30
+ 01FA FF1F              rol R31
+ 01FC E80F              add R30,R24
+ 01FE F91F              adc R31,R25
+ 0200 2080              ldd R2,z+0
+ 0202 3180              ldd R3,z+1
+ 0204 28BA              out 0x18,R2
+ 0206                   .dbline 99
+ 0206           ;      delay(1);
+ 0206 01E0              ldi R16,1
+ 0208 10E0              ldi R17,0
+ 020A 00DF              xcall _delay
+ 020C                   .dbline 100
+ 020C           ;        delay(10);
+ 020C 0AE0              ldi R16,10
+ 020E 10E0              ldi R17,0
+ 0210 FDDE              xcall _delay
+ 0212                   .dbline 101
+ 0212           ;        DDRD|=0X0F;
+ 0212 81B3              in R24,0x11
+ 0214 8F60              ori R24,15
+ 0216 81BB              out 0x11,R24
+ 0218                   .dbline 102
+ 0218           ;        PORTD|=0X0F;
+ 0218 82B3              in R24,0x12
+ 021A 8F60              ori R24,15
+ 021C 82BB              out 0x12,R24
+ 021E                   .dbline 103
+ 021E           ;        DDRD&=0XF0;
+ 021E 81B3              in R24,0x11
+ 0220 807F              andi R24,240
+ 0222 81BB              out 0x11,R24
+ 0224                   .dbline 104
+ 0224           ;        j=PIND;
+ 0224 E0B2              in R14,0x10
+ 0226                   .dbline 105
+ 0226           ;        j=j&0X0F;
+ 0226 8E2D              mov R24,R14
+ 0228 8F70              andi R24,15
+ 022A E82E              mov R14,R24
+ 022C                   .dbline 106
+ 022C           ;        if(j==0X0D)
+ 022C 8D30              cpi R24,13
+ 022E A1F5              brne L41
+ 0230           X10:
+ 0230                   .dbline 107
+ 0230           ;        {while(1){
+ 0230 32C0              xjmp L44
+ 0232           L43:
+ 0232                   .dbline 107
+ 0232                   .dbline 108
+ 0232           ;         for(k=0;k<8;k++){
+ 0232 6627              clr R22
+ 0234 2EC0              xjmp L49
+ 0236           L46:
+ 0236                   .dbline 108
+ 0236                   .dbline 109
+ 0236           ;         PORTA=~(1<<k);
+ 0236 01E0              ldi R16,1
+ 0238 162F              mov R17,R22
+ 023A 0E940000          xcall lsl8
+ 023E 202E              mov R2,R16
+ 0240 2094              com R2
+ 0242 2BBA              out 0x1b,R2
+ 0244                   .dbline 110
+ 0244           ;         if(k%2==0&&k!=0)
+ 0244 12E0              ldi R17,2
+ 0246 062F              mov R16,R22
+ 0248 0E940000          xcall mod8u
+ 024C 0023              tst R16
+ 024E 41F4              brne L50
+ 0250           X11:
+ 0250 6623              tst R22
+ 0252 31F0              breq L50
+ 0254           X12:
+ 0254                   .dbline 111
+ 0254           ;       PORTB=table1[0];
+ 0254 20901400          lds R2,_table1
+ 0258 30901500          lds R3,_table1+1
+ 025C 28BA              out 0x18,R2
+ 025E 05C0              xjmp L51
+ 0260           L50:
+ 0260                   .dbline 113
+ 0260           ;         else
+ 0260           ;         PORTB=table[0];
+ 0260 20900000          lds R2,_table
+ 0264 30900100          lds R3,_table+1
+ 0268 28BA              out 0x18,R2
+ 026A           L51:
+ 026A                   .dbline 114
+ 026A           ;       delay(1);
+ 026A 01E0              ldi R16,1
+ 026C 10E0              ldi R17,0
+ 026E CEDE              xcall _delay
+ 0270                   .dbline 115
+ 0270           ;         DDRD|=0X0F;
+ 0270 81B3              in R24,0x11
+ 0272 8F60              ori R24,15
+ 0274 81BB              out 0x11,R24
+ 0276                   .dbline 116
+ 0276           ;         PORTD|=0X0F;
+ 0276 82B3              in R24,0x12
+ 0278 8F60              ori R24,15
+ 027A 82BB              out 0x12,R24
+ 027C                   .dbline 117
+ 027C           ;         DDRD&=0XF0;
+ 027C 81B3              in R24,0x11
+ 027E 807F              andi R24,240
+ 0280 81BB              out 0x11,R24
+ 0282                   .dbline 118
+ 0282           ;         j=PIND;
+ 0282 E0B2              in R14,0x10
+ 0284                   .dbline 119
+ 0284           ;         j=j&0X0F;
+ 0284 8E2D              mov R24,R14
+ 0286 8F70              andi R24,15
+ 0288 E82E              mov R14,R24
+ 028A                   .dbline 120
+ 028A           ;         if(j==0X07){
+ 028A 8730              cpi R24,7
+ 028C 09F4              brne L52
+ 028E           X13:
+ 028E                   .dbline 120
+ 028E                   .dbline 121
+ 028E           ;        zhanshi();
+ 028E 0DD0              xcall _zhanshi
+ 0290                   .dbline 122
+ 0290           ;               }
+ 0290           L52:
+ 0290                   .dbline 123
+ 0290           ;            }
+ 0290           L47:
+ 0290                   .dbline 108
+ 0290 6395              inc R22
+ 0292           L49:
+ 0292                   .dbline 108
+ 0292 6830              cpi R22,8
+ 0294 80F2              brlo L46
+ 0296           X14:
+ 0296                   .dbline 124
+ 0296           ;          }
+ 0296           L44:
+ 0296                   .dbline 107
+ 0296 CDCF              xjmp L43
+ 0298           L41:
+ 0298                   .dbline 126
+ 0298           ;         }
+ 0298           ;       else if(j==0X0E){
+ 0298 8E2D              mov R24,R14
+ 029A 8E30              cpi R24,14
+ 029C 09F4              brne L54
+ 029E           X15:
+ 029E                   .dbline 126
+ 029E                   .dbline 127
+ 029E           ;        break;
+ 029E 01C0              xjmp L40
+ 02A0           L54:
+ 02A0           L42:
+ 02A0                   .dbline 129
+ 02A0           ;        }
+ 02A0           ;       }
+ 02A0           L39:
+ 02A0                   .dbline 75
+ 02A0 38CF              xjmp L38
+ 02A2           L40:
+ 02A2                   .dbline 130
+ 02A2           ;       }
+ 02A2           L36:
+ 02A2           L24:
+ 02A2                   .dbline -2
+ 02A2           L22:
+ 02A2                   .dbline 0 ; func end
+ 02A2 0E940000          xcall pop_xgsetF0FC
+ 02A6 2496              adiw R28,4
+ 02A8 0895              ret
+ 02AA                   .dbsym r j 14 c
+ 02AA                   .dbsym r k 22 c
+ 02AA                   .dbsym r h 12 I
+ 02AA                   .dbsym r g 10 I
+ 02AA                   .dbsym r f 20 I
+ 02AA                   .dbsym l e 18 I
+ 02AA                   .dbsym l d 16 I
+ 02AA                   .dbsym l c 14 I
+ 02AA                   .dbsym l b 12 I
+ 02AA                   .dbsym l a 10 I
+ 02AA                   .dbend
+ 02AA                   .dbfunc e zhanshi _zhanshi fV
+ 02AA           ;              i -> R14,R15
+ 02AA           ;              j -> <dead>
+ 02AA           ;              z -> <dead>
+ 02AA           ;              l -> <dead>
+ 02AA           ;              h -> y+20
+ 02AA           ;              g -> y+18
+ 02AA           ;              f -> y+16
+ 02AA           ;              e -> y+14
+ 02AA           ;              d -> y+12
+ 02AA           ;              c -> R20,R21
+ 02AA           ;              b -> R22,R23
+ 02AA           ;              a -> R10,R11
+                        .even
+ 02AA           _zhanshi::
+ 02AA 0E940000          xcall push_xgsetF0FC
+ 02AE 6697              sbiw R28,22
+ 02B0                   .dbline -1
+ 02B0                   .dbline 134
+ 02B0           ; }
+ 02B0           ; 
+ 02B0           ; void zhanshi()
+ 02B0           ; {
+ 02B0 54C1              xjmp L58
+ 02B2           L57:
+ 02B2                   .dbline 136
+ 02B2           ; int a,b,c,d,e,f,g,h,l,z,j;
+ 02B2           ; while(1){
+ 02B2                   .dbline 137
+ 02B2           ; for(h=0;h<10;h++){
+ 02B2 0024              clr R0
+ 02B4 1124              clr R1
+ 02B6 1D8A              std y+21,R1
+ 02B8 0C8A              std y+20,R0
+ 02BA           L60:
+ 02BA                   .dbline 137
+ 02BA                   .dbline 138
+ 02BA           ; for(g=0;g<10;g++){
+ 02BA 0024              clr R0
+ 02BC 1124              clr R1
+ 02BE 1B8A              std y+19,R1
+ 02C0 0A8A              std y+18,R0
+ 02C2           L64:
+ 02C2                   .dbline 138
+ 02C2                   .dbline 139
+ 02C2           ; for(f=0;f<6;f++) {
+ 02C2 0024              clr R0
+ 02C4 1124              clr R1
+ 02C6 198A              std y+17,R1
+ 02C8 088A              std y+16,R0
+ 02CA           L68:
+ 02CA                   .dbline 139
+ 02CA                   .dbline 140
+ 02CA           ; for(e=0;e<10;e++){
+ 02CA 0024              clr R0
+ 02CC 1124              clr R1
+ 02CE 1F86              std y+15,R1
+ 02D0 0E86              std y+14,R0
+ 02D2           L72:
+ 02D2                   .dbline 140
+ 02D2                   .dbline 141
+ 02D2           ; for(d=0;d<6;d++) {
+ 02D2 0024              clr R0
+ 02D4 1124              clr R1
+ 02D6 1D86              std y+13,R1
+ 02D8 0C86              std y+12,R0
+ 02DA           L76:
+ 02DA                   .dbline 141
+ 02DA                   .dbline 142
+ 02DA           ; for(c=0;c<10;c++){
+ 02DA 4427              clr R20
+ 02DC 5527              clr R21
+ 02DE           L80:
+ 02DE                   .dbline 142
+ 02DE                   .dbline 143
+ 02DE           ; for(b=0;b<10;b++){
+ 02DE 6627              clr R22
+ 02E0 7727              clr R23
+ 02E2           L84:
+ 02E2                   .dbline 143
+ 02E2                   .dbline 144
+ 02E2           ; for(a=0;a<10;a++){
+ 02E2 AA24              clr R10
+ 02E4 BB24              clr R11
+ 02E6           L88:
+ 02E6                   .dbline 144
+ 02E6                   .dbline 145
+ 02E6           ; int i=7;
+ 02E6 87E0              ldi R24,7
+ 02E8 90E0              ldi R25,0
+ 02EA 7C01              movw R14,R24
+ 02EC                   .dbline 146
+ 02EC           ; time();
+ 02EC A3DE              xcall _time
+ 02EE                   .dbline 147
+ 02EE           ; PORTA=~(1<<i--);
+ 02EE 1701              movw R2,R14
+ 02F0 C101              movw R24,R2
+ 02F2 0197              sbiw R24,1
+ 02F4 7C01              movw R14,R24
+ 02F6 01E0              ldi R16,1
+ 02F8 10E0              ldi R17,0
+ 02FA 9101              movw R18,R2
+ 02FC 0E940000          xcall lsl16
+ 0300 1801              movw R2,R16
+ 0302 2094              com R2
+ 0304 3094              com R3
+ 0306 2BBA              out 0x1b,R2
+ 0308                   .dbline 148
+ 0308           ; PORTB=table[h];
+ 0308 80E0              ldi R24,<_table
+ 030A 90E0              ldi R25,>_table
+ 030C EC89              ldd R30,y+20
+ 030E FD89              ldd R31,y+21
+ 0310 EE0F              lsl R30
+ 0312 FF1F              rol R31
+ 0314 E80F              add R30,R24
+ 0316 F91F              adc R31,R25
+ 0318 2080              ldd R2,z+0
+ 031A 3180              ldd R3,z+1
+ 031C 28BA              out 0x18,R2
+ 031E                   .dbline 149
+ 031E           ; delay(1);
+ 031E 01E0              ldi R16,1
+ 0320 10E0              ldi R17,0
+ 0322 74DE              xcall _delay
+ 0324                   .dbline 150
+ 0324           ; PORTA=~(1<<i--);
+ 0324 1701              movw R2,R14
+ 0326 C101              movw R24,R2
+ 0328 0197              sbiw R24,1
+ 032A 7C01              movw R14,R24
+ 032C 01E0              ldi R16,1
+ 032E 10E0              ldi R17,0
+ 0330 9101              movw R18,R2
+ 0332 0E940000          xcall lsl16
+ 0336 1801              movw R2,R16
+ 0338 2094              com R2
+ 033A 3094              com R3
+ 033C 2BBA              out 0x1b,R2
+ 033E                   .dbline 151
+ 033E           ; PORTB=table1[g];
+ 033E 80E0              ldi R24,<_table1
+ 0340 90E0              ldi R25,>_table1
+ 0342 EA89              ldd R30,y+18
+ 0344 FB89              ldd R31,y+19
+ 0346 EE0F              lsl R30
+ 0348 FF1F              rol R31
+ 034A E80F              add R30,R24
+ 034C F91F              adc R31,R25
+ 034E 2080              ldd R2,z+0
+ 0350 3180              ldd R3,z+1
+ 0352 28BA              out 0x18,R2
+ 0354                   .dbline 152
+ 0354           ; delay(1);
+ 0354 01E0              ldi R16,1
+ 0356 10E0              ldi R17,0
+ 0358 59DE              xcall _delay
+ 035A                   .dbline 153
+ 035A           ; PORTA=~(1<<i--);
+ 035A 6701              movw R12,R14
+ 035C C601              movw R24,R12
+ 035E 0197              sbiw R24,1
+ 0360 7C01              movw R14,R24
+ 0362 01E0              ldi R16,1
+ 0364 10E0              ldi R17,0
+ 0366 9601              movw R18,R12
+ 0368 0E940000          xcall lsl16
+ 036C 1801              movw R2,R16
+ 036E 2094              com R2
+ 0370 3094              com R3
+ 0372 2BBA              out 0x1b,R2
+ 0374                   .dbline 154
+ 0374           ; PORTB=table[f];
+ 0374 80E0              ldi R24,<_table
+ 0376 90E0              ldi R25,>_table
+ 0378 E889              ldd R30,y+16
+ 037A F989              ldd R31,y+17
+ 037C EE0F              lsl R30
+ 037E FF1F              rol R31
+ 0380 E80F              add R30,R24
+ 0382 F91F              adc R31,R25
+ 0384 2080              ldd R2,z+0
+ 0386 3180              ldd R3,z+1
+ 0388 28BA              out 0x18,R2
+ 038A                   .dbline 155
+ 038A           ; delay(1);
+ 038A 01E0              ldi R16,1
+ 038C 10E0              ldi R17,0
+ 038E 3EDE              xcall _delay
+ 0390                   .dbline 156
+ 0390           ; PORTA=~(1<<i--);
+ 0390 6701              movw R12,R14
+ 0392 C601              movw R24,R12
+ 0394 0197              sbiw R24,1
+ 0396 7C01              movw R14,R24
+ 0398 01E0              ldi R16,1
+ 039A 10E0              ldi R17,0
+ 039C 9601              movw R18,R12
+ 039E 0E940000          xcall lsl16
+ 03A2 1801              movw R2,R16
+ 03A4 2094              com R2
+ 03A6 3094              com R3
+ 03A8 2BBA              out 0x1b,R2
+ 03AA                   .dbline 157
+ 03AA           ; PORTB=table1[e];
+ 03AA 80E0              ldi R24,<_table1
+ 03AC 90E0              ldi R25,>_table1
+ 03AE EE85              ldd R30,y+14
+ 03B0 FF85              ldd R31,y+15
+ 03B2 EE0F              lsl R30
+ 03B4 FF1F              rol R31
+ 03B6 E80F              add R30,R24
+ 03B8 F91F              adc R31,R25
+ 03BA 2080              ldd R2,z+0
+ 03BC 3180              ldd R3,z+1
+ 03BE 28BA              out 0x18,R2
+ 03C0                   .dbline 158
+ 03C0           ; delay(1);
+ 03C0 01E0              ldi R16,1
+ 03C2 10E0              ldi R17,0
+ 03C4 23DE              xcall _delay
+ 03C6                   .dbline 159
+ 03C6           ; PORTA=~(1<<i--);
+ 03C6 6701              movw R12,R14
+ 03C8 C601              movw R24,R12
+ 03CA 0197              sbiw R24,1
+ 03CC 7C01              movw R14,R24
+ 03CE 01E0              ldi R16,1
+ 03D0 10E0              ldi R17,0
+ 03D2 9601              movw R18,R12
+ 03D4 0E940000          xcall lsl16
+ 03D8 1801              movw R2,R16
+ 03DA 2094              com R2
+ 03DC 3094              com R3
+ 03DE 2BBA              out 0x1b,R2
+ 03E0                   .dbline 160
+ 03E0           ; PORTB=table[d];
+ 03E0 80E0              ldi R24,<_table
+ 03E2 90E0              ldi R25,>_table
+ 03E4 EC85              ldd R30,y+12
+ 03E6 FD85              ldd R31,y+13
+ 03E8 EE0F              lsl R30
+ 03EA FF1F              rol R31
+ 03EC E80F              add R30,R24
+ 03EE F91F              adc R31,R25
+ 03F0 2080              ldd R2,z+0
+ 03F2 3180              ldd R3,z+1
+ 03F4 28BA              out 0x18,R2
+ 03F6                   .dbline 161
+ 03F6           ; delay(1);
+ 03F6 01E0              ldi R16,1
+ 03F8 10E0              ldi R17,0
+ 03FA 08DE              xcall _delay
+ 03FC                   .dbline 162
+ 03FC           ; PORTA=~(1<<i--);
+ 03FC 6701              movw R12,R14
+ 03FE C601              movw R24,R12
+ 0400 0197              sbiw R24,1
+ 0402 7C01              movw R14,R24
+ 0404 01E0              ldi R16,1
+ 0406 10E0              ldi R17,0
+ 0408 9601              movw R18,R12
+ 040A 0E940000          xcall lsl16
+ 040E 1801              movw R2,R16
+ 0410 2094              com R2
+ 0412 3094              com R3
+ 0414 2BBA              out 0x1b,R2
+ 0416                   .dbline 163
+ 0416           ; PORTB=table1[c];
+ 0416 80E0              ldi R24,<_table1
+ 0418 90E0              ldi R25,>_table1
+ 041A FA01              movw R30,R20
+ 041C EE0F              lsl R30
+ 041E FF1F              rol R31
+ 0420 E80F              add R30,R24
+ 0422 F91F              adc R31,R25
+ 0424 2080              ldd R2,z+0
+ 0426 3180              ldd R3,z+1
+ 0428 28BA              out 0x18,R2
+ 042A                   .dbline 164
+ 042A           ; delay(1);
+ 042A 01E0              ldi R16,1
+ 042C 10E0              ldi R17,0
+ 042E EEDD              xcall _delay
+ 0430                   .dbline 165
+ 0430           ; PORTA=~(1<<i--);
+ 0430 6701              movw R12,R14
+ 0432 C601              movw R24,R12
+ 0434 0197              sbiw R24,1
+ 0436 7C01              movw R14,R24
+ 0438 01E0              ldi R16,1
+ 043A 10E0              ldi R17,0
+ 043C 9601              movw R18,R12
+ 043E 0E940000          xcall lsl16
+ 0442 1801              movw R2,R16
+ 0444 2094              com R2
+ 0446 3094              com R3
+ 0448 2BBA              out 0x1b,R2
+ 044A                   .dbline 166
+ 044A           ; PORTB=table[b];
+ 044A 80E0              ldi R24,<_table
+ 044C 90E0              ldi R25,>_table
+ 044E FB01              movw R30,R22
+ 0450 EE0F              lsl R30
+ 0452 FF1F              rol R31
+ 0454 E80F              add R30,R24
+ 0456 F91F              adc R31,R25
+ 0458 2080              ldd R2,z+0
+ 045A 3180              ldd R3,z+1
+ 045C 28BA              out 0x18,R2
+ 045E                   .dbline 167
+ 045E           ; delay(1);
+ 045E 01E0              ldi R16,1
+ 0460 10E0              ldi R17,0
+ 0462 D4DD              xcall _delay
+ 0464                   .dbline 168
+ 0464           ; PORTA=~(1<<i--);
+ 0464 6701              movw R12,R14
+ 0466 C601              movw R24,R12
+ 0468 0197              sbiw R24,1
+ 046A 7C01              movw R14,R24
+ 046C 01E0              ldi R16,1
+ 046E 10E0              ldi R17,0
+ 0470 9601              movw R18,R12
+ 0472 0E940000          xcall lsl16
+ 0476 1801              movw R2,R16
+ 0478 2094              com R2
+ 047A 3094              com R3
+ 047C 2BBA              out 0x1b,R2
+ 047E                   .dbline 169
+ 047E           ; PORTB=table[a];
+ 047E 80E0              ldi R24,<_table
+ 0480 90E0              ldi R25,>_table
+ 0482 F501              movw R30,R10
+ 0484 EE0F              lsl R30
+ 0486 FF1F              rol R31
+ 0488 E80F              add R30,R24
+ 048A F91F              adc R31,R25
+ 048C 2080              ldd R2,z+0
+ 048E 3180              ldd R3,z+1
+ 0490 28BA              out 0x18,R2
+ 0492                   .dbline 170
+ 0492           ; delay(1);
+ 0492 01E0              ldi R16,1
+ 0494 10E0              ldi R17,0
+ 0496 BADD              xcall _delay
+ 0498                   .dbline 171
+ 0498           ; scan(a,b,c,d,e,f,g,h);
+ 0498 0C88              ldd R0,y+20
+ 049A 1D88              ldd R1,y+21
+ 049C 1B86              std y+11,R1
+ 049E 0A86              std y+10,R0
+ 04A0 0A88              ldd R0,y+18
+ 04A2 1B88              ldd R1,y+19
+ 04A4 1986              std y+9,R1
+ 04A6 0886              std y+8,R0
+ 04A8 0888              ldd R0,y+16
+ 04AA 1988              ldd R1,y+17
+ 04AC 1F82              std y+7,R1
+ 04AE 0E82              std y+6,R0
+ 04B0 0E84              ldd R0,y+14
+ 04B2 1F84              ldd R1,y+15
+ 04B4 1D82              std y+5,R1
+ 04B6 0C82              std y+4,R0
+ 04B8 0C84              ldd R0,y+12
+ 04BA 1D84              ldd R1,y+13
+ 04BC 1B82              std y+3,R1
+ 04BE 0A82              std y+2,R0
+ 04C0 5983              std y+1,R21
+ 04C2 4883              std y+0,R20
+ 04C4 9B01              movw R18,R22
+ 04C6 8501              movw R16,R10
+ 04C8 D2DD              xcall _scan
+ 04CA                   .dbline 172
+ 04CA           ; }
+ 04CA           L89:
+ 04CA                   .dbline 144
+ 04CA C501              movw R24,R10
+ 04CC 0196              adiw R24,1
+ 04CE 5C01              movw R10,R24
+ 04D0                   .dbline 144
+ 04D0 8A30              cpi R24,10
+ 04D2 E0E0              ldi R30,0
+ 04D4 9E07              cpc R25,R30
+ 04D6 0CF4              brge X26
+ 04D8 06CF              xjmp L88
+ 04DA           X26:
+ 04DA           X17:
+ 04DA                   .dbline 173
+ 04DA           ; }
+ 04DA           L85:
+ 04DA                   .dbline 143
+ 04DA 6F5F              subi R22,255  ; offset = 1
+ 04DC 7F4F              sbci R23,255
+ 04DE                   .dbline 143
+ 04DE 6A30              cpi R22,10
+ 04E0 E0E0              ldi R30,0
+ 04E2 7E07              cpc R23,R30
+ 04E4 0CF4              brge X27
+ 04E6 FDCE              xjmp L84
+ 04E8           X27:
+ 04E8           X18:
+ 04E8                   .dbline 174
+ 04E8           ; }
+ 04E8           L81:
+ 04E8                   .dbline 142
+ 04E8 4F5F              subi R20,255  ; offset = 1
+ 04EA 5F4F              sbci R21,255
+ 04EC                   .dbline 142
+ 04EC 4A30              cpi R20,10
+ 04EE E0E0              ldi R30,0
+ 04F0 5E07              cpc R21,R30
+ 04F2 0CF4              brge X28
+ 04F4 F4CE              xjmp L80
+ 04F6           X28:
+ 04F6           X19:
+ 04F6                   .dbline 175
+ 04F6           ; }
+ 04F6           L77:
+ 04F6                   .dbline 141
+ 04F6 8C85              ldd R24,y+12
+ 04F8 9D85              ldd R25,y+13
+ 04FA 0196              adiw R24,1
+ 04FC 9D87              std y+13,R25
+ 04FE 8C87              std y+12,R24
+ 0500                   .dbline 141
+ 0500 8630              cpi R24,6
+ 0502 E0E0              ldi R30,0
+ 0504 9E07              cpc R25,R30
+ 0506 0CF4              brge X29
+ 0508 E8CE              xjmp L76
+ 050A           X29:
+ 050A           X20:
+ 050A                   .dbline 176
+ 050A           ; }
+ 050A           L73:
+ 050A                   .dbline 140
+ 050A 8E85              ldd R24,y+14
+ 050C 9F85              ldd R25,y+15
+ 050E 0196              adiw R24,1
+ 0510 9F87              std y+15,R25
+ 0512 8E87              std y+14,R24
+ 0514                   .dbline 140
+ 0514 8A30              cpi R24,10
+ 0516 E0E0              ldi R30,0
+ 0518 9E07              cpc R25,R30
+ 051A 0CF4              brge X30
+ 051C DACE              xjmp L72
+ 051E           X30:
+ 051E           X21:
+ 051E                   .dbline 177
+ 051E           ; }
+ 051E           L69:
+ 051E                   .dbline 139
+ 051E 8889              ldd R24,y+16
+ 0520 9989              ldd R25,y+17
+ 0522 0196              adiw R24,1
+ 0524 998B              std y+17,R25
+ 0526 888B              std y+16,R24
+ 0528                   .dbline 139
+ 0528 8630              cpi R24,6
+ 052A E0E0              ldi R30,0
+ 052C 9E07              cpc R25,R30
+ 052E 0CF4              brge X31
+ 0530 CCCE              xjmp L68
+ 0532           X31:
+ 0532           X22:
+ 0532                   .dbline 178
+ 0532           ; }
+ 0532           L65:
+ 0532                   .dbline 138
+ 0532 8A89              ldd R24,y+18
+ 0534 9B89              ldd R25,y+19
+ 0536 0196              adiw R24,1
+ 0538 9B8B              std y+19,R25
+ 053A 8A8B              std y+18,R24
+ 053C                   .dbline 138
+ 053C 8A30              cpi R24,10
+ 053E E0E0              ldi R30,0
+ 0540 9E07              cpc R25,R30
+ 0542 0CF4              brge X32
+ 0544 BECE              xjmp L64
+ 0546           X32:
+ 0546           X23:
+ 0546                   .dbline 179
+ 0546           ; }
+ 0546           L61:
+ 0546                   .dbline 137
+ 0546 8C89              ldd R24,y+20
+ 0548 9D89              ldd R25,y+21
+ 054A 0196              adiw R24,1
+ 054C 9D8B              std y+21,R25
+ 054E 8C8B              std y+20,R24
+ 0550                   .dbline 137
+ 0550 8A30              cpi R24,10
+ 0552 E0E0              ldi R30,0
+ 0554 9E07              cpc R25,R30
+ 0556 0CF4              brge X33
+ 0558 B0CE              xjmp L60
+ 055A           X33:
+ 055A           X24:
+ 055A                   .dbline 180
+ 055A           ; }
+ 055A           L58:
+ 055A                   .dbline 136
+ 055A ABCE              xjmp L57
+ 055C           X25:
+ 055C                   .dbline -2
+ 055C           L56:
+ 055C                   .dbline 0 ; func end
+ 055C 6696              adiw R28,22
+ 055E 0C940000          xjmp pop_xgsetF0FC
+ 0562                   .dbsym r i 14 I
+ 0562                   .dbsym l j 13 I
+ 0562                   .dbsym l z 13 I
+ 0562                   .dbsym l l 13 I
+ 0562                   .dbsym l h 20 I
+ 0562                   .dbsym l g 18 I
+ 0562                   .dbsym l f 16 I
+ 0562                   .dbsym l e 14 I
+ 0562                   .dbsym l d 12 I
+ 0562                   .dbsym r c 20 I
+ 0562                   .dbsym r b 22 I
+ 0562                   .dbsym r a 10 I
+ 0562                   .dbend
+ 0562                   .dbfunc e main _main fV
+ 0562           ;              z -> <dead>
+ 0562           ;              l -> <dead>
+ 0562           ;              h -> <dead>
+ 0562           ;              g -> <dead>
+ 0562           ;              f -> <dead>
+ 0562           ;              e -> <dead>
+ 0562           ;              d -> <dead>
+ 0562           ;              c -> <dead>
+ 0562           ;              b -> <dead>
+ 0562           ;              a -> <dead>
+ 0562           ;              j -> R22,R23
+ 0562           ;              k -> R20,R21
+                        .even
+ 0562           _main::
+ 0562                   .dbline -1
+ 0562                   .dbline 184
+ 0562           ; }
+ 0562           ; 
+ 0562           ; void main(void)
+ 0562           ; {
+ 0562                   .dbline 186
+ 0562           ; int a,b,c,d,e,f,g,h,l,z,j,k;
+ 0562           ; timer_init();
+ 0562 4EDD              xcall _timer_init
+ 0564                   .dbline 187
+ 0564           ; DDRA|=0XFF;
+ 0564 8AB3              in R24,0x1a
+ 0566 8F6F              ori R24,255
+ 0568 8ABB              out 0x1a,R24
+ 056A                   .dbline 188
+ 056A           ; PORTA|=0X00;
+ 056A 2BB2              in R2,0x1b
+ 056C 2BBA              out 0x1b,R2
+ 056E                   .dbline 189
+ 056E           ; DDRB|=0XFF;
+ 056E 87B3              in R24,0x17
+ 0570 8F6F              ori R24,255
+ 0572 87BB              out 0x17,R24
+ 0574                   .dbline 190
+ 0574           ; PORTB|=0X3F;
+ 0574 88B3              in R24,0x18
+ 0576 8F63              ori R24,63
+ 0578 88BB              out 0x18,R24
+ 057A 3DC0              xjmp L94
+ 057C           L93:
+ 057C                   .dbline 191
+ 057C           ; while(1){
+ 057C                   .dbline 192
+ 057C           ;       for(k=0;k<8;k++){
+ 057C 4427              clr R20
+ 057E 5527              clr R21
+ 0580           L96:
+ 0580                   .dbline 192
+ 0580                   .dbline 193
+ 0580           ;         PORTA=~(1<<k);
+ 0580 01E0              ldi R16,1
+ 0582 10E0              ldi R17,0
+ 0584 9A01              movw R18,R20
+ 0586 0E940000          xcall lsl16
+ 058A 1801              movw R2,R16
+ 058C 2094              com R2
+ 058E 3094              com R3
+ 0590 2BBA              out 0x1b,R2
+ 0592                   .dbline 194
+ 0592           ;         if(k%2==0&&k!=0)
+ 0592 22E0              ldi R18,2
+ 0594 30E0              ldi R19,0
+ 0596 8A01              movw R16,R20
+ 0598 0E940000          xcall mod16s
+ 059C 0030              cpi R16,0
+ 059E 0107              cpc R16,R17
+ 05A0 49F4              brne L100
+ 05A2           X34:
+ 05A2 4030              cpi R20,0
+ 05A4 4507              cpc R20,R21
+ 05A6 31F0              breq L100
+ 05A8           X35:
+ 05A8                   .dbline 195
+ 05A8           ;       PORTB=table1[0];
+ 05A8 20901400          lds R2,_table1
+ 05AC 30901500          lds R3,_table1+1
+ 05B0 28BA              out 0x18,R2
+ 05B2 05C0              xjmp L101
+ 05B4           L100:
+ 05B4                   .dbline 197
+ 05B4           ;         else
+ 05B4           ;         PORTB=table[0];
+ 05B4 20900000          lds R2,_table
+ 05B8 30900100          lds R3,_table+1
+ 05BC 28BA              out 0x18,R2
+ 05BE           L101:
+ 05BE                   .dbline 198
+ 05BE           ;       delay(1);
+ 05BE 01E0              ldi R16,1
+ 05C0 10E0              ldi R17,0
+ 05C2 24DD              xcall _delay
+ 05C4                   .dbline 200
+ 05C4           ; 
+ 05C4           ;         DDRD|=0X0F;
+ 05C4 81B3              in R24,0x11
+ 05C6 8F60              ori R24,15
+ 05C8 81BB              out 0x11,R24
+ 05CA                   .dbline 201
+ 05CA           ;       PORTD|=0X0F;
+ 05CA 82B3              in R24,0x12
+ 05CC 8F60              ori R24,15
+ 05CE 82BB              out 0x12,R24
+ 05D0                   .dbline 202
+ 05D0           ;       DDRD&=0XF0;
+ 05D0 81B3              in R24,0x11
+ 05D2 807F              andi R24,240
+ 05D4 81BB              out 0x11,R24
+ 05D6                   .dbline 203
+ 05D6           ;       j=PIND;
+ 05D6 60B3              in R22,0x10
+ 05D8 7727              clr R23
+ 05DA                   .dbline 204
+ 05DA           ;       j=j&0X0F;
+ 05DA 6F70              andi R22,15
+ 05DC 7070              andi R23,0
+ 05DE                   .dbline 205
+ 05DE           ;         if(j==0X07){
+ 05DE 6730              cpi R22,7
+ 05E0 E0E0              ldi R30,0
+ 05E2 7E07              cpc R23,R30
+ 05E4 09F4              brne L102
+ 05E6           X36:
+ 05E6                   .dbline 205
+ 05E6                   .dbline 207
+ 05E6           ; 
+ 05E6           ;      zhanshi();
+ 05E6 61DE              xcall _zhanshi
+ 05E8                   .dbline 208
+ 05E8           ;        }
+ 05E8           L102:
+ 05E8                   .dbline 209
+ 05E8           ;      }
+ 05E8           L97:
+ 05E8                   .dbline 192
+ 05E8 4F5F              subi R20,255  ; offset = 1
+ 05EA 5F4F              sbci R21,255
+ 05EC                   .dbline 192
+ 05EC 4830              cpi R20,8
+ 05EE E0E0              ldi R30,0
+ 05F0 5E07              cpc R21,R30
+ 05F2 0CF4              brge X39
+ 05F4 C5CF              xjmp L96
+ 05F6           X39:
+ 05F6           X37:
+ 05F6                   .dbline 210
+ 05F6           ;   }
+ 05F6           L94:
+ 05F6                   .dbline 191
+ 05F6 C2CF              xjmp L93
+ 05F8           X38:
+ 05F8                   .dbline -2
+ 05F8           L92:
+ 05F8                   .dbline 0 ; func end
+ 05F8 0895              ret
+ 05FA                   .dbsym l z 1 I
+ 05FA                   .dbsym l l 1 I
+ 05FA                   .dbsym l h 1 I
+ 05FA                   .dbsym l g 1 I
+ 05FA                   .dbsym l f 1 I
+ 05FA                   .dbsym l e 1 I
+ 05FA                   .dbsym l d 1 I
+ 05FA                   .dbsym l c 1 I
+ 05FA                   .dbsym l b 1 I
+ 05FA                   .dbsym l a 1 I
+ 05FA                   .dbsym r j 22 I
+ 05FA                   .dbsym r k 20 I
+ 05FA                   .dbend
+ 05FA           ; }

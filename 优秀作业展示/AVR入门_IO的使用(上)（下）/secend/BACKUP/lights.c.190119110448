@@ -1,0 +1,26 @@
+#include"iom16V.h"
+
+void delay_ms(int ms) //延迟函数
+{
+    int i,j;
+    for(i=0;i<ms;i++)
+	{
+	    for(j=0;j<1148;j++);
+	}
+}
+
+void main()
+{
+    while(1)
+	{
+       DDRA |= (1<<2);  //输出高电平
+	   PORTA |= (1<<2);
+	   delay_ms(500);
+	   PORTA &= ~(1<<2);
+	
+	   DDRB |= (1<<2);
+	   PORTB |= (1<<2);
+	   delay_ms(500);
+	   PORTB &= ~(1<<2);
+	}
+}

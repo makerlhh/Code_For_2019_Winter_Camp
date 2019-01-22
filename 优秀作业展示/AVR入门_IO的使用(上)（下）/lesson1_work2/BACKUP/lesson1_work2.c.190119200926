@@ -1,0 +1,19 @@
+#include "iom16v.h"
+
+void main()
+{
+    //心形外环LED
+    DDRA = 0XFF;
+    PORTA = 0X3F;
+	DDRB = 0XFF;
+	PORTB = 0X44;
+	//外环LED
+	DDRC = 0XFF;
+	PORTC = 0XFF;
+    DDRD = 0XFF;
+	PORTD = 0XFF;
+		
+		
+		//DDRA = 0X01;
+		//PORTA = 0X01;
+}

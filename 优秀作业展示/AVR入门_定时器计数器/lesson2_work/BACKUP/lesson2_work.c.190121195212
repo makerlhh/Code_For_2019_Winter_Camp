@@ -1,0 +1,80 @@
+#include "iom16v.h"
+#define uchar unsigned char
+#define uint undigned int 
+void timer0_init();
+void counter();
+void disp();
+void delay(uint n);
+
+uchar code table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+uchar hour = 0,minute = 0,second = 0,ms = 0;
+
+void main()
+{
+   uchar i;
+   timer0_init();
+   
+   while(1) //计时器、计数器
+   {
+       for(i = 0;i<10;i++)
+	   {
+	       if(TCNT0 == 128)
+		   {
+		       TCNT0 = 0;
+			   break;
+		   }   
+	   } 
+	   ms++;
+	   counter();
+	   
+   } 
+
+   
+   
+   
+   
+}
+
+void timer0_init()
+{
+    TCCR0 = 0X05; //选择1024分频
+	TCNT0 = 0X00;
+}
+
+void counter() //时、分、秒计算
+{
+    if(ms == 100)
+	{
+	    ms = 0;
+	    second++;
+		if(second == 60)
+		{
+		    second = 0;
+		    minute++;
+			if(minute == 60)
+			{
+			    minute = 0;
+			    hour++;
+				if(hour == 60)
+				{
+				    hour = 0;
+				}
+			}
+		}	
+	}
+}
+
+void delay(uint n)  //延时n*100ms  
+{
+    uint i,j,m;
+    for(n;n>0;n--)
+    {
+        for(m = 2;m>0;m--)
+        {
+             for(i = 250;i>0;i--)
+             {
+   	             for(j = 230;j>0;j--);
+             }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+#include<iom16v.h>
+#include<stdlib.h>
+#define uint unsigned int
+#define uchar unsigned char
+
+void delay_ms(int z)
+{	 
+	 uint x,y;
+ 	 for(x=0;x<z;x++)
+	 	for(y=0;y<1148;y++);
+}
+
+void main()
+{	
+	DDRA=0xff;
+	PORTA |= (1<<2); 
+ 	while(1)
+	{
+	 	
+		PORTA = _crol_(PORTA,1);
+	}
+}

@@ -1,0 +1,647 @@
+Interrupt Vectors
+    00000 940C 002A JMP	__start|__text_start
+
+Program Code (text area)
+__start|__text_start:
+    0002A E5CF      LDI	R28,0x5F
+    0002B E0D4      LDI	R29,4
+    0002C BFCD      OUT	0x3D,R28
+    0002D BFDE      OUT	0x3E,R29
+    0002E 51CE      SUBI	R28,0x1E
+    0002F 40D0      SBCI	R29,0
+    00030 EA0A      LDI	R16,0xAA
+    00031 8308      ST	Y,R16
+    00032 2400      CLR	R0
+    00033 E6E0      LDI	R30,0x60
+    00034 E0F0      LDI	R31,0
+    00035 E010      LDI	R17,0
+    00036 36E0      CPI	R30,0x60
+    00037 07F1      CPC	R31,R17
+    00038 F011      BEQ	0x003B
+    00039 9201      ST	Z+,R0
+    0003A CFFB      RJMP	0x0036
+    0003B 8300      ST	Z,R16
+    0003C E5E4      LDI	R30,0x54
+    0003D E0F0      LDI	R31,0
+    0003E E6A0      LDI	R26,0x60
+    0003F E0B0      LDI	R27,0
+    00040 E010      LDI	R17,0
+    00041 E000      LDI	R16,0
+    00042 BF0B      OUT	0x3B,R16
+    00043 35E4      CPI	R30,0x54
+    00044 07F1      CPC	R31,R17
+    00045 F021      BEQ	0x004A
+    00046 95C8      LPM
+    00047 9631      ADIW	R30,1
+    00048 920D      ST	X+,R0
+    00049 CFF9      RJMP	0x0043
+    0004A 940E 01CB CALL	_main
+_exit:
+    0004C CFFF      RJMP	_exit
+_delay_ms:
+  i                    --> R20
+  j                    --> R22
+  ms                   --> R16
+    0004D 940E 0205 CALL	push_xgsetF000
+FILE: D:\创客协会\冬令营\lights_more\light_more.c
+(0001) #include <iom16v.h>
+(0002) #define ON 1<<port
+(0003) #define OFF ~(1<<port)
+(0004) 
+(0005) void delay_ms(int ms)
+(0006) {
+(0007)  	int i,j;
+(0008)  	for(i=0; i<ms; i++)
+    0004F 2744      CLR	R20
+    00050 2755      CLR	R21
+    00051 C00A      RJMP	0x005C
+(0009) 	{
+(0010) 	 	for(j=0; j<1148; j++);
+    00052 2766      CLR	R22
+    00053 2777      CLR	R23
+    00054 5F6F      SUBI	R22,0xFF
+    00055 4F7F      SBCI	R23,0xFF
+    00056 376C      CPI	R22,0x7C
+    00057 E0E4      LDI	R30,4
+    00058 077E      CPC	R23,R30
+    00059 F3D4      BLT	0x0054
+    0005A 5F4F      SUBI	R20,0xFF
+    0005B 4F5F      SBCI	R21,0xFF
+    0005C 1740      CP	R20,R16
+    0005D 0751      CPC	R21,R17
+    0005E F39C      BLT	0x0052
+    0005F 940C 020A JMP	pop_xgsetF000
+_Light:
+  status               --> R20
+  port                 --> R10
+  DDR                  --> R22
+    00061 940E 020F CALL	push_xgsetF00C
+    00063 0159      MOVW	R10,R18
+    00064 01B8      MOVW	R22,R16
+    00065 814E      LDD	R20,Y+6
+    00066 815F      LDD	R21,Y+7
+(0011) 	}
+(0012) }
+(0013) 
+(0014) void Light(int DDR, int port, int status)//单控灯，参数：标号 端口号 状态
+(0015) {
+(0016)  	switch(DDR)//标号分支(0->A 1->B 2->C 3->D)
+    00067 3060      CPI	R22,0
+    00068 0767      CPC	R22,R23
+    00069 F081      BEQ	0x007A
+    0006A 3061      CPI	R22,1
+    0006B E0E0      LDI	R30,0
+    0006C 077E      CPC	R23,R30
+    0006D F409      BNE	0x006F
+    0006E C05F      RJMP	0x00CE
+    0006F 3062      CPI	R22,2
+    00070 E0E0      LDI	R30,0
+    00071 077E      CPC	R23,R30
+    00072 F409      BNE	0x0074
+    00073 C0AE      RJMP	0x0122
+    00074 3063      CPI	R22,3
+    00075 E0E0      LDI	R30,0
+    00076 077E      CPC	R23,R30
+    00077 F409      BNE	0x0079
+    00078 C0FD      RJMP	0x0176
+    00079 C14F      RJMP	0x01C9
+(0017) 	{
+(0018) 	 	case 0:
+(0019) 		{
+(0020) 		 	switch(status)//状态分支（高电平1 低电平0 高阻值2）
+    0007A 3040      CPI	R20,0
+    0007B 0745      CPC	R20,R21
+    0007C F0F1      BEQ	0x009B
+    0007D 3041      CPI	R20,1
+    0007E E0E0      LDI	R30,0
+    0007F 075E      CPC	R21,R30
+    00080 F029      BEQ	0x0086
+    00081 3042      CPI	R20,2
+    00082 E0E0      LDI	R30,0
+    00083 075E      CPC	R21,R30
+    00084 F171      BEQ	0x00B3
+    00085 C143      RJMP	0x01C9
+(0021) 			{
+(0022) 			 	case 1:
+(0023) 				{
+(0024) 				 	DDRA |= ON;
+    00086 E001      LDI	R16,1
+    00087 E010      LDI	R17,0
+    00088 0195      MOVW	R18,R10
+    00089 940E 021D CALL	lsl16
+    0008B B22A      IN	R2,0x1A
+    0008C 2433      CLR	R3
+    0008D 2A20      OR	R2,R16
+    0008E 2A31      OR	R3,R17
+    0008F BA2A      OUT	0x1A,R2
+(0025) 					PORTA |= ON;
+    00090 E001      LDI	R16,1
+    00091 E010      LDI	R17,0
+    00092 0195      MOVW	R18,R10
+    00093 940E 021D CALL	lsl16
+    00095 B22B      IN	R2,0x1B
+    00096 2433      CLR	R3
+    00097 2A20      OR	R2,R16
+    00098 2A31      OR	R3,R17
+    00099 BA2B      OUT	0x1B,R2
+(0026) 					break;
+    0009A C12E      RJMP	0x01C9
+(0027) 				}
+(0028) 				case 0:
+(0029) 				{
+(0030) 				 	DDRA |= ON;
+    0009B E001      LDI	R16,1
+    0009C E010      LDI	R17,0
+    0009D 0195      MOVW	R18,R10
+    0009E 940E 021D CALL	lsl16
+    000A0 B22A      IN	R2,0x1A
+    000A1 2433      CLR	R3
+    000A2 2A20      OR	R2,R16
+    000A3 2A31      OR	R3,R17
+    000A4 BA2A      OUT	0x1A,R2
+(0031) 					PORTA &= OFF;
+    000A5 E001      LDI	R16,1
+    000A6 E010      LDI	R17,0
+    000A7 0195      MOVW	R18,R10
+    000A8 940E 021D CALL	lsl16
+    000AA 0118      MOVW	R2,R16
+    000AB 9420      COM	R2
+    000AC 9430      COM	R3
+    000AD B24B      IN	R4,0x1B
+    000AE 2455      CLR	R5
+    000AF 2042      AND	R4,R2
+    000B0 2053      AND	R5,R3
+    000B1 BA4B      OUT	0x1B,R4
+(0032) 					break;
+    000B2 C116      RJMP	0x01C9
+(0033) 				}
+(0034) 				case 2:
+(0035) 				{
+(0036) 				 	DDRA &= OFF;
+    000B3 E001      LDI	R16,1
+    000B4 E010      LDI	R17,0
+    000B5 0195      MOVW	R18,R10
+    000B6 940E 021D CALL	lsl16
+    000B8 0118      MOVW	R2,R16
+    000B9 9420      COM	R2
+    000BA 9430      COM	R3
+    000BB B24A      IN	R4,0x1A
+    000BC 2455      CLR	R5
+    000BD 2042      AND	R4,R2
+    000BE 2053      AND	R5,R3
+    000BF BA4A      OUT	0x1A,R4
+(0037) 					PORTA &= OFF;
+    000C0 E001      LDI	R16,1
+    000C1 E010      LDI	R17,0
+    000C2 0195      MOVW	R18,R10
+    000C3 940E 021D CALL	lsl16
+    000C5 0118      MOVW	R2,R16
+    000C6 9420      COM	R2
+    000C7 9430      COM	R3
+    000C8 B24B      IN	R4,0x1B
+    000C9 2455      CLR	R5
+    000CA 2042      AND	R4,R2
+    000CB 2053      AND	R5,R3
+    000CC BA4B      OUT	0x1B,R4
+(0038) 					break;
+(0039) 				}
+(0040) 			}
+(0041) 			break;
+    000CD C0FB      RJMP	0x01C9
+(0042) 			
+(0043) 		}
+(0044) 		case 1:
+(0045) 		{
+(0046) 		 	switch(status)
+    000CE 3040      CPI	R20,0
+    000CF 0745      CPC	R20,R21
+    000D0 F0F1      BEQ	0x00EF
+    000D1 3041      CPI	R20,1
+    000D2 E0E0      LDI	R30,0
+    000D3 075E      CPC	R21,R30
+    000D4 F029      BEQ	0x00DA
+    000D5 3042      CPI	R20,2
+    000D6 E0E0      LDI	R30,0
+    000D7 075E      CPC	R21,R30
+    000D8 F171      BEQ	0x0107
+    000D9 C0EF      RJMP	0x01C9
+(0047) 			{
+(0048) 			 	case 1:
+(0049) 				{
+(0050) 				 	DDRB |= ON;
+    000DA E001      LDI	R16,1
+    000DB E010      LDI	R17,0
+    000DC 0195      MOVW	R18,R10
+    000DD 940E 021D CALL	lsl16
+    000DF B227      IN	R2,0x17
+    000E0 2433      CLR	R3
+    000E1 2A20      OR	R2,R16
+    000E2 2A31      OR	R3,R17
+    000E3 BA27      OUT	0x17,R2
+(0051) 					PORTB |= ON;
+    000E4 E001      LDI	R16,1
+    000E5 E010      LDI	R17,0
+    000E6 0195      MOVW	R18,R10
+    000E7 940E 021D CALL	lsl16
+    000E9 B228      IN	R2,0x18
+    000EA 2433      CLR	R3
+    000EB 2A20      OR	R2,R16
+    000EC 2A31      OR	R3,R17
+    000ED BA28      OUT	0x18,R2
+(0052) 					break;
+    000EE C0DA      RJMP	0x01C9
+(0053) 				}
+(0054) 				case 0:
+(0055) 				{
+(0056) 				 	DDRB |= ON;
+    000EF E001      LDI	R16,1
+    000F0 E010      LDI	R17,0
+    000F1 0195      MOVW	R18,R10
+    000F2 940E 021D CALL	lsl16
+    000F4 B227      IN	R2,0x17
+    000F5 2433      CLR	R3
+    000F6 2A20      OR	R2,R16
+    000F7 2A31      OR	R3,R17
+    000F8 BA27      OUT	0x17,R2
+(0057) 					PORTB &= OFF;
+    000F9 E001      LDI	R16,1
+    000FA E010      LDI	R17,0
+    000FB 0195      MOVW	R18,R10
+    000FC 940E 021D CALL	lsl16
+    000FE 0118      MOVW	R2,R16
+    000FF 9420      COM	R2
+    00100 9430      COM	R3
+    00101 B248      IN	R4,0x18
+    00102 2455      CLR	R5
+    00103 2042      AND	R4,R2
+    00104 2053      AND	R5,R3
+    00105 BA48      OUT	0x18,R4
+(0058) 					break;
+    00106 C0C2      RJMP	0x01C9
+(0059) 				}
+(0060) 				case 2:
+(0061) 				{
+(0062) 				 	DDRB &= OFF;
+    00107 E001      LDI	R16,1
+    00108 E010      LDI	R17,0
+    00109 0195      MOVW	R18,R10
+    0010A 940E 021D CALL	lsl16
+    0010C 0118      MOVW	R2,R16
+    0010D 9420      COM	R2
+    0010E 9430      COM	R3
+    0010F B247      IN	R4,0x17
+    00110 2455      CLR	R5
+    00111 2042      AND	R4,R2
+    00112 2053      AND	R5,R3
+    00113 BA47      OUT	0x17,R4
+(0063) 					PORTB &= OFF;
+    00114 E001      LDI	R16,1
+    00115 E010      LDI	R17,0
+    00116 0195      MOVW	R18,R10
+    00117 940E 021D CALL	lsl16
+    00119 0118      MOVW	R2,R16
+    0011A 9420      COM	R2
+    0011B 9430      COM	R3
+    0011C B248      IN	R4,0x18
+    0011D 2455      CLR	R5
+    0011E 2042      AND	R4,R2
+    0011F 2053      AND	R5,R3
+    00120 BA48      OUT	0x18,R4
+(0064) 					break;
+(0065) 				}
+(0066) 			}
+(0067) 			break;
+    00121 C0A7      RJMP	0x01C9
+(0068) 			
+(0069) 		}
+(0070) 		case 2:
+(0071) 		{
+(0072) 		 	switch(status)
+    00122 3040      CPI	R20,0
+    00123 0745      CPC	R20,R21
+    00124 F0F1      BEQ	0x0143
+    00125 3041      CPI	R20,1
+    00126 E0E0      LDI	R30,0
+    00127 075E      CPC	R21,R30
+    00128 F029      BEQ	0x012E
+    00129 3042      CPI	R20,2
+    0012A E0E0      LDI	R30,0
+    0012B 075E      CPC	R21,R30
+    0012C F171      BEQ	0x015B
+    0012D C09B      RJMP	0x01C9
+(0073) 			{
+(0074) 			 	case 1:
+(0075) 				{
+(0076) 				 	DDRC |= ON;
+    0012E E001      LDI	R16,1
+    0012F E010      LDI	R17,0
+    00130 0195      MOVW	R18,R10
+    00131 940E 021D CALL	lsl16
+    00133 B224      IN	R2,0x14
+    00134 2433      CLR	R3
+    00135 2A20      OR	R2,R16
+    00136 2A31      OR	R3,R17
+    00137 BA24      OUT	0x14,R2
+(0077) 					PORTC |= ON;
+    00138 E001      LDI	R16,1
+    00139 E010      LDI	R17,0
+    0013A 0195      MOVW	R18,R10
+    0013B 940E 021D CALL	lsl16
+    0013D B225      IN	R2,0x15
+    0013E 2433      CLR	R3
+    0013F 2A20      OR	R2,R16
+    00140 2A31      OR	R3,R17
+    00141 BA25      OUT	0x15,R2
+(0078) 					break;
+    00142 C086      RJMP	0x01C9
+(0079) 				}
+(0080) 				case 0:
+(0081) 				{
+(0082) 				 	DDRC |= ON;
+    00143 E001      LDI	R16,1
+    00144 E010      LDI	R17,0
+    00145 0195      MOVW	R18,R10
+    00146 940E 021D CALL	lsl16
+    00148 B224      IN	R2,0x14
+    00149 2433      CLR	R3
+    0014A 2A20      OR	R2,R16
+    0014B 2A31      OR	R3,R17
+    0014C BA24      OUT	0x14,R2
+(0083) 					PORTC &= OFF;
+    0014D E001      LDI	R16,1
+    0014E E010      LDI	R17,0
+    0014F 0195      MOVW	R18,R10
+    00150 940E 021D CALL	lsl16
+    00152 0118      MOVW	R2,R16
+    00153 9420      COM	R2
+    00154 9430      COM	R3
+    00155 B245      IN	R4,0x15
+    00156 2455      CLR	R5
+    00157 2042      AND	R4,R2
+    00158 2053      AND	R5,R3
+    00159 BA45      OUT	0x15,R4
+(0084) 					break;
+    0015A C06E      RJMP	0x01C9
+(0085) 				}
+(0086) 				case 2:
+(0087) 				{
+(0088) 				 	DDRC &= OFF;
+    0015B E001      LDI	R16,1
+    0015C E010      LDI	R17,0
+    0015D 0195      MOVW	R18,R10
+    0015E 940E 021D CALL	lsl16
+    00160 0118      MOVW	R2,R16
+    00161 9420      COM	R2
+    00162 9430      COM	R3
+    00163 B244      IN	R4,0x14
+    00164 2455      CLR	R5
+    00165 2042      AND	R4,R2
+    00166 2053      AND	R5,R3
+    00167 BA44      OUT	0x14,R4
+(0089) 					PORTC &= OFF;
+    00168 E001      LDI	R16,1
+    00169 E010      LDI	R17,0
+    0016A 0195      MOVW	R18,R10
+    0016B 940E 021D CALL	lsl16
+    0016D 0118      MOVW	R2,R16
+    0016E 9420      COM	R2
+    0016F 9430      COM	R3
+    00170 B245      IN	R4,0x15
+    00171 2455      CLR	R5
+    00172 2042      AND	R4,R2
+    00173 2053      AND	R5,R3
+    00174 BA45      OUT	0x15,R4
+(0090) 					break;
+(0091) 				}
+(0092) 			}
+(0093) 			break;
+    00175 C053      RJMP	0x01C9
+(0094) 			
+(0095) 		}
+(0096) 		case 3:
+(0097) 		{
+(0098) 		 	switch(status)
+    00176 3040      CPI	R20,0
+    00177 0745      CPC	R20,R21
+    00178 F0F1      BEQ	0x0197
+    00179 3041      CPI	R20,1
+    0017A E0E0      LDI	R30,0
+    0017B 075E      CPC	R21,R30
+    0017C F029      BEQ	0x0182
+    0017D 3042      CPI	R20,2
+    0017E E0E0      LDI	R30,0
+    0017F 075E      CPC	R21,R30
+    00180 F171      BEQ	0x01AF
+    00181 C047      RJMP	0x01C9
+(0099) 			{
+(0100) 			 	case 1:
+(0101) 				{
+(0102) 				 	DDRD |= ON;
+    00182 E001      LDI	R16,1
+    00183 E010      LDI	R17,0
+    00184 0195      MOVW	R18,R10
+    00185 940E 021D CALL	lsl16
+    00187 B221      IN	R2,0x11
+    00188 2433      CLR	R3
+    00189 2A20      OR	R2,R16
+    0018A 2A31      OR	R3,R17
+    0018B BA21      OUT	0x11,R2
+(0103) 					PORTD |= ON;
+    0018C E001      LDI	R16,1
+    0018D E010      LDI	R17,0
+    0018E 0195      MOVW	R18,R10
+    0018F 940E 021D CALL	lsl16
+    00191 B222      IN	R2,0x12
+    00192 2433      CLR	R3
+    00193 2A20      OR	R2,R16
+    00194 2A31      OR	R3,R17
+    00195 BA22      OUT	0x12,R2
+(0104) 					break;
+    00196 C032      RJMP	0x01C9
+(0105) 				}
+(0106) 				case 0:
+(0107) 				{
+(0108) 				 	DDRD |= ON;
+    00197 E001      LDI	R16,1
+    00198 E010      LDI	R17,0
+    00199 0195      MOVW	R18,R10
+    0019A 940E 021D CALL	lsl16
+    0019C B221      IN	R2,0x11
+    0019D 2433      CLR	R3
+    0019E 2A20      OR	R2,R16
+    0019F 2A31      OR	R3,R17
+    001A0 BA21      OUT	0x11,R2
+(0109) 					PORTD &= OFF;
+    001A1 E001      LDI	R16,1
+    001A2 E010      LDI	R17,0
+    001A3 0195      MOVW	R18,R10
+    001A4 940E 021D CALL	lsl16
+    001A6 0118      MOVW	R2,R16
+    001A7 9420      COM	R2
+    001A8 9430      COM	R3
+    001A9 B242      IN	R4,0x12
+    001AA 2455      CLR	R5
+    001AB 2042      AND	R4,R2
+    001AC 2053      AND	R5,R3
+    001AD BA42      OUT	0x12,R4
+(0110) 					break;
+    001AE C01A      RJMP	0x01C9
+(0111) 				}
+(0112) 				case 2:
+(0113) 				{
+(0114) 				 	DDRD &= OFF;
+    001AF E001      LDI	R16,1
+    001B0 E010      LDI	R17,0
+    001B1 0195      MOVW	R18,R10
+    001B2 940E 021D CALL	lsl16
+    001B4 0118      MOVW	R2,R16
+    001B5 9420      COM	R2
+    001B6 9430      COM	R3
+    001B7 B241      IN	R4,0x11
+    001B8 2455      CLR	R5
+    001B9 2042      AND	R4,R2
+    001BA 2053      AND	R5,R3
+    001BB BA41      OUT	0x11,R4
+(0115) 					PORTD &= OFF;
+    001BC E001      LDI	R16,1
+    001BD E010      LDI	R17,0
+    001BE 0195      MOVW	R18,R10
+    001BF 940E 021D CALL	lsl16
+    001C1 0118      MOVW	R2,R16
+    001C2 9420      COM	R2
+    001C3 9430      COM	R3
+    001C4 B242      IN	R4,0x12
+    001C5 2455      CLR	R5
+    001C6 2042      AND	R4,R2
+    001C7 2053      AND	R5,R3
+    001C8 BA42      OUT	0x12,R4
+(0116) 					break;
+(0117) 				}
+(0118) 			}
+(0119) 			break;
+(0120) 		}
+(0121) 		break;
+    001C9 940C 0216 JMP	pop_xgsetF00C
+_main:
+  delay                --> R22
+  DDR                  --> R20
+  port                 --> R10
+    001CB 9722      SBIW	R28,2
+(0122) 	}
+(0123) }
+(0124) 
+(0125) void main()
+(0126) {
+(0127)  	
+(0128) 	int DDR=0;
+    001CC 2744      CLR	R20
+    001CD 2755      CLR	R21
+(0129) 	int port=0;
+    001CE 24AA      CLR	R10
+    001CF 24BB      CLR	R11
+(0130) 	int delay=100;
+    001D0 E664      LDI	R22,0x64
+    001D1 E070      LDI	R23,0
+    001D2 C02B      RJMP	0x01FE
+(0131) 	
+(0132)  	while(DDR<=3)
+(0133) 	{
+(0134) 	 	for(port=0; port<8; port++)
+    001D3 24AA      CLR	R10
+    001D4 24BB      CLR	R11
+(0135) 		{
+(0136) 		 	Light(DDR, port, 1);
+    001D5 E081      LDI	R24,1
+    001D6 E090      LDI	R25,0
+    001D7 8399      STD	Y+1,R25
+    001D8 8388      ST	Y,R24
+    001D9 0195      MOVW	R18,R10
+    001DA 018A      MOVW	R16,R20
+    001DB DE85      RCALL	_Light
+(0137) 			delay_ms(delay);
+    001DC 018B      MOVW	R16,R22
+    001DD DE6F      RCALL	_delay_ms
+(0138) 			Light(DDR, port, 0);
+    001DE 2422      CLR	R2
+    001DF 2433      CLR	R3
+    001E0 8239      STD	Y+1,R3
+    001E1 8228      ST	Y,R2
+    001E2 0195      MOVW	R18,R10
+    001E3 018A      MOVW	R16,R20
+    001E4 DE7C      RCALL	_Light
+(0139) 			delay_ms(delay);
+    001E5 018B      MOVW	R16,R22
+    001E6 DE66      RCALL	_delay_ms
+(0140) 			Light(DDR, port, 2);
+    001E7 E082      LDI	R24,2
+    001E8 E090      LDI	R25,0
+    001E9 8399      STD	Y+1,R25
+    001EA 8388      ST	Y,R24
+    001EB 0195      MOVW	R18,R10
+    001EC 018A      MOVW	R16,R20
+    001ED DE73      RCALL	_Light
+    001EE 01C5      MOVW	R24,R10
+    001EF 9601      ADIW	R24,1
+    001F0 015C      MOVW	R10,R24
+    001F1 3088      CPI	R24,0x8
+    001F2 E0E0      LDI	R30,0
+    001F3 079E      CPC	R25,R30
+    001F4 F304      BLT	0x01D5
+(0141) 		}
+(0142) 		DDR++;
+    001F5 5F4F      SUBI	R20,0xFF
+    001F6 4F5F      SBCI	R21,0xFF
+(0143) 		if(DDR>3)
+    001F7 E083      LDI	R24,3
+    001F8 E090      LDI	R25,0
+    001F9 1784      CP	R24,R20
+    001FA 0795      CPC	R25,R21
+    001FB F414      BGE	0x01FE
+(0144) 		{
+(0145) 		 	DDR=0;
+FILE: <library>
+    001FC 2744      CLR	R20
+    001FD 2755      CLR	R21
+    001FE E083      LDI	R24,3
+    001FF E090      LDI	R25,0
+    00200 1784      CP	R24,R20
+    00201 0795      CPC	R25,R21
+    00202 F684      BGE	0x01D3
+    00203 9622      ADIW	R28,2
+    00204 9508      RET
+push_xgsetF000:
+    00205 937A      ST	-Y,R23
+    00206 936A      ST	-Y,R22
+    00207 935A      ST	-Y,R21
+    00208 934A      ST	-Y,R20
+    00209 9508      RET
+pop_xgsetF000:
+    0020A 9149      LD	R20,Y+
+    0020B 9159      LD	R21,Y+
+    0020C 9169      LD	R22,Y+
+    0020D 9179      LD	R23,Y+
+    0020E 9508      RET
+push_xgsetF00C:
+    0020F 937A      ST	-Y,R23
+    00210 936A      ST	-Y,R22
+    00211 935A      ST	-Y,R21
+    00212 934A      ST	-Y,R20
+    00213 92BA      ST	-Y,R11
+    00214 92AA      ST	-Y,R10
+    00215 9508      RET
+pop_xgsetF00C:
+    00216 90A9      LD	R10,Y+
+    00217 90B9      LD	R11,Y+
+    00218 9149      LD	R20,Y+
+    00219 9159      LD	R21,Y+
+    0021A 9169      LD	R22,Y+
+    0021B 9179      LD	R23,Y+
+    0021C 9508      RET
+lsl16:
+    0021D 2322      TST	R18
+    0021E F021      BEQ	0x0223
+    0021F 0F00      LSL	R16
+    00220 1F11      ROL	R17
+    00221 952A      DEC	R18
+    00222 CFFA      RJMP	lsl16
+    00223 9508      RET

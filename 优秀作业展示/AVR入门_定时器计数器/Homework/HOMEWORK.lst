@@ -1,0 +1,419 @@
+Interrupt Vectors
+    00000 940C 0047 JMP	__text_start|__start
+
+Program Code (text area)
+__text_start|__start:
+    00047 E5CF      LDI	R28,0x5F
+    00048 E0D4      LDI	R29,4
+    00049 BFCD      OUT	0x3D,R28
+    0004A BFDE      OUT	0x3E,R29
+    0004B 51CE      SUBI	R28,0x1E
+    0004C 40D0      SBCI	R29,0
+    0004D EA0A      LDI	R16,0xAA
+    0004E 8308      ST	Y,R16
+    0004F 2400      CLR	R0
+    00050 E9EA      LDI	R30,0x9A
+    00051 E0F0      LDI	R31,0
+    00052 E010      LDI	R17,0
+    00053 39EE      CPI	R30,0x9E
+    00054 07F1      CPC	R31,R17
+    00055 F011      BEQ	0x0058
+    00056 9201      ST	Z+,R0
+    00057 CFFB      RJMP	0x0053
+    00058 8300      ST	Z,R16
+    00059 E5E4      LDI	R30,0x54
+    0005A E0F0      LDI	R31,0
+    0005B E6A0      LDI	R26,0x60
+    0005C E0B0      LDI	R27,0
+    0005D E010      LDI	R17,0
+    0005E E000      LDI	R16,0
+    0005F BF0B      OUT	0x3B,R16
+    00060 38EE      CPI	R30,0x8E
+    00061 07F1      CPC	R31,R17
+    00062 F021      BEQ	0x0067
+    00063 95C8      LPM
+    00064 9631      ADIW	R30,1
+    00065 920D      ST	X+,R0
+    00066 CFF9      RJMP	0x0060
+    00067 940E 0127 CALL	_main
+_exit:
+    00069 CFFF      RJMP	_exit
+FILE: C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+(0001) #include<iom16v.h>
+(0002) 
+(0003) a[10] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管0~9数字
+(0004) b[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};//数码管1~8
+(0005) int i,j,time[8]={0},*p=time,control[2]={0,1};//time[8]为3位ms,2位s,2位min,1位h
+(0006) 
+(0007) void init()//初始化
+(0008) {
+(0009)     DDRA = 0xff;
+_init:
+    0006A EF8F      LDI	R24,0xFF
+    0006B BB8A      OUT	0x1A,R24
+(0010) 	DDRC = 0xff;
+    0006C BB84      OUT	0x14,R24
+(0011) 	PORTA = 0xc0;
+    0006D EC80      LDI	R24,0xC0
+    0006E BB8B      OUT	0x1B,R24
+(0012) 	PORTC = 0xff;
+    0006F EF8F      LDI	R24,0xFF
+    00070 BB85      OUT	0x15,R24
+(0013) 	PORTB = 0xff;
+    00071 BB88      OUT	0x18,R24
+    00072 9508      RET
+(0014) }
+(0015) 
+(0016) void timeinit()//计时器初始化
+(0017) {
+(0018)     TCCR0 = 0x02;
+_timeinit:
+    00073 E082      LDI	R24,2
+    00074 BF83      OUT	0x33,R24
+(0019) 	TCNT0 = 0;
+    00075 2422      CLR	R2
+    00076 BE22      OUT	0x32,R2
+    00077 9508      RET
+(0020) }
+(0021) 
+(0022) void forward(int *p,int x)//进位函数
+(0023) {
+(0024)     if(*p == x)
+_forward:
+  x                    --> R18
+  p                    --> R16
+    00078 01F8      MOVW	R30,R16
+    00079 8020      LD	R2,Z
+    0007A 8031      LDD	R3,Z+1
+    0007B 1622      CP	R2,R18
+    0007C 0633      CPC	R3,R19
+    0007D F461      BNE	0x008A
+(0025) 	{
+(0026) 	    *p = 0;
+    0007E 2422      CLR	R2
+    0007F 2433      CLR	R3
+    00080 8231      STD	Z+1,R3
+    00081 8220      ST	Z,R2
+(0027) 	    *(p+1) = *(p+1) + 1;
+    00082 01CF      MOVW	R24,R30
+    00083 9602      ADIW	R24,2
+    00084 01FC      MOVW	R30,R24
+    00085 8180      LD	R24,Z
+    00086 8191      LDD	R25,Z+1
+    00087 9601      ADIW	R24,1
+    00088 8391      STD	Z+1,R25
+    00089 8380      ST	Z,R24
+(0028) 	}
+    0008A 9508      RET
+(0029) }
+(0030) 
+(0031) void delay(unsigned int x)//延时函数
+(0032) {
+_delay:
+  x                    --> R16
+    0008B C008      RJMP	0x0094
+(0033)     while(1)
+(0034) 	{
+(0035) 	    if(TCNT0 == x)
+    0008C B622      IN	R2,0x32
+    0008D 2433      CLR	R3
+    0008E 1620      CP	R2,R16
+    0008F 0631      CPC	R3,R17
+    00090 F419      BNE	0x0094
+(0036) 	    {
+(0037) 		    TCNT0 = 0;
+    00091 2422      CLR	R2
+    00092 BE22      OUT	0x32,R2
+(0038) 			break;
+    00093 C001      RJMP	0x0095
+    00094 CFF7      RJMP	0x008C
+    00095 9508      RET
+(0039) 		}
+(0040) 	}
+(0041) }
+(0042) 
+(0043) void delay_ms()//基于程序修改后的ms延时函数
+(0044) {
+(0045)     for(i=0;i<10;i++)
+_delay_ms:
+    00096 2422      CLR	R2
+    00097 2433      CLR	R3
+    00098 9230 009D STS	i+1,R3
+    0009A 9220 009C STS	i,R2
+(0046) 	{
+    0009C C006      RJMP	0x00A3
+(0047) 	    while(1)
+(0048) 	    {
+(0049) 	        if(TCNT0 == 45)
+    0009D B782      IN	R24,0x32
+    0009E 328D      CPI	R24,0x2D
+    0009F F419      BNE	0x00A3
+(0050) 		    {
+(0051) 		        TCNT0 = 0;
+    000A0 2422      CLR	R2
+    000A1 BE22      OUT	0x32,R2
+(0052) 		        break;
+    000A2 C001      RJMP	0x00A4
+    000A3 CFF9      RJMP	0x009D
+    000A4 9180 009C LDS	R24,i
+    000A6 9190 009D LDS	R25,i+1
+    000A8 9601      ADIW	R24,1
+    000A9 9390 009D STS	i+1,R25
+    000AB 9380 009C STS	i,R24
+    000AD 308A      CPI	R24,0xA
+    000AE E0E0      LDI	R30,0
+    000AF 079E      CPC	R25,R30
+    000B0 F394      BLT	0x00A3
+    000B1 9508      RET
+(0053) 			}
+(0054) 		}
+(0055) 	}
+(0056) }
+(0057) 
+(0058) void display()//显示函数
+(0059) {
+(0060)     for(i=0;i<8;i++)
+_display:
+    000B2 2422      CLR	R2
+    000B3 2433      CLR	R3
+    000B4 9230 009D STS	i+1,R3
+    000B6 9220 009C STS	i,R2
+(0061)     {
+(0062) 		if(i == 7 || i == 5 || i == 3)
+    000B8 9020 009C LDS	R2,i
+    000BA 9030 009D LDS	R3,i+1
+    000BC 01C1      MOVW	R24,R2
+    000BD 3087      CPI	R24,7
+    000BE E0E0      LDI	R30,0
+    000BF 079E      CPC	R25,R30
+    000C0 F041      BEQ	0x00C9
+    000C1 3085      CPI	R24,5
+    000C2 E0E0      LDI	R30,0
+    000C3 079E      CPC	R25,R30
+    000C4 F021      BEQ	0x00C9
+    000C5 3083      CPI	R24,3
+    000C6 E0E0      LDI	R30,0
+    000C7 079E      CPC	R25,R30
+    000C8 F549      BNE	0x00F2
+(0063) 	    {
+(0064) 		    PORTC = b[i];
+    000C9 E784      LDI	R24,0x74
+    000CA E090      LDI	R25,0
+    000CB 91E0 009C LDS	R30,i
+    000CD 91F0 009D LDS	R31,i+1
+    000CF 0FEE      LSL	R30
+    000D0 1FFF      ROL	R31
+    000D1 0FE8      ADD	R30,R24
+    000D2 1FF9      ADC	R31,R25
+    000D3 8020      LD	R2,Z
+    000D4 8031      LDD	R3,Z+1
+    000D5 BA25      OUT	0x15,R2
+(0065) 		    PORTA = a[time[i]] - 0x80;
+    000D6 E884      LDI	R24,0x84
+    000D7 E090      LDI	R25,0
+    000D8 91E0 009C LDS	R30,i
+    000DA 91F0 009D LDS	R31,i+1
+    000DC 0FEE      LSL	R30
+    000DD 1FFF      ROL	R31
+    000DE 0FE8      ADD	R30,R24
+    000DF 1FF9      ADC	R31,R25
+    000E0 8020      LD	R2,Z
+    000E1 8031      LDD	R3,Z+1
+    000E2 0C22      LSL	R2
+    000E3 1C33      ROL	R3
+    000E4 E680      LDI	R24,0x60
+    000E5 E090      LDI	R25,0
+    000E6 01F1      MOVW	R30,R2
+    000E7 0FE8      ADD	R30,R24
+    000E8 1FF9      ADC	R31,R25
+    000E9 8180      LD	R24,Z
+    000EA 8191      LDD	R25,Z+1
+    000EB 5880      SUBI	R24,0x80
+    000EC 4090      SBCI	R25,0
+    000ED BB8B      OUT	0x1B,R24
+(0066) 			delay(35);
+    000EE E203      LDI	R16,0x23
+    000EF E010      LDI	R17,0
+    000F0 DF9A      RCALL	_delay
+(0067) 	    }
+    000F1 C026      RJMP	0x0118
+(0068) 		else
+(0069) 		{
+(0070) 		    PORTC = b[i];
+    000F2 E784      LDI	R24,0x74
+    000F3 E090      LDI	R25,0
+    000F4 91E0 009C LDS	R30,i
+    000F6 91F0 009D LDS	R31,i+1
+    000F8 0FEE      LSL	R30
+    000F9 1FFF      ROL	R31
+    000FA 0FE8      ADD	R30,R24
+    000FB 1FF9      ADC	R31,R25
+    000FC 8020      LD	R2,Z
+    000FD 8031      LDD	R3,Z+1
+    000FE BA25      OUT	0x15,R2
+(0071) 		    PORTA = a[time[i]];
+    000FF E884      LDI	R24,0x84
+    00100 E090      LDI	R25,0
+    00101 91E0 009C LDS	R30,i
+    00103 91F0 009D LDS	R31,i+1
+    00105 0FEE      LSL	R30
+    00106 1FFF      ROL	R31
+    00107 0FE8      ADD	R30,R24
+    00108 1FF9      ADC	R31,R25
+    00109 8020      LD	R2,Z
+    0010A 8031      LDD	R3,Z+1
+    0010B 0C22      LSL	R2
+    0010C 1C33      ROL	R3
+    0010D E680      LDI	R24,0x60
+    0010E E090      LDI	R25,0
+    0010F 01F1      MOVW	R30,R2
+    00110 0FE8      ADD	R30,R24
+    00111 1FF9      ADC	R31,R25
+    00112 8020      LD	R2,Z
+    00113 8031      LDD	R3,Z+1
+    00114 BA2B      OUT	0x1B,R2
+(0072) 			delay(35);
+    00115 E203      LDI	R16,0x23
+    00116 E010      LDI	R17,0
+    00117 DF73      RCALL	_delay
+    00118 9180 009C LDS	R24,i
+    0011A 9190 009D LDS	R25,i+1
+    0011C 9601      ADIW	R24,1
+    0011D 9390 009D STS	i+1,R25
+    0011F 9380 009C STS	i,R24
+    00121 3088      CPI	R24,0x8
+    00122 E0E0      LDI	R30,0
+    00123 079E      CPC	R25,R30
+    00124 F40C      BGE	0x0126
+    00125 CF92      RJMP	0x00B8
+    00126 9508      RET
+(0073) 	    }
+(0074) 	}
+(0075) }
+(0076) 
+(0077) void main()
+(0078) {
+(0079)     init();
+_main:
+    00127 DF42      RCALL	_init
+(0080) 	timeinit();
+    00128 DF4A      RCALL	_timeinit
+    00129 C079      RJMP	0x01A3
+(0081) 	while(1)
+(0082) 	{
+(0083) 	    if(control[0] == 1 && control[1] == 1)//按钮判断
+    0012A 9180 0096 LDS	R24,control
+    0012C 9190 0097 LDS	R25,control+1
+    0012E 3081      CPI	R24,1
+    0012F E0E0      LDI	R30,0
+    00130 079E      CPC	R25,R30
+    00131 F009      BEQ	0x0133
+    00132 C05D      RJMP	0x0190
+    00133 9180 0098 LDS	R24,control+2
+    00135 9190 0099 LDS	R25,control+3
+    00137 3081      CPI	R24,1
+    00138 E0E0      LDI	R30,0
+    00139 079E      CPC	R25,R30
+    0013A F009      BEQ	0x013C
+    0013B C054      RJMP	0x0190
+(0084) 	    {
+(0085) 		    delay_ms();
+    0013C DF59      RCALL	_delay_ms
+(0086) 		    time[0] = time[0] + 1;
+    0013D 9180 0084 LDS	R24,time
+    0013F 9190 0085 LDS	R25,time+1
+    00141 9601      ADIW	R24,1
+    00142 9390 0085 STS	time+1,R25
+    00144 9380 0084 STS	time,R24
+(0087) 		    for(i=0;i<7;i++)//进位循环
+    00146 2422      CLR	R2
+    00147 2433      CLR	R3
+    00148 9230 009D STS	i+1,R3
+    0014A 9220 009C STS	i,R2
+(0088) 		    {
+(0089) 		        if(i == 4 || i == 6)
+    0014C 9020 009C LDS	R2,i
+    0014E 9030 009D LDS	R3,i+1
+    00150 01C1      MOVW	R24,R2
+    00151 3084      CPI	R24,4
+    00152 E0E0      LDI	R30,0
+    00153 079E      CPC	R25,R30
+    00154 F021      BEQ	0x0159
+    00155 3086      CPI	R24,6
+    00156 E0E0      LDI	R30,0
+    00157 079E      CPC	R25,R30
+    00158 F481      BNE	0x0169
+(0090) 			        forward(p + i,6);
+    00159 E026      LDI	R18,6
+    0015A E030      LDI	R19,0
+    0015B 9020 0094 LDS	R2,p
+    0015D 9030 0095 LDS	R3,p+1
+    0015F 9100 009C LDS	R16,i
+    00161 9110 009D LDS	R17,i+1
+    00163 0F00      LSL	R16
+    00164 1F11      ROL	R17
+    00165 0D02      ADD	R16,R2
+    00166 1D13      ADC	R17,R3
+    00167 DF10      RCALL	_forward
+    00168 C00F      RJMP	0x0178
+(0091) 			    else
+(0092) 		            forward(p + i,10);
+    00169 E02A      LDI	R18,0xA
+    0016A E030      LDI	R19,0
+    0016B 9020 0094 LDS	R2,p
+    0016D 9030 0095 LDS	R3,p+1
+    0016F 9100 009C LDS	R16,i
+    00171 9110 009D LDS	R17,i+1
+    00173 0F00      LSL	R16
+    00174 1F11      ROL	R17
+    00175 0D02      ADD	R16,R2
+    00176 1D13      ADC	R17,R3
+    00177 DF00      RCALL	_forward
+    00178 9180 009C LDS	R24,i
+    0017A 9190 009D LDS	R25,i+1
+    0017C 9601      ADIW	R24,1
+    0017D 9390 009D STS	i+1,R25
+    0017F 9380 009C STS	i,R24
+    00181 3087      CPI	R24,7
+    00182 E0E0      LDI	R30,0
+    00183 079E      CPC	R25,R30
+    00184 F23C      BLT	0x014C
+(0093) 		    }
+(0094) 		    display();
+    00185 DF2C      RCALL	_display
+(0095) 			if(PINB == 0xfd)//STOP
+    00186 B386      IN	R24,0x16
+    00187 3F8D      CPI	R24,0xFD
+    00188 F4D1      BNE	0x01A3
+(0096) 			    control[1] = 0;
+    00189 2422      CLR	R2
+    0018A 2433      CLR	R3
+    0018B 9230 0099 STS	control+3,R3
+    0018D 9220 0098 STS	control+2,R2
+(0097) 		}
+    0018F C013      RJMP	0x01A3
+(0098) 		else
+(0099) 		{
+(0100) 		    if(PINB == 0xfe)//START
+    00190 B386      IN	R24,0x16
+    00191 3F8E      CPI	R24,0xFE
+    00192 F431      BNE	0x0199
+(0101) 			    control[0] = 1;
+    00193 E081      LDI	R24,1
+    00194 E090      LDI	R25,0
+    00195 9390 0097 STS	control+1,R25
+    00197 9380 0096 STS	control,R24
+(0102) 			if(PINB == 0xfb)//CONTINUE
+    00199 B386      IN	R24,0x16
+    0019A 3F8B      CPI	R24,0xFB
+    0019B F431      BNE	0x01A2
+(0103) 			    control[1] = 1;
+    0019C E081      LDI	R24,1
+    0019D E090      LDI	R25,0
+    0019E 9390 0099 STS	control+3,R25
+    001A0 9380 0098 STS	control+2,R24
+(0104) 			display();
+FILE: <library>
+    001A2 DF0F      RCALL	_display
+    001A3 CF86      RJMP	0x012A
+    001A4 9508      RET

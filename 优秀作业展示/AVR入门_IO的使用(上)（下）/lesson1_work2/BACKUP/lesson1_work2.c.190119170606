@@ -1,0 +1,10 @@
+#include "iom16v.h"
+
+void mian()
+{
+    while(1)
+    {
+	    DDRC = 0XFF;
+	    PORTC |= 0X01;
+    }
+}

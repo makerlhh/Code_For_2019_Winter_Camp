@@ -1,0 +1,7 @@
+#include "iom16v.h"
+
+void mian()
+{
+	    DDRA = 0X01;
+	    PORTA = 0X01;
+}

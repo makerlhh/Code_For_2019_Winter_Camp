@@ -1,0 +1,10 @@
+#include "iom16v.h"
+
+void main()
+{
+	    DDRC = 0XFF;
+	    PORTC = 0XFF;
+		
+		DDRA = 0X01;
+		PORTA = 0X01;
+}

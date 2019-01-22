@@ -1,0 +1,88 @@
+#include<iom16v.h>
+#define uint unsigned int
+#define uchar unsigned char
+int x,y,flag;
+int crol(int a,int i)//Ñ­»·×óÒÆº¯Êý
+{
+ 	int temp;
+ 	temp=a>>(8-i);
+ 	a=a<<i;
+ 	a=a|temp;
+	return a;
+}
+
+void delay(int z)
+{	 
+	 uint x,y;
+ 	 for(x=0;x<z;x++)
+	 	for(y=0;y<1148;y++);
+}
+
+void main()
+{	
+	x=y=flag=0;
+	DDRA=0xff;
+	DDRB=0xff;
+	DDRC=0xff;
+	DDRD=0xff;
+	
+	PORTA |= (1<<0);
+	PORTB=0x00;
+	PORTC=0xfe;
+	PORTD=0xff; 
+	delay(500);
+	
+ 	while(1)
+	{		
+			if(x<8)
+			{
+			PORTA = crol(PORTA,1);	
+			delay(500);	
+			}
+			if(x>8)
+			{
+			PORTB = crol(PORTB,1);
+			delay(500);
+			}	
+			if(y<8&&flag==1)
+			{
+			flag=0;
+			PORTC=crol(PORTC,1);
+			}	
+			if(y>8&&flag==1)
+			{
+			flag=0;
+			PORTD=crol(PORTD,1);
+			}
+			x++;
+			if(x==8)
+			{
+			PORTB=0x01;
+			PORTA=0X00;
+			delay(500);
+			}
+			if(x==16)
+			{
+			x=0;
+			y++;
+			flag++;
+			PORTA=0x01;
+			PORTB=0x00;
+			delay(500);
+			}
+			
+			if(y==8)
+			{
+			 flag=0;
+			 PORTC=0xff;
+			 PORTD=0xfe;
+			}
+			if(y==16)
+			{
+			y=0;
+			flag=0;
+			PORTC=0xfe;
+			PORTD=0xff;
+			}
+	}
+}

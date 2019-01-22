@@ -1,0 +1,96 @@
+#include <iom16v.h>
+#define bit(n) (1<<n)
+#pragma interrupt_handler enter_one:9
+unsigned char data[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0};
+unsigned int  x = 0; 
+void enter_one ()
+{ 
+  	 if (x == 60)
+	 x = 0;
+	 x++;
+	 TCNT1H = 0X85;
+	 TCNT1L = 0XED;
+}
+void delay(int ms)
+{
+ 	int i,j;
+ 	for(i = 0; i<ms ;i++)
+	{
+	 	  for (j = 0; j<1148; j++);
+	}
+}
+void show_time(unsigned int y, int j)
+{
+ PORTA |= bit(3);
+ PORTB = data[y];
+ PORTA &= ~bit(3);
+ 
+ PORTB = 0xff;
+ PORTB &= ~bit(j);
+ PORTA |= bit(4);
+ PORTA &= ~bit(4);
+ delay(1);
+}
+void timer0_init ()
+{
+     TCCR0 = 0x00; //定时器计数器的控制寄存器的名称
+     TCNT0 = 0;    //8位寄存器00000000  0~255  111111111 
+     TCCR0 = 0x09; //普通工作模式1024分频 
+	TIMSK |= bit(2);
+	SREG  |= bit(7);  //中断，当符合（这里选了10）当计数器0溢出归零的时候，跳转到enter_one执行一次函数体。
+}
+
+int key_press()
+{
+ 	unsigned char j;
+	
+ 	DDRD  |= 0X0F;
+	PORTD |= 0X0F;
+	
+	DDRD  &= ~0X0F; 
+	j = PIND;
+	j = j&0x0f;
+	if(j == 0x0f)
+	return 0;
+	else 
+	return 1;
+}
+int key_scan()
+{ 
+  unsigned char key;
+  delay(10);
+  if (key_press())
+  {
+   	 key = PIND;
+	 key&= 0x0f;
+	switch(key)
+	{
+	   case 0x0e:timer0_init(); break;          //start 按下
+	   case 0x0d:timer0_init(); break;		  //reset 按下
+	   case 0x0b: break;		 //continue 按下
+	   case 0x07:TCCR0 = 0;    break;	    //stop 按下
+	}
+	 while (key_press());     //判断是否按钮松开，避免重复以上循环！
+  }
+  else 
+  return key =10;
+}
+
+
+void main ()
+{	
+    DDRA |= 0x18;
+	DDRB = 0xff;
+	
+	TCCR1B = 0X04;
+	TCNT1H = 0X85;
+	TCNT1L = 0XED;
+	TIMSK |= bit(2);
+	SREG  |= bit(7);
+	
+	while (1)
+	{
+	 show_time(x/10,0);
+	 show_time(x%10,1);
+	}
+}

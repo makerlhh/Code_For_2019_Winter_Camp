@@ -1,0 +1,377 @@
+                        .module source1.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile source1.c
+ 0000                   .dbfile C:\Users\fellow\Desktop\机器人181-曾飞龙\source1.c
+ 0000                   .dbfunc e crol _crol fI
+ 0000           ;           temp -> R12,R13
+ 0000           ;              i -> R14,R15
+ 0000           ;              a -> R10,R11
+                        .even
+ 0000           _crol::
+ 0000 0E940000          xcall push_xgset00FC
+ 0004 7901              movw R14,R18
+ 0006 5801              movw R10,R16
+ 0008                   .dbline -1
+ 0008                   .dbline 6
+ 0008           ; #include<iom16v.h>
+ 0008           ; #define uint unsigned int
+ 0008           ; #define uchar unsigned char
+ 0008           ; 
+ 0008           ; int crol(int a,int i)//循环左移函数
+ 0008           ; {
+ 0008                   .dbline 8
+ 0008           ;       int temp;
+ 0008           ;       temp=a>>(8-i);
+ 0008 28E0              ldi R18,8
+ 000A 30E0              ldi R19,0
+ 000C 2E19              sub R18,R14
+ 000E 3F09              sbc R19,R15
+ 0010 8501              movw R16,R10
+ 0012 0E940000          xcall asr16
+ 0016 6801              movw R12,R16
+ 0018                   .dbline 9
+ 0018           ;       a=a<<i;
+ 0018 9701              movw R18,R14
+ 001A 8501              movw R16,R10
+ 001C 0E940000          xcall lsl16
+ 0020 5801              movw R10,R16
+ 0022                   .dbline 10
+ 0022           ;       a=a|temp;
+ 0022 AC28              or R10,R12
+ 0024 BD28              or R11,R13
+ 0026                   .dbline 11
+ 0026           ;       return a;
+ 0026 8501              movw R16,R10
+ 0028                   .dbline -2
+ 0028           L1:
+ 0028                   .dbline 0 ; func end
+ 0028 0C940000          xjmp pop_xgset00FC
+ 002C                   .dbsym r temp 12 I
+ 002C                   .dbsym r i 14 I
+ 002C                   .dbsym r a 10 I
+ 002C                   .dbend
+ 002C                   .dbfunc e delay _delay fV
+ 002C           ;              x -> R20,R21
+ 002C           ;              y -> R22,R23
+ 002C           ;              z -> R16,R17
+                        .even
+ 002C           _delay::
+ 002C 0E940000          xcall push_xgsetF000
+ 0030                   .dbline -1
+ 0030                   .dbline 15
+ 0030           ; }
+ 0030           ; 
+ 0030           ; void delay(int z)
+ 0030           ; {      
+ 0030                   .dbline 17
+ 0030           ;        uint x,y;
+ 0030           ;        for(x=0;x<z;x++)
+ 0030 4427              clr R20
+ 0032 5527              clr R21
+ 0034 0BC0              xjmp L6
+ 0036           L3:
+ 0036                   .dbline 18
+ 0036           ;               for(y=0;y<1148;y++);
+ 0036 6627              clr R22
+ 0038 7727              clr R23
+ 003A 02C0              xjmp L10
+ 003C           L7:
+ 003C                   .dbline 18
+ 003C           L8:
+ 003C                   .dbline 18
+ 003C 6F5F              subi R22,255  ; offset = 1
+ 003E 7F4F              sbci R23,255
+ 0040           L10:
+ 0040                   .dbline 18
+ 0040 6C37              cpi R22,124
+ 0042 E4E0              ldi R30,4
+ 0044 7E07              cpc R23,R30
+ 0046 D0F3              brlo L7
+ 0048           X0:
+ 0048           L4:
+ 0048                   .dbline 17
+ 0048 4F5F              subi R20,255  ; offset = 1
+ 004A 5F4F              sbci R21,255
+ 004C           L6:
+ 004C                   .dbline 17
+ 004C 4017              cp R20,R16
+ 004E 5107              cpc R21,R17
+ 0050 90F3              brlo L3
+ 0052           X1:
+ 0052                   .dbline -2
+ 0052           L2:
+ 0052                   .dbline 0 ; func end
+ 0052 0C940000          xjmp pop_xgsetF000
+ 0056                   .dbsym r x 20 i
+ 0056                   .dbsym r y 22 i
+ 0056                   .dbsym r z 16 I
+ 0056                   .dbend
+ 0056                   .dbfunc e main _main fV
+ 0056           ;           flag -> R10,R11
+ 0056           ;              y -> R20,R21
+ 0056           ;              x -> R22,R23
+                        .even
+ 0056           _main::
+ 0056                   .dbline -1
+ 0056                   .dbline 22
+ 0056           ; }
+ 0056           ; 
+ 0056           ; void main()//PA,PB控制行，PC,PD控制列，从上往下，从右往左
+ 0056           ; {     int x,y,flag;
+ 0056                   .dbline 23
+ 0056           ;       x=y=flag=0;
+ 0056 AA24              clr R10
+ 0058 BB24              clr R11
+ 005A 4427              clr R20
+ 005C 5527              clr R21
+ 005E 6627              clr R22
+ 0060 7727              clr R23
+ 0062                   .dbline 24
+ 0062           ;       DDRA=0xff;
+ 0062 8FEF              ldi R24,255
+ 0064 8ABB              out 0x1a,R24
+ 0066                   .dbline 25
+ 0066           ;       DDRB=0xff;
+ 0066 87BB              out 0x17,R24
+ 0068                   .dbline 26
+ 0068           ;       DDRC=0xff;
+ 0068 84BB              out 0x14,R24
+ 006A                   .dbline 27
+ 006A           ;       DDRD=0xff;
+ 006A 81BB              out 0x11,R24
+ 006C                   .dbline 29
+ 006C           ;       
+ 006C           ;       PORTA=0x01;
+ 006C 81E0              ldi R24,1
+ 006E 8BBB              out 0x1b,R24
+ 0070                   .dbline 30
+ 0070           ;       PORTB=0x00;
+ 0070 2224              clr R2
+ 0072 28BA              out 0x18,R2
+ 0074                   .dbline 31
+ 0074           ;       PORTC=0xfe;
+ 0074 8EEF              ldi R24,254
+ 0076 85BB              out 0x15,R24
+ 0078                   .dbline 32
+ 0078           ;       PORTD=0xff; 
+ 0078 8FEF              ldi R24,255
+ 007A 82BB              out 0x12,R24
+ 007C                   .dbline 33
+ 007C           ;       delay(10);
+ 007C 0AE0              ldi R16,10
+ 007E 10E0              ldi R17,0
+ 0080 D5DF              xcall _delay
+ 0082 60C0              xjmp L13
+ 0084           L12:
+ 0084                   .dbline 36
+ 0084           ;       
+ 0084           ;       while(1)
+ 0084           ;       {               
+ 0084                   .dbline 37
+ 0084           ;                       if(x<7)
+ 0084 6730              cpi R22,7
+ 0086 E0E0              ldi R30,0
+ 0088 7E07              cpc R23,R30
+ 008A 4CF4              brge L15
+ 008C           X2:
+ 008C                   .dbline 38
+ 008C           ;                       {
+ 008C                   .dbline 39
+ 008C           ;                       PORTA = crol(PORTA,1);  
+ 008C 21E0              ldi R18,1
+ 008E 30E0              ldi R19,0
+ 0090 0BB3              in R16,0x1b
+ 0092 1127              clr R17
+ 0094 B5DF              xcall _crol
+ 0096 0BBB              out 0x1b,R16
+ 0098                   .dbline 40
+ 0098           ;                       delay(10);      
+ 0098 0AE0              ldi R16,10
+ 009A 10E0              ldi R17,0
+ 009C C7DF              xcall _delay
+ 009E                   .dbline 41
+ 009E           ;                       }
+ 009E           L15:
+ 009E                   .dbline 42
+ 009E           ;                       if(x>8)
+ 009E 88E0              ldi R24,8
+ 00A0 90E0              ldi R25,0
+ 00A2 8617              cp R24,R22
+ 00A4 9707              cpc R25,R23
+ 00A6 4CF4              brge L17
+ 00A8           X3:
+ 00A8                   .dbline 43
+ 00A8           ;                       {
+ 00A8                   .dbline 44
+ 00A8           ;                       PORTB = crol(PORTB,1);
+ 00A8 21E0              ldi R18,1
+ 00AA 30E0              ldi R19,0
+ 00AC 08B3              in R16,0x18
+ 00AE 1127              clr R17
+ 00B0 A7DF              xcall _crol
+ 00B2 08BB              out 0x18,R16
+ 00B4                   .dbline 45
+ 00B4           ;                       delay(10);
+ 00B4 0AE0              ldi R16,10
+ 00B6 10E0              ldi R17,0
+ 00B8 B9DF              xcall _delay
+ 00BA                   .dbline 46
+ 00BA           ;                       }                       
+ 00BA           L17:
+ 00BA                   .dbline 47
+ 00BA           ;                       x++;
+ 00BA 6F5F              subi R22,255  ; offset = 1
+ 00BC 7F4F              sbci R23,255
+ 00BE                   .dbline 48
+ 00BE           ;                       if(x==8)
+ 00BE 6830              cpi R22,8
+ 00C0 E0E0              ldi R30,0
+ 00C2 7E07              cpc R23,R30
+ 00C4 39F4              brne L19
+ 00C6           X4:
+ 00C6                   .dbline 49
+ 00C6           ;                       {
+ 00C6                   .dbline 50
+ 00C6           ;                       PORTA=0X00;
+ 00C6 2224              clr R2
+ 00C8 2BBA              out 0x1b,R2
+ 00CA                   .dbline 51
+ 00CA           ;                       PORTB=0x01;
+ 00CA 81E0              ldi R24,1
+ 00CC 88BB              out 0x18,R24
+ 00CE                   .dbline 52
+ 00CE           ;                       delay(10);
+ 00CE 0AE0              ldi R16,10
+ 00D0 10E0              ldi R17,0
+ 00D2 ACDF              xcall _delay
+ 00D4                   .dbline 53
+ 00D4           ;                       }
+ 00D4           L19:
+ 00D4                   .dbline 54
+ 00D4           ;                       if(x==16)
+ 00D4 6031              cpi R22,16
+ 00D6 E0E0              ldi R30,0
+ 00D8 7E07              cpc R23,R30
+ 00DA A1F5              brne L21
+ 00DC           X5:
+ 00DC                   .dbline 55
+ 00DC           ;                       {
+ 00DC                   .dbline 56
+ 00DC           ;                       x=0;
+ 00DC 6627              clr R22
+ 00DE 7727              clr R23
+ 00E0                   .dbline 57
+ 00E0           ;                       y++;
+ 00E0 4F5F              subi R20,255  ; offset = 1
+ 00E2 5F4F              sbci R21,255
+ 00E4                   .dbline 58
+ 00E4           ;                       if(y==8)
+ 00E4 4830              cpi R20,8
+ 00E6 E0E0              ldi R30,0
+ 00E8 5E07              cpc R21,R30
+ 00EA 21F4              brne L23
+ 00EC           X6:
+ 00EC                   .dbline 59
+ 00EC           ;                       {
+ 00EC                   .dbline 60
+ 00EC           ;                        PORTC=0xff;
+ 00EC 8FEF              ldi R24,255
+ 00EE 85BB              out 0x15,R24
+ 00F0                   .dbline 61
+ 00F0           ;                        PORTD=0xfe;
+ 00F0 8EEF              ldi R24,254
+ 00F2 82BB              out 0x12,R24
+ 00F4                   .dbline 62
+ 00F4           ;                       }
+ 00F4           L23:
+ 00F4                   .dbline 63
+ 00F4           ;                       if(y==16)
+ 00F4 4031              cpi R20,16
+ 00F6 E0E0              ldi R30,0
+ 00F8 5E07              cpc R21,R30
+ 00FA 31F4              brne L25
+ 00FC           X7:
+ 00FC                   .dbline 64
+ 00FC           ;                       {
+ 00FC                   .dbline 65
+ 00FC           ;                       y=0;
+ 00FC 4427              clr R20
+ 00FE 5527              clr R21
+ 0100                   .dbline 66
+ 0100           ;                       PORTC=0xfe;
+ 0100 8EEF              ldi R24,254
+ 0102 85BB              out 0x15,R24
+ 0104                   .dbline 67
+ 0104           ;                       PORTD=0xff;
+ 0104 8FEF              ldi R24,255
+ 0106 82BB              out 0x12,R24
+ 0108                   .dbline 68
+ 0108           ;                       }
+ 0108           L25:
+ 0108                   .dbline 69
+ 0108           ;                       if(y<8)
+ 0108 4830              cpi R20,8
+ 010A E0E0              ldi R30,0
+ 010C 5E07              cpc R21,R30
+ 010E 3CF4              brge L27
+ 0110           X8:
+ 0110                   .dbline 70
+ 0110           ;                       PORTC=crol(PORTC,1);
+ 0110 21E0              ldi R18,1
+ 0112 30E0              ldi R19,0
+ 0114 05B3              in R16,0x15
+ 0116 1127              clr R17
+ 0118 73DF              xcall _crol
+ 011A 5801              movw R10,R16
+ 011C 05BB              out 0x15,R16
+ 011E           L27:
+ 011E                   .dbline 71
+ 011E           ;                       if(y>8)
+ 011E 88E0              ldi R24,8
+ 0120 90E0              ldi R25,0
+ 0122 8417              cp R24,R20
+ 0124 9507              cpc R25,R21
+ 0126 3CF4              brge L29
+ 0128           X9:
+ 0128                   .dbline 72
+ 0128           ;                       PORTD=crol(PORTD,1);
+ 0128 21E0              ldi R18,1
+ 012A 30E0              ldi R19,0
+ 012C 02B3              in R16,0x12
+ 012E 1127              clr R17
+ 0130 67DF              xcall _crol
+ 0132 5801              movw R10,R16
+ 0134 02BB              out 0x12,R16
+ 0136           L29:
+ 0136                   .dbline 73
+ 0136           ;                       PORTA=0x01;
+ 0136 81E0              ldi R24,1
+ 0138 8BBB              out 0x1b,R24
+ 013A                   .dbline 74
+ 013A           ;                       PORTB=0x00;             
+ 013A 2224              clr R2
+ 013C 28BA              out 0x18,R2
+ 013E                   .dbline 75
+ 013E           ;                       delay(10);
+ 013E 0AE0              ldi R16,10
+ 0140 10E0              ldi R17,0
+ 0142 74DF              xcall _delay
+ 0144                   .dbline 76
+ 0144           ;                       }               
+ 0144           L21:
+ 0144                   .dbline 78
+ 0144           ; 
+ 0144           ;       }
+ 0144           L13:
+ 0144                   .dbline 35
+ 0144 9FCF              xjmp L12
+ 0146           X10:
+ 0146                   .dbline -2
+ 0146           L11:
+ 0146                   .dbline 0 ; func end
+ 0146 0895              ret
+ 0148                   .dbsym r flag 10 I
+ 0148                   .dbsym r y 20 I
+ 0148                   .dbsym r x 22 I
+ 0148                   .dbend
+ 0148           ; }

@@ -1,0 +1,63 @@
+#include "iom16v.h"
+#define uchar unsigned char
+void timer0_init();
+void counter();
+void disp();
+
+
+uchar hour = 0,minute = 0,second = 0,ms = 0;
+
+void main()
+{
+   uchar i;
+   timer0_init();
+   
+   while(1)//
+   {
+       for(i = 0;i<10;i++)
+	   {
+	       if(TCNT0 == 128)
+		   {
+		       TCNT0 = 0;
+			   break;
+		   }   
+	   } 
+	   ms++;
+	   void counter();
+   } 
+
+   
+   
+   
+   
+}
+
+void timer0_init()
+{
+    TCCR0 = 0X05; //选择1024分频
+	TCNT0 = 0X00;
+}
+
+void counter() //时分秒计算
+{
+    if(ms == 100)
+	{
+	    ms = 0;
+	    second++;
+		if(second == 60)
+		{
+		    second = 0;
+		    minute++;
+			if(minute == 60)
+			{
+			    minute = 0;
+			    hour++;
+				if(hour == 60)
+				{
+				    hour = 0;
+				}
+			}
+		}	
+	}
+}
+

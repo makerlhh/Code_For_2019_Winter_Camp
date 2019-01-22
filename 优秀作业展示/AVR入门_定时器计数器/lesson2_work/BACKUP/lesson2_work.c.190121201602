@@ -1,0 +1,101 @@
+#include "iom16v.h"
+#define uchar unsigned char
+#define uint unsigned int 
+
+void timer0_init();
+void counter();
+void disp(uint hour,uint minute,uint second,uint ms);
+void delay(uint n);
+
+uchar const table[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};
+uint hour = 0,minute = 0,second = 0,ms = 0;
+
+
+void main()
+{
+   uchar i;
+   timer0_init();
+   
+   while(1) //计时器、计数器
+   {
+       for(i = 0;i<10;i++)
+	   {
+	       if(TCNT0 == 128)
+		   {
+		       TCNT0 = 0;
+			   break;
+		   }   
+	   } 
+	   ms++;
+	   counter();
+	   disp(hour,minute,second,ms);
+	   
+   } 
+
+   
+   
+   
+   
+}
+
+void timer0_init()
+{
+    TCCR0 = 0X05; //选择1024分频
+	TCNT0 = 0X00;
+}
+
+void counter() //时、分、秒计算
+{
+    if(ms == 100)
+	{
+	    ms = 0;
+	    second++;
+		if(second == 60)
+		{
+		    second = 0;
+		    minute++;
+			if(minute == 60)
+			{
+			    minute = 0;
+			    hour++;
+				if(hour == 60)
+				{
+				    hour = 0;
+				}
+			}
+		}	
+	}
+}
+
+void delay(uint n)  //延时n*100ms  
+{
+    uint i,j,m;
+    for(n;n>0;n--)
+    {
+        for(m = 2;m>0;m--)
+        {
+             for(i = 250;i>0;i--)
+             {
+   	             for(j = 230;j>0;j--);
+             }
+        }
+    }
+}
+
+void disp(uint hour,uint minute,uint second,uint ms)
+{
+    uint hourshi = 0,hourge = 0,minuteshi = 0,minutege = 0,secondshi  = 0,secondge = 0,msshi = 0,msge = 0;
+    hourshi = hour/10;
+	hourge = hour%10;
+	minuteshi = minute/10;
+	minutege = minute%10;
+	secondshi = seconed/10;
+	secondge = second%10;
+	msshi = ms/10;
+	msge = ms%10;
+	DDRA = 0XFF;
+	DDRB = 0XFF;
+	PORTB = 0X00;
+	
+
+}

@@ -1,0 +1,702 @@
+Interrupt Vectors
+    00000 940C 0038 JMP	__text_start|__start
+
+Program Code (text area)
+__text_start|__start:
+    00038 E5CF      LDI	R28,0x5F
+    00039 E0D4      LDI	R29,4
+    0003A BFCD      OUT	0x3D,R28
+    0003B BFDE      OUT	0x3E,R29
+    0003C 51CE      SUBI	R28,0x1E
+    0003D 40D0      SBCI	R29,0
+    0003E EA0A      LDI	R16,0xAA
+    0003F 8308      ST	Y,R16
+    00040 2400      CLR	R0
+    00041 E7EB      LDI	R30,0x7B
+    00042 E0F0      LDI	R31,0
+    00043 E010      LDI	R17,0
+    00044 37EB      CPI	R30,0x7B
+    00045 07F1      CPC	R31,R17
+    00046 F011      BEQ	0x0049
+    00047 9201      ST	Z+,R0
+    00048 CFFB      RJMP	0x0044
+    00049 8300      ST	Z,R16
+    0004A E5E4      LDI	R30,0x54
+    0004B E0F0      LDI	R31,0
+    0004C E6A0      LDI	R26,0x60
+    0004D E0B0      LDI	R27,0
+    0004E E010      LDI	R17,0
+    0004F E000      LDI	R16,0
+    00050 BF0B      OUT	0x3B,R16
+    00051 36EF      CPI	R30,0x6F
+    00052 07F1      CPC	R31,R17
+    00053 F021      BEQ	0x0058
+    00054 95C8      LPM
+    00055 9631      ADIW	R30,1
+    00056 920D      ST	X+,R0
+    00057 CFF9      RJMP	0x0051
+    00058 940E 005B CALL	_main
+_exit:
+    0005A CFFF      RJMP	_exit
+_main:
+  i                    --> Y,+5
+    0005B 9724      SBIW	R28,4
+FILE: F:\programme\singlechip\SCMatm\lesson2_work\lesson2_work.c
+(0001) #include "iom16v.h"
+(0002) #define uchar unsigned char
+(0003) #define uint unsigned int 
+(0004) 
+(0005) void timer0_init(); 
+(0006) void counter();
+(0007) void disp(uint hour,uint minute,uint second,uint ms);
+(0008) void delay(uint n);
+(0009) uchar key();
+(0010) 
+(0011) uchar const table[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};
+(0012) uint hour = 0,minute = 0,second = 0,ms = 0;
+(0013) uchar Key_Value = 0X00;
+(0014) 
+(0015) void main()
+(0016) {
+(0017)    uchar i;
+(0018)    timer0_init();  //定时器、计数器初始化
+    0005C D0C2      RCALL	_timer0_init
+(0019)    Key_Value = key();  //检测START按钮是否被按下
+    0005D D1A5      RCALL	_key
+    0005E 9300 0072 STS	Key_Value,R16
+    00060 C0BB      RJMP	0x011C
+(0020)    while(1)
+(0021)    {   
+(0022)        if(Key_Value == 0X06) //STAR 控制
+    00061 9180 0072 LDS	R24,Key_Value
+    00063 3086      CPI	R24,6
+    00064 F009      BEQ	0x0066
+    00065 C078      RJMP	0x00DE
+(0023)        { 
+    00066 C076      RJMP	0x00DD
+(0024)            while(1) 
+(0025)            {
+(0026) 	            while(1)  //计时器、计数器
+(0027) 		        {
+(0028) 		            TCNT0 = 0X59;  
+    00067 E589      LDI	R24,0x59
+    00068 BF82      OUT	0x32,R24
+(0029) 				    break;    
+    00069 C001      RJMP	0x006B
+    0006A CFFC      RJMP	0x0067
+(0030) 			    }     
+(0031) 	   		    ms++;
+    0006B 9180 0070 LDS	R24,ms
+    0006D 9190 0071 LDS	R25,ms+1
+    0006F 9601      ADIW	R24,1
+    00070 9390 0071 STS	ms+1,R25
+    00072 9380 0070 STS	ms,R24
+(0032) 	   		    if(ms==100)  //时、分、秒计算
+    00074 3684      CPI	R24,0x64
+    00075 E0E0      LDI	R30,0
+    00076 079E      CPC	R25,R30
+    00077 F409      BNE	0x0079
+(0033) 	   		    {
+(0034) 	       	        counter();
+    00078 D0AD      RCALL	_counter
+(0035) 	   		    } 
+(0036)                 
+(0037)                 Key_Value = PIND&0X07;  
+    00079 B380      IN	R24,0x10
+    0007A 7087      ANDI	R24,7
+    0007B 9380 0072 STS	Key_Value,R24
+(0038)                 delay(1);   //消抖
+    0007D E001      LDI	R16,1
+    0007E E010      LDI	R17,0
+    0007F D0E0      RCALL	_delay
+(0039)                   		    
+(0040) 			    if(Key_Value == 0X07)  //START按钮是否被打开
+    00080 9180 0072 LDS	R24,Key_Value
+    00082 3087      CPI	R24,7
+    00083 F499      BNE	0x0097
+(0041) 			    {
+(0042) 			        hour = 0;minute = 0;second = 0;ms = 0;
+    00084 2422      CLR	R2
+    00085 2433      CLR	R3
+    00086 9230 006B STS	hour+1,R3
+    00088 9220 006A STS	hour,R2
+    0008A 9230 006D STS	minute+1,R3
+    0008C 9220 006C STS	minute,R2
+    0008E 9230 006F STS	second+1,R3
+    00090 9220 006E STS	second,R2
+    00092 9230 0071 STS	ms+1,R3
+    00094 9220 0070 STS	ms,R2
+(0043) 			        break;
+    00096 C047      RJMP	0x00DE
+(0044) 			    }
+(0045) 			    if(Key_Value == 0X04)  //RESET按钮是否被按下
+    00097 9180 0072 LDS	R24,Key_Value
+    00099 3084      CPI	R24,4
+    0009A F491      BNE	0x00AD
+(0046) 			    {
+(0047) 			        hour = 0;minute = 0;second = 0;ms = 0;
+    0009B 2422      CLR	R2
+    0009C 2433      CLR	R3
+    0009D 9230 006B STS	hour+1,R3
+    0009F 9220 006A STS	hour,R2
+    000A1 9230 006D STS	minute+1,R3
+    000A3 9220 006C STS	minute,R2
+    000A5 9230 006F STS	second+1,R3
+    000A7 9220 006E STS	second,R2
+    000A9 9230 0071 STS	ms+1,R3
+    000AB 9220 0070 STS	ms,R2
+(0048) 			    }               
+(0049)                 if(Key_Value == 0X02) //STOP/CONTINUE按钮是否被按下
+    000AD 9180 0072 LDS	R24,Key_Value
+    000AF 3082      CPI	R24,2
+    000B0 F409      BNE	0x00B2
+(0050)                 {
+(0051)                     break;                               
+    000B1 C02C      RJMP	0x00DE
+(0052)                 }
+(0053)                 if(Key_Value == 0X00)  //START/RESET/STOP/CONTINUE按钮同时按下初始化位0
+    000B2 9020 0072 LDS	R2,Key_Value
+    000B4 2022      TST	R2
+    000B5 F491      BNE	0x00C8
+(0054)                 {
+(0055)                      hour = 0;minute = 0;second = 0;ms = 0;
+    000B6 2422      CLR	R2
+    000B7 2433      CLR	R3
+    000B8 9230 006B STS	hour+1,R3
+    000BA 9220 006A STS	hour,R2
+    000BC 9230 006D STS	minute+1,R3
+    000BE 9220 006C STS	minute,R2
+    000C0 9230 006F STS	second+1,R3
+    000C2 9220 006E STS	second,R2
+    000C4 9230 0071 STS	ms+1,R3
+    000C6 9220 0070 STS	ms,R2
+(0056)                 }             
+(0057)                 disp(hour,minute,second,ms);  //显示时、分、秒
+    000C8 9020 0070 LDS	R2,ms
+    000CA 9030 0071 LDS	R3,ms+1
+    000CC 823B      STD	Y+3,R3
+    000CD 822A      STD	Y+2,R2
+    000CE 9020 006E LDS	R2,second
+    000D0 9030 006F LDS	R3,second+1
+    000D2 8239      STD	Y+1,R3
+    000D3 8228      ST	Y,R2
+    000D4 9120 006C LDS	R18,minute
+    000D6 9130 006D LDS	R19,minute+1
+    000D8 9100 006A LDS	R16,hour
+    000DA 9110 006B LDS	R17,hour+1
+    000DC D096      RCALL	_disp
+    000DD CF8C      RJMP	0x006A
+(0058)    		    }
+(0059)         }
+(0060)         Key_Value = key(); //继续检测START按钮是否被按下
+    000DE D124      RCALL	_key
+    000DF 9300 0072 STS	Key_Value,R16
+(0061)                
+(0062)         if(Key_Value == 0X02) //STOP/CONTINUE按钮是否被按下后执行的动作
+    000E1 3002      CPI	R16,2
+    000E2 F5C9      BNE	0x011C
+(0063)         {
+    000E3 C037      RJMP	0x011B
+(0064)             while(1)
+(0065)             {             
+(0066)                  disp(hour,minute,second,ms);       
+    000E4 9020 0070 LDS	R2,ms
+    000E6 9030 0071 LDS	R3,ms+1
+    000E8 823B      STD	Y+3,R3
+    000E9 822A      STD	Y+2,R2
+    000EA 9020 006E LDS	R2,second
+    000EC 9030 006F LDS	R3,second+1
+    000EE 8239      STD	Y+1,R3
+    000EF 8228      ST	Y,R2
+    000F0 9120 006C LDS	R18,minute
+    000F2 9130 006D LDS	R19,minute+1
+    000F4 9100 006A LDS	R16,hour
+    000F6 9110 006B LDS	R17,hour+1
+    000F8 D07A      RCALL	_disp
+(0067)                  Key_Value = PIND&0X07;
+    000F9 B380      IN	R24,0x10
+    000FA 7087      ANDI	R24,7
+    000FB 9380 0072 STS	Key_Value,R24
+(0068)                  delay(1);
+    000FD E001      LDI	R16,1
+    000FE E010      LDI	R17,0
+    000FF D060      RCALL	_delay
+(0069)                  if(Key_Value == 0X00)   //START/RESET/STOP/CONTINUE按钮同时按下初始化位0
+    00100 9020 0072 LDS	R2,Key_Value
+    00102 2022      TST	R2
+    00103 F491      BNE	0x0116
+(0070)                  {
+(0071)                      hour = 0;minute = 0;second = 0;ms = 0;
+    00104 2422      CLR	R2
+    00105 2433      CLR	R3
+    00106 9230 006B STS	hour+1,R3
+    00108 9220 006A STS	hour,R2
+    0010A 9230 006D STS	minute+1,R3
+    0010C 9220 006C STS	minute,R2
+    0010E 9230 006F STS	second+1,R3
+    00110 9220 006E STS	second,R2
+    00112 9230 0071 STS	ms+1,R3
+    00114 9220 0070 STS	ms,R2
+(0072)                  }
+(0073)                  if(Key_Value == 0X06);
+    00116 9180 0072 LDS	R24,Key_Value
+    00118 3086      CPI	R24,6
+    00119 F411      BNE	0x011C
+(0074)                  {                           
+(0075)                       break;
+    0011A C001      RJMP	0x011C
+    0011B CFC8      RJMP	0x00E4
+    0011C CF44      RJMP	0x0061
+    0011D 9624      ADIW	R28,4
+    0011E 9508      RET
+(0076)                  }
+(0077)              }
+(0078)         }   
+(0079)     }  
+(0080) }
+(0081) 
+(0082) void timer0_init()
+(0083) {
+(0084)     TCCR0 = 0X00;
+_timer0_init:
+    0011F 2422      CLR	R2
+    00120 BE23      OUT	0x33,R2
+(0085) 	TCNT0 = 0X59;  //初始化寄存器
+    00121 E589      LDI	R24,0x59
+    00122 BF82      OUT	0x32,R24
+(0086) 	TCCR0 = 0X05; //选择1024分频
+    00123 E085      LDI	R24,5
+    00124 BF83      OUT	0x33,R24
+    00125 9508      RET
+(0087) }
+(0088) 
+(0089) void counter() //时、分、秒计算
+(0090) {
+(0091) 	ms = 0;
+_counter:
+    00126 2422      CLR	R2
+    00127 2433      CLR	R3
+    00128 9230 0071 STS	ms+1,R3
+    0012A 9220 0070 STS	ms,R2
+(0092) 	second++;
+    0012C 9180 006E LDS	R24,second
+    0012E 9190 006F LDS	R25,second+1
+    00130 9601      ADIW	R24,1
+    00131 9390 006F STS	second+1,R25
+    00133 9380 006E STS	second,R24
+(0093) 	if(second == 60)
+    00135 338C      CPI	R24,0x3C
+    00136 E0E0      LDI	R30,0
+    00137 079E      CPC	R25,R30
+    00138 F531      BNE	0x015F
+(0094) 	{
+(0095) 		second = 0;
+    00139 9230 006F STS	second+1,R3
+    0013B 9220 006E STS	second,R2
+(0096) 		minute++;
+    0013D 9180 006C LDS	R24,minute
+    0013F 9190 006D LDS	R25,minute+1
+    00141 9601      ADIW	R24,1
+    00142 9390 006D STS	minute+1,R25
+    00144 9380 006C STS	minute,R24
+(0097) 		if(minute == 60)
+    00146 338C      CPI	R24,0x3C
+    00147 E0E0      LDI	R30,0
+    00148 079E      CPC	R25,R30
+    00149 F4A9      BNE	0x015F
+(0098) 		{
+(0099) 		    minute = 0;
+    0014A 9230 006D STS	minute+1,R3
+    0014C 9220 006C STS	minute,R2
+(0100) 			hour++;
+    0014E 9180 006A LDS	R24,hour
+    00150 9190 006B LDS	R25,hour+1
+    00152 9601      ADIW	R24,1
+    00153 9390 006B STS	hour+1,R25
+    00155 9380 006A STS	hour,R24
+(0101) 			if(hour == 60)
+    00157 338C      CPI	R24,0x3C
+    00158 E0E0      LDI	R30,0
+    00159 079E      CPC	R25,R30
+    0015A F421      BNE	0x015F
+(0102) 			{
+(0103) 			    hour = 0;
+    0015B 9230 006B STS	hour+1,R3
+    0015D 9220 006A STS	hour,R2
+(0104) 		    }
+(0105) 		}
+(0106) 	}	
+    0015F 9508      RET
+_delay:
+  m                    --> R20
+  n                    --> R16
+    00160 934A      ST	-Y,R20
+    00161 935A      ST	-Y,R21
+(0107) }
+(0108) 
+(0109) void delay(uint n)  //延时 n ms  
+(0110) {
+(0111)     uint m; 
+(0112)     for(n;n>0;n--)
+    00162 C00A      RJMP	0x016D
+(0113)     {
+(0114)         for(m = 1141;m>0;m--);
+    00163 E745      LDI	R20,0x75
+    00164 E054      LDI	R21,4
+    00165 C002      RJMP	0x0168
+    00166 5041      SUBI	R20,1
+    00167 4050      SBCI	R21,0
+    00168 3040      CPI	R20,0
+    00169 0745      CPC	R20,R21
+    0016A F7D9      BNE	0x0166
+    0016B 5001      SUBI	R16,1
+    0016C 4010      SBCI	R17,0
+    0016D 3000      CPI	R16,0
+    0016E 0701      CPC	R16,R17
+    0016F F799      BNE	0x0163
+    00170 9159      LD	R21,Y+
+    00171 9149      LD	R20,Y+
+    00172 9508      RET
+_disp:
+  num                  --> Y,+0
+  i                    --> R20
+  ms                   --> R10
+  second               --> R12
+  minute               --> R14
+  hour                 --> R20
+    00173 940E 025D CALL	push_xgset30FC
+    00175 0179      MOVW	R14,R18
+    00176 01A8      MOVW	R20,R16
+    00177 9728      SBIW	R28,0x8
+    00178 88C8      LDD	R12,Y+16
+    00179 88D9      LDD	R13,Y+17
+    0017A 88AA      LDD	R10,Y+18
+    0017B 88BB      LDD	R11,Y+19
+(0115)     }
+(0116) }
+(0117) 
+(0118) void disp(uint hour,uint minute,uint second,uint ms)//显示函数
+(0119) {
+(0120)     uchar i;
+(0121) 	uchar num[8] = {0};
+    0017C E783      LDI	R24,0x73
+    0017D E090      LDI	R25,0
+    0017E 01FE      MOVW	R30,R28
+    0017F E008      LDI	R16,0x8
+    00180 E010      LDI	R17,0
+    00181 93FA      ST	-Y,R31
+    00182 93EA      ST	-Y,R30
+    00183 939A      ST	-Y,R25
+    00184 938A      ST	-Y,R24
+    00185 940E 026C CALL	asgnblk
+(0122)     num[0] = hour/10;
+    00187 E02A      LDI	R18,0xA
+    00188 E030      LDI	R19,0
+    00189 018A      MOVW	R16,R20
+    0018A 940E 0220 CALL	div16u
+    0018C 8308      ST	Y,R16
+(0123) 	num[1] = hour%10;
+    0018D E02A      LDI	R18,0xA
+    0018E E030      LDI	R19,0
+    0018F 018A      MOVW	R16,R20
+    00190 940E 021E CALL	mod16u
+    00192 8309      STD	Y+1,R16
+(0124) 	num[2] = minute/10;
+    00193 E02A      LDI	R18,0xA
+    00194 E030      LDI	R19,0
+    00195 0187      MOVW	R16,R14
+    00196 940E 0220 CALL	div16u
+    00198 830A      STD	Y+2,R16
+(0125) 	num[3] = minute%10;
+    00199 E02A      LDI	R18,0xA
+    0019A E030      LDI	R19,0
+    0019B 0187      MOVW	R16,R14
+    0019C 940E 021E CALL	mod16u
+    0019E 830B      STD	Y+3,R16
+(0126) 	num[4] = second/10;
+    0019F E02A      LDI	R18,0xA
+    001A0 E030      LDI	R19,0
+    001A1 0186      MOVW	R16,R12
+    001A2 940E 0220 CALL	div16u
+    001A4 830C      STD	Y+4,R16
+(0127) 	num[5] = second%10;
+    001A5 E02A      LDI	R18,0xA
+    001A6 E030      LDI	R19,0
+    001A7 0186      MOVW	R16,R12
+    001A8 940E 021E CALL	mod16u
+    001AA 830D      STD	Y+5,R16
+(0128) 	num[6] = ms/10;
+    001AB E02A      LDI	R18,0xA
+    001AC E030      LDI	R19,0
+    001AD 0185      MOVW	R16,R10
+    001AE 940E 0220 CALL	div16u
+    001B0 830E      STD	Y+6,R16
+(0129) 	num[7] = ms%10;
+    001B1 E02A      LDI	R18,0xA
+    001B2 E030      LDI	R19,0
+    001B3 0185      MOVW	R16,R10
+    001B4 940E 021E CALL	mod16u
+    001B6 830F      STD	Y+7,R16
+(0130) 	
+(0131) 	DDRA = 0XFF;
+    001B7 EF8F      LDI	R24,0xFF
+    001B8 BB8A      OUT	0x1A,R24
+(0132) 	DDRB = 0XFF;
+    001B9 BB87      OUT	0x17,R24
+    001BA C044      RJMP	0x01FF
+(0133) 	while(1)
+(0134) 	{
+(0135) 	    PORTA = 0XFF;
+    001BB EF8F      LDI	R24,0xFF
+    001BC BB8B      OUT	0x1B,R24
+(0136) 		PORTB = 0X00;
+    001BD 2422      CLR	R2
+    001BE BA28      OUT	0x18,R2
+(0137) 		for(i = 0;i<8;i++)
+    001BF 2744      CLR	R20
+    001C0 C03A      RJMP	0x01FB
+(0138) 		{
+(0139) 		    if(((i+1)%2)==0)  //设置小数点
+    001C1 E012      LDI	R17,2
+    001C2 2F04      MOV	R16,R20
+    001C3 5F0F      SUBI	R16,0xFF
+    001C4 940E 023A CALL	mod8u
+    001C6 2300      TST	R16
+    001C7 F4D1      BNE	0x01E2
+(0140) 			{
+(0141) 			    PORTA = (1<<i);
+    001C8 E001      LDI	R16,1
+    001C9 2F14      MOV	R17,R20
+    001CA 940E 0266 CALL	lsl8
+    001CC BB0B      OUT	0x1B,R16
+(0142) 		        PORTB = table[num[i]]&0X7F;
+    001CD 01CE      MOVW	R24,R28
+    001CE 2FE4      MOV	R30,R20
+    001CF 27FF      CLR	R31
+    001D0 0FE8      ADD	R30,R24
+    001D1 1FF9      ADC	R31,R25
+    001D2 81E0      LD	R30,Z
+    001D3 27FF      CLR	R31
+    001D4 E680      LDI	R24,0x60
+    001D5 E090      LDI	R25,0
+    001D6 0FE8      ADD	R30,R24
+    001D7 1FF9      ADC	R31,R25
+    001D8 8180      LD	R24,Z
+    001D9 778F      ANDI	R24,0x7F
+    001DA BB88      OUT	0x18,R24
+(0143) 				delay(1);
+    001DB E001      LDI	R16,1
+    001DC E010      LDI	R17,0
+    001DD DF82      RCALL	_delay
+(0144) 				PORTA = 0X00;
+    001DE 2422      CLR	R2
+    001DF BA2B      OUT	0x1B,R2
+(0145) 				PORTB = 0X00;	    
+    001E0 BA28      OUT	0x18,R2
+(0146) 		    }
+    001E1 C018      RJMP	0x01FA
+(0147) 			else
+(0148) 			{
+(0149) 			    PORTA = (1<<i);
+    001E2 E001      LDI	R16,1
+    001E3 2F14      MOV	R17,R20
+    001E4 940E 0266 CALL	lsl8
+    001E6 BB0B      OUT	0x1B,R16
+(0150) 		        PORTB = table[num[i]];
+    001E7 01CE      MOVW	R24,R28
+    001E8 2FE4      MOV	R30,R20
+    001E9 27FF      CLR	R31
+    001EA 0FE8      ADD	R30,R24
+    001EB 1FF9      ADC	R31,R25
+    001EC 81E0      LD	R30,Z
+    001ED 27FF      CLR	R31
+    001EE E680      LDI	R24,0x60
+    001EF E090      LDI	R25,0
+    001F0 0FE8      ADD	R30,R24
+    001F1 1FF9      ADC	R31,R25
+    001F2 8020      LD	R2,Z
+    001F3 BA28      OUT	0x18,R2
+(0151) 				delay(1);
+    001F4 E001      LDI	R16,1
+    001F5 E010      LDI	R17,0
+    001F6 DF69      RCALL	_delay
+(0152) 				PORTA = 0X00;
+    001F7 2422      CLR	R2
+    001F8 BA2B      OUT	0x1B,R2
+(0153) 				PORTB = 0X00;
+    001F9 BA28      OUT	0x18,R2
+    001FA 9543      INC	R20
+    001FB 3048      CPI	R20,0x8
+    001FC F408      BCC	0x01FE
+    001FD CFC3      RJMP	0x01C1
+(0154) 			}
+(0155) 		}
+(0156) 		break;
+    001FE C001      RJMP	0x0200
+    001FF CFBB      RJMP	0x01BB
+    00200 9628      ADIW	R28,0x8
+    00201 940C 0252 JMP	pop_xgset30FC
+(0157) 	}
+(0158) }
+(0159) 
+(0160) uchar key() //检测START按键是否被按下
+(0161) {
+(0162)     DDRD = 0X00;
+_key:
+    00203 2422      CLR	R2
+    00204 BA21      OUT	0x11,R2
+(0163) 	PORTD = 0X07;
+    00205 E087      LDI	R24,7
+    00206 BB82      OUT	0x12,R24
+    00207 C014      RJMP	0x021C
+(0164) 	while(1)
+(0165) 	{
+(0166)         delay(1); //消抖
+    00208 E001      LDI	R16,1
+    00209 E010      LDI	R17,0
+    0020A DF55      RCALL	_delay
+(0167)         Key_Value = PIND&0X07;
+    0020B B380      IN	R24,0x10
+    0020C 7087      ANDI	R24,7
+    0020D 9380 0072 STS	Key_Value,R24
+(0168) 	    if(Key_Value == 0X07)  
+    0020F 3087      CPI	R24,7
+    00210 F411      BNE	0x0213
+(0169) 	    {
+(0170) 	        return (0);
+    00211 2700      CLR	R16
+    00212 C00A      RJMP	0x021D
+(0171) 	    }
+(0172)         if(Key_Value == 0X06)  
+    00213 9180 0072 LDS	R24,Key_Value
+    00215 3086      CPI	R24,6
+    00216 F411      BNE	0x0219
+(0173) 	    {
+(0174) 	        return (Key_Value);
+    00217 2F08      MOV	R16,R24
+    00218 C004      RJMP	0x021D
+(0175) 	    }
+(0176)         else
+(0177)         {
+(0178)             Key_Value == 0X02;
+(0179)             return (Key_Value);
+FILE: <library>
+    00219 9100 0072 LDS	R16,Key_Value
+    0021B C001      RJMP	0x021D
+    0021C CFEB      RJMP	0x0208
+    0021D 9508      RET
+mod16u:
+    0021E 9468      BSET	6
+    0021F C001      RJMP	xdiv16u
+div16u:
+    00220 94E8      BCLR	6
+xdiv16u:
+    00221 92EA      ST	-Y,R14
+    00222 92FA      ST	-Y,R15
+    00223 938A      ST	-Y,R24
+    00224 24EE      CLR	R14
+    00225 24FF      CLR	R15
+    00226 E180      LDI	R24,0x10
+    00227 0F00      LSL	R16
+    00228 1F11      ROL	R17
+    00229 1CEE      ROL	R14
+    0022A 1CFF      ROL	R15
+    0022B 16E2      CP	R14,R18
+    0022C 06F3      CPC	R15,R19
+    0022D F018      BCS	0x0231
+    0022E 1AE2      SUB	R14,R18
+    0022F 0AF3      SBC	R15,R19
+    00230 9503      INC	R16
+    00231 958A      DEC	R24
+    00232 F7A1      BNE	0x0227
+    00233 F416      BRTC	0x0236
+    00234 2D0E      MOV	R16,R14
+    00235 2D1F      MOV	R17,R15
+    00236 9189      LD	R24,Y+
+    00237 90F9      LD	R15,Y+
+    00238 90E9      LD	R14,Y+
+    00239 9508      RET
+mod8u:
+    0023A 9468      BSET	6
+    0023B C001      RJMP	xdiv8u
+div8u:
+    0023C 94E8      BCLR	6
+xdiv8u:
+    0023D 932A      ST	-Y,R18
+    0023E 92FA      ST	-Y,R15
+    0023F 92EA      ST	-Y,R14
+    00240 24FF      CLR	R15
+    00241 24EE      CLR	R14
+    00242 E120      LDI	R18,0x10
+    00243 0F00      LSL	R16
+    00244 1CFF      ROL	R15
+    00245 1CEE      ROL	R14
+    00246 16E1      CP	R14,R17
+    00247 F010      BCS	0x024A
+    00248 1AE1      SUB	R14,R17
+    00249 9503      INC	R16
+    0024A 952A      DEC	R18
+    0024B F7B9      BNE	0x0243
+    0024C F40E      BRTC	0x024E
+    0024D 2D0E      MOV	R16,R14
+    0024E 90E9      LD	R14,Y+
+    0024F 90F9      LD	R15,Y+
+    00250 9129      LD	R18,Y+
+    00251 9508      RET
+pop_xgset30FC:
+    00252 90A9      LD	R10,Y+
+    00253 90B9      LD	R11,Y+
+    00254 90C9      LD	R12,Y+
+    00255 90D9      LD	R13,Y+
+    00256 90E9      LD	R14,Y+
+    00257 90F9      LD	R15,Y+
+    00258 9149      LD	R20,Y+
+    00259 9159      LD	R21,Y+
+    0025A 9508      RET
+push_xgsetF0FC:
+    0025B 937A      ST	-Y,R23
+    0025C 936A      ST	-Y,R22
+push_xgset30FC:
+    0025D 935A      ST	-Y,R21
+    0025E 934A      ST	-Y,R20
+push_xgset00FC:
+    0025F 92FA      ST	-Y,R15
+    00260 92EA      ST	-Y,R14
+push_xgset003C:
+    00261 92DA      ST	-Y,R13
+    00262 92CA      ST	-Y,R12
+    00263 92BA      ST	-Y,R11
+    00264 92AA      ST	-Y,R10
+    00265 9508      RET
+lsl8:
+    00266 2311      TST	R17
+    00267 F019      BEQ	0x026B
+    00268 0F00      LSL	R16
+    00269 951A      DEC	R17
+    0026A CFFB      RJMP	lsl8
+    0026B 9508      RET
+asgnblk:
+    0026C 93AA      ST	-Y,R26
+    0026D 93BA      ST	-Y,R27
+    0026E 93EA      ST	-Y,R30
+    0026F 93FA      ST	-Y,R31
+    00270 920A      ST	-Y,R0
+    00271 81AF      LDD	R26,Y+7
+    00272 85B8      LDD	R27,Y+8
+    00273 81ED      LDD	R30,Y+5
+    00274 81FE      LDD	R31,Y+6
+    00275 3000      CPI	R16,0
+    00276 0701      CPC	R16,R17
+    00277 F029      BEQ	0x027D
+    00278 9001      LD	R0,Z+
+    00279 920D      ST	X+,R0
+    0027A 5001      SUBI	R16,1
+    0027B 4010      SBCI	R17,0
+    0027C CFF8      RJMP	0x0275
+    0027D 9009      LD	R0,Y+
+    0027E 91F9      LD	R31,Y+
+    0027F 91E9      LD	R30,Y+
+    00280 91B9      LD	R27,Y+
+    00281 91A9      LD	R26,Y+
+    00282 9624      ADIW	R28,4
+    00283 9508      RET

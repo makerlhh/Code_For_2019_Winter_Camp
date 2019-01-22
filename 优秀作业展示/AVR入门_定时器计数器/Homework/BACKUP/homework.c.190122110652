@@ -1,0 +1,81 @@
+#include<iom16v.h>
+
+a[10] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管0~9数字
+b[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};//数码管1~8
+int i,time[8]={0},*p=time;//time[8]为3位ms,2位s,2位min,1位h
+
+void init()//初始化
+{
+    DDRA = 0xff;
+	DDRC = 0xff;
+	PORTA = 0xc0;
+	PORTC = 0xff;
+}
+
+void timeinit()//计时器初始化
+{
+    TCCR0 = 0x02;
+	TCNT0 = 0;
+	TCCR2 = 0x02;
+	TCNT2 = 0;
+}
+
+void forward(int *p,int x)//进位
+{
+    if(*p == x)
+	{
+	    *p = 0;
+	    *(p+1) = *(p+1) + 1;
+	}
+}
+
+void delay(unsigned int x)//延时函数
+{
+    while(1)
+	{
+	    if(TCNT2 == x)
+	    {
+		    TCNT2 = 0;
+			break;
+		}
+	}
+}
+
+void delay_ms()//ms级延时函数
+{
+    for(i=0;i<10;i++)//1ms
+	{
+	    while(1)
+	    {
+	        if(TCNT0 == 100)//100us
+		    {
+		        TCNT0 = 0;
+		        break;
+			}
+		}
+	}
+}
+
+void main()
+{
+    init();
+	timeinit();
+	while(1)
+	{
+	    delay_ms();
+		time[0] = time[0] + 1;
+		for(i=0;i<7;i++)//进位循环
+		{
+		    if(i == 4 || i == 6)
+			    forward(p + i,6);
+			else
+		        forward(p + i,10);
+		}
+		for(i=0;i<8;i++)//显示循环
+		{
+		    PORTA = a[time[i]];
+		    PORTC = b[i];
+			delay(35);
+		}
+    }
+}

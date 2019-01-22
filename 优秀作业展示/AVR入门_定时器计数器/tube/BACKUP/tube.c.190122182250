@@ -1,0 +1,109 @@
+#include <iom16v.h>
+#define bit(n) (1<<n)
+#pragma interrupt_handler enter_one:9
+unsigned char data[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0,0x0a};
+unsigned char  s = 0,m = 0,h = 0; 
+void enter_one ()
+{ 
+  	 if (s == 60)
+	 {
+	     s = 0;
+	     m++;
+	        if (m == 60)
+	       {
+	  	      m = 0;
+		      h++;
+		      if(h == 24) 
+			  {
+			      h = 0;
+			  }
+	        }
+	 }
+	 s++;
+	 TCNT1H = 0X85;
+	 TCNT1L = 0XED;
+}
+void delay(int ms)
+{
+ 	int i,j;
+ 	for(i = 0; i<ms ;i++)
+	{
+	 	  for (j = 0; j<1148; j++);
+	}
+}
+void show_time(unsigned char y, int j)//低电平输出位数。
+{
+  PORTB = data[y];
+  
+  PORTA |= ~bit(j);
+  
+  
+  PORTA &= ~bit(j);
+
+
+ delay(1);
+}
+
+int key_press()
+{
+ 	unsigned char j;
+	
+ 	DDRD  |= 0X0F;
+	PORTD |= 0X0F;
+	
+	DDRD  &= ~0X0F; 
+	j = PIND;
+	j = j&0x0f;
+	if(j == 0x0f)
+	return 0;
+	else 
+	return 1;
+}
+int key_scan()
+{ 
+  unsigned char key;
+  delay(10);
+  if (key_press())
+  {
+   	 key = PIND;
+	 key&= 0x0f;
+	switch(key)
+	{
+	   case 0x0e: break;          //start 按下
+	   case 0x0d: break;		  //reset 按下
+	   case 0x0b: break;		 //continue 按下
+	   case 0x07:TCCR0 = 0;    break;	    //stop 按下
+	}
+	 while (key_press());     //判断是否按钮松开，避免重复以上循环！
+  }
+  else 
+  return key =10;
+}
+
+
+void main ()
+{	
+    DDRA |= 0xff;
+	DDRB |= 0xff;
+	
+	TCCR1B = 0X04;
+	TCNT1H = 0X85;
+	TCNT1L = 0XED;
+	TIMSK |= bit(2);
+	SREG  |= bit(7);
+	
+	PORTA |= 0X00;
+	PORTB  = 0X3F;
+	
+	
+	while (1)
+	{
+	 show_time(s%10,2);
+	 show_time(s/10,3);
+	 show_time(m%10,4);
+	 show_time(m/10,5);
+	 show_time(11,1);
+	 show_time(h%10,6);
+	 show_time(h/10,7);
+	}
+}

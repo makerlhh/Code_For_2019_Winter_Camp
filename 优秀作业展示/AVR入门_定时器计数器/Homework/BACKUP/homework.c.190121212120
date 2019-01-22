@@ -1,0 +1,17 @@
+#include<iom16v.h>
+
+a[10]={0xf9};
+void init()//≥ı ºªØ
+{
+    DDRA = 0xff;
+	DDRC = 0xff;
+	PORTA = 0x00;
+	PORTC = 0xff;
+}
+
+void main()
+{
+    init();
+	PORTA = 0b10011010;
+	PORTC = 0x80;
+}

@@ -1,0 +1,45 @@
+#include<iom16v.h>
+
+a[10]={0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管1~9
+int ms = 0;
+
+void init()//初始化
+{
+    DDRA = 0xff;
+	DDRC = 0xff;
+	PORTA = 0x00;
+	PORTC = 0xff;
+}
+
+void timeinit()//计时器初始化
+{
+    TCCR0 = 0x02;
+	TCNT0 = 0;
+}
+
+void time()
+{
+    while(1)
+	{
+	    for(i=0;i<10;i++)//1s
+	    {
+	        while(1)
+	        {
+	            if(TCNT0 == 100)//100us
+		        {
+		            TCNT0 = 0;
+		        	break;
+				}
+		    }
+			ms = ms + 1;
+		}
+	}
+}
+
+void main()
+{
+    init();
+	timeinit();
+	PORTA = a[1];
+	PORTC = 0x80;
+}

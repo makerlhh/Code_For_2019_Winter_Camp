@@ -1,0 +1,150 @@
+#include <iom16v.h>
+#define ON 1<<port
+#define OFF ~(1<<port)
+
+void delay_ms(int ms)
+{
+ 	int i,j;
+ 	for(i=0; i<ms; i++)
+	{
+	 	for(j=0; j<1148; j++);
+	}
+}
+
+void Light(int DDR, int port, int status)//单控灯，参数：标号 端口号 状态
+{
+ 	switch(DDR)//标号分支(0->A 1->B 2->C 3->D)
+	{
+	 	case 0:
+		{
+		 	switch(status)//状态分支（高电平1 低电平0 高阻值2）
+			{
+			 	case 1:
+				{
+				 	DDRA |= ON;
+					PORTA |= ON;
+					break;
+				}
+				case 0:
+				{
+				 	DDRA |= ON;
+					PORTA &= OFF;
+					break;
+				}
+				case 2:
+				{
+				 	DDRA &= OFF;
+					PORTA &= OFF;
+					break;
+				}
+			}
+			break;
+			
+		}
+		case 1:
+		{
+		 	switch(status)
+			{
+			 	case 1:
+				{
+				 	DDRB |= ON;
+					PORTB |= ON;
+					break;
+				}
+				case 0:
+				{
+				 	DDRB |= ON;
+					PORTB &= OFF;
+					break;
+				}
+				case 2:
+				{
+				 	DDRB &= OFF;
+					PORTB &= OFF;
+					break;
+				}
+			}
+			break;
+			
+		}
+		case 2:
+		{
+		 	switch(status)
+			{
+			 	case 1:
+				{
+				 	DDRC |= ON;
+					PORTC |= ON;
+					break;
+				}
+				case 0:
+				{
+				 	DDRC |= ON;
+					PORTC &= OFF;
+					break;
+				}
+				case 2:
+				{
+				 	DDRC &= OFF;
+					PORTC &= OFF;
+					break;
+				}
+			}
+			break;
+			
+		}
+		case 3:
+		{
+		 	switch(status)
+			{
+			 	case 1:
+				{
+				 	DDRD |= ON;
+					PORTD |= ON;
+					break;
+				}
+				case 0:
+				{
+				 	DDRD |= ON;
+					PORTD &= OFF;
+					break;
+				}
+				case 2:
+				{
+				 	DDRD &= OFF;
+					PORTD &= OFF;
+					break;
+				}
+			}
+			break;
+		}
+		break;
+	}
+}
+
+void main()
+{
+ 	
+	int DDR=0;
+	int port=0;
+	int delay=30;
+	
+ 	while(DDR<=3)
+	{
+	 	for(port=0; port<8; port++)
+		{
+		 	Light(DDR, port, 1);
+			delay_ms(delay);
+			Light(DDR, port, 0);
+			delay_ms(delay);
+			Light(DDR, port, 2);
+		}
+		DDR++;
+		if(DDR>3)
+		{
+		 	DDR=0;
+		}
+	}
+	
+	
+}

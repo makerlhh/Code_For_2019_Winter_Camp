@@ -1,0 +1,36 @@
+#include<iom16v.h>
+#define uint unsigned int
+#define uchar unsigned char
+
+int crol(int a,int i)//Ñ­»·×óÒÆº¯Êý
+{
+ 	int temp;
+ 	temp=a>>(8-i);
+ 	a=a<<i;
+ 	a=a|temp;
+	return a;
+}
+
+void delay_ms(int z)
+{	 
+	 uint x,y;
+ 	 for(x=0;x<z;x++)
+	 	for(y=0;y<1148;y++);
+}
+
+void main()
+{	
+	DDRA=0xff;
+	PORTA |= (1<<2); 
+	
+ 	while(1)
+	{
+	 	
+		PORTA = crol(PORTA,1);
+		DDRB=0xff;
+		PORTB=0xff;
+		delay_ms(500);
+		DDRB=0xff;
+		PORTB=0;
+	}
+}

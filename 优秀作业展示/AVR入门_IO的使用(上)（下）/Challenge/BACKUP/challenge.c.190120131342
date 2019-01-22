@@ -1,0 +1,40 @@
+#include <iom16v.h>
+
+void delay(unsigned int ms)//ms¼¶ÑÓÊ±º¯Êý
+{
+   int i;
+   for(i=0;i<ms*1148;i++);
+}
+
+void main()
+{
+    int i,j;
+    DDRA = 0xFF;
+	DDRB = 0xFF;
+	DDRC = 0xFF;
+	DDRD = 0xFF;
+	PORTC = ~0x01;
+	for(i=0;i<8;i++)
+	{
+	    PORTA = 0x01;
+	    for(j=0;j<7;j++)
+	    {
+		    delay(300);
+		    PORTA = (PORTA << 1);
+		}
+		delay(300);
+		PORTC = (PORTC << 1) + 1;
+	}
+	PORTD = ~0x01;
+	for(i=0;i<8;i++)
+	{
+	    PORTA = 0x01;
+	    for(j=0;j<7;j++)
+	    {
+		    delay(300);
+		    PORTA = (PORTA << 1);
+		}
+		delay(300);
+		PORTD = (PORTD << 1) + 1;
+	}
+}

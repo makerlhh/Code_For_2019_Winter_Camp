@@ -1,0 +1,26 @@
+#include<iom16v.h>
+#define uint unsigned int
+#define uchar unsigned char
+
+void delay_ms(int z)
+{	 
+	 uint x,y;
+ 	 for(x=0;x<z;x++)
+	 	for(y=0;y<1148;y++);
+}
+
+void main()
+{
+ 	while(1)
+	{
+	 	DDRA |= (1<<2);
+		PORTA |= (1<<2); 
+		delay_ms(500);
+		PORTA &= ~(1<<2);
+	 
+	 	DDRB |= (1<<2);
+		PORTB |= (1<<2);
+		delay_ms(500);
+		PORTB &= ~(1<<2);
+	}
+}

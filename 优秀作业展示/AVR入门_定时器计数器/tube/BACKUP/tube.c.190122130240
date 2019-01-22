@@ -1,0 +1,89 @@
+#include <iom16v.h>
+#pragma interrupt_handler enter_one:9
+unsigned char data[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0};
+
+int number = 0;
+
+void enter_one()
+{
+ 	 if (number == 10)
+	 number = 0;
+	 number++;
+	 TCNT1H = 0X31;
+	 TCNT1L = 0X29;
+}
+
+void delay(int ms)
+{
+ 	int i,j;
+ 	for(i = 0; i<ms ;i++)
+	{
+	 	  for (j = 0; j<1148; j++);
+	}
+}
+void show_time(int i,int j)
+{
+	 PORTA |= ~(1<<j);  //位数选择，决定哪一位显示,选择位运算，cpu执行得快,低电平显示位数
+	 PORTB = data[i];
+
+	 delay(1000);
+	
+}
+int key_press()
+{
+ 	unsigned char j;
+	
+ 	DDRD  |= 0X0F;
+	PORTD |= 0X0F;
+	
+	DDRD  &= ~0X0F; 
+	j = PIND;
+	j = j&0x0f;
+	if(j == 0x0f)
+	return 0;
+	else 
+	return 1;
+}
+int key_scan()
+{ 
+  unsigned char key;
+  delay(10);
+  if (key_press())
+  {
+   	 key = PIND;
+	 key&= 0x0f;
+	switch(key)
+	{
+	   case 0x0e:break;            //start 按下
+	   case 0x0d:break;			  //reset 按下
+	   case 0x0b:break;			 //continue 按下
+	   case 0x07:break;		    //stop 按下
+	}
+	 while (key_press());     //判断是否按钮松开，避免重复以上循环！
+  }
+  else 
+  return key =10;
+}
+
+
+void main ()
+{
+	TCCR1B = 0X09;    //1024分频
+	TCNT1H = 0X31;    //16位计数器的初值
+	TCNT1L = 0X29;
+	TIMSK |= (1<<2);
+	SREG  |= (1<<7);  //中断，当符合（这里选了9）当计数器1溢出归零的时候，跳转到enter_one执行一次函数体。
+	
+	DDRA = 0xff;
+	DDRB = 0xff;
+	
+	while (1)
+	{
+	 	 if (key_press())
+		 {
+		  	int i;
+		  	i = key_scan();
+		 }
+	 	show_time(number,5);  
+	}
+}

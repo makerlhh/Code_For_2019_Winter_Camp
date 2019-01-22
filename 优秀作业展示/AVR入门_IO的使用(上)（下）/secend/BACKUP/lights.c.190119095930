@@ -1,0 +1,28 @@
+#include"iom16V.h"
+
+void delay_ms(int ms) //ÑÓ³Ùº¯Êý
+{
+    int i,j;
+    for(i=0;i<ms;i++)
+	{
+	    for(j=0;j<1148;j++);
+	}
+}
+
+void main()
+{
+    while(i)
+	{
+       DDRA |= (1<<2);
+	   PORTA |= (1<<2);
+	   delay(500);
+	   PORTA &= ~(1<<2);
+	
+	   DDRB |= (1<<2);
+	   PORTB |= (1<<2);
+	   delay(500);
+	   PORTB &= ~(1<<2);
+	}
+	
+	
+}

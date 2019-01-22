@@ -1,0 +1,23 @@
+#include <iom16v.h>
+#define ON 1<<port
+#define OFF ~(1<<port)
+
+
+void Light(char DDR, int port, int status, int delay)
+{
+ 	switch(DDR)
+	{
+	 	case 'A':
+		{
+		 	DDRA |= status;
+			PORTA |= status;
+			
+		}
+	}
+}
+
+void main()
+{
+ 	DDRA |= (1<<0);
+	PORTA |= 0x00;
+}

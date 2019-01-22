@@ -1,0 +1,127 @@
+#include "iom16v.h"
+#define uchar unsigned char
+#define uint unsigned int 
+
+void timer0_init();
+void counter();
+void disp(uint hour,uint minute,uint second,uint ms);
+void delay(uint n);
+
+uchar const table[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};
+uint hour = 0,minute = 0,second = 0,ms = 0;
+
+
+void main()
+{
+   uchar i;
+   timer0_init();
+   
+   while(1) //计时器、计数器
+   {
+       for(i = 0;i<10;i++)
+	   {
+	       while(1)
+		   {
+	           if(TCNT0 == 128)
+		       {
+		           TCNT0 = 0;
+			       break;
+		       } 
+		   }  
+	   } 
+	   ms++;
+	   if(ms==100)
+	   {
+	       counter();
+	   }
+	   disp(hour,minute,second,ms);   
+   } 
+
+     
+}
+
+void timer0_init()
+{
+    TCCR0 = 0X05; //选择1024分频
+	TCNT0 = 0X00;
+}
+
+void counter() //时、分、秒计算
+{
+    //if(ms == 100)
+	//{
+	    ms = 0;
+	    second++;
+		if(second == 60)
+		{
+		    second = 0;
+		    minute++;
+			if(minute == 60)
+			{
+			    minute = 0;
+			    hour++;
+				if(hour == 60)
+				{
+				    hour = 0;
+				}
+			}
+		}	
+	//}
+}
+
+void delay(uint n)  //延时nms  
+{
+    uint m;
+    for(n;n>0;n--)
+    {
+        for(m = 128;m>0;m--);
+    }
+}
+
+void disp(uint hour,uint minute,uint second,uint ms)//显示函数
+{
+    uchar i;
+	uchar num[8] = {0};
+    num[0] = hour/10;
+	num[1] = hour%10;
+	num[2] = minute/10;
+	num[3] = minute%10;
+	num[4] = second/10;
+	num[5] = second%10;
+	num[6] = ms/10;
+	num[7] = ms%10;
+	
+	DDRA = 0XFF;
+	DDRB = 0XFF;
+	while(1)
+	{
+	    PORTA = 0XFF;
+		PORTB = 0X00;
+		for(i = 0;i<7;i++)
+		{
+		    if(((i+1)%2)==0)
+			{
+			    PORTA = (1<<i);
+		        PORTB = table[num[i]]|0X80;
+				delay(10);
+				PORTA = 0X00;
+				PORTB = 0X00;		    
+		    }
+			else
+			{
+			    PORTA = (1<<i);
+		        PORTB = table[num[i]];
+				delay(10);
+				PORTA = 0X00;
+				PORTB = 0X00;
+			}
+		}
+		break;
+	}
+}
+
+ /* PORTA |= (1<<i);  A1,B0开
+	PORTB = table[i];
+	delay(1);
+	PORTB = 0XFF;
+	PORTA = 0X00; */

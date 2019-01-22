@@ -1,0 +1,702 @@
+                        .module homework.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile homework.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile homework.c
+ 0000           _a::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 C000              .word 192
+                        .area data(ram, con, rel)
+ 0002                   .dbfile homework.c
+ 0002                   .blkb 2
+                        .area idata
+ 0002 F900              .word 249
+                        .area data(ram, con, rel)
+ 0004                   .dbfile homework.c
+ 0004                   .blkb 2
+                        .area idata
+ 0004 A400              .word 164
+                        .area data(ram, con, rel)
+ 0006                   .dbfile homework.c
+ 0006                   .blkb 2
+                        .area idata
+ 0006 B000              .word 176
+                        .area data(ram, con, rel)
+ 0008                   .dbfile homework.c
+ 0008                   .blkb 2
+                        .area idata
+ 0008 9900              .word 153
+                        .area data(ram, con, rel)
+ 000A                   .dbfile homework.c
+ 000A                   .blkb 2
+                        .area idata
+ 000A 9200              .word 146
+                        .area data(ram, con, rel)
+ 000C                   .dbfile homework.c
+ 000C                   .blkb 2
+                        .area idata
+ 000C 8200              .word 130
+                        .area data(ram, con, rel)
+ 000E                   .dbfile homework.c
+ 000E                   .blkb 2
+                        .area idata
+ 000E F800              .word 248
+                        .area data(ram, con, rel)
+ 0010                   .dbfile homework.c
+ 0010                   .blkb 2
+                        .area idata
+ 0010 8000              .word 128
+                        .area data(ram, con, rel)
+ 0012                   .dbfile homework.c
+ 0012                   .blkb 2
+                        .area idata
+ 0012 9000              .word 144
+                        .area data(ram, con, rel)
+ 0014                   .dbfile homework.c
+ 0014                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0014                   .dbsym e a _a A[20:10]I
+ 0014           _b::
+ 0014                   .blkb 2
+                        .area idata
+ 0014 8000              .word 128
+                        .area data(ram, con, rel)
+ 0016                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0016                   .blkb 2
+                        .area idata
+ 0016 4000              .word 64
+                        .area data(ram, con, rel)
+ 0018                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0018                   .blkb 2
+                        .area idata
+ 0018 2000              .word 32
+                        .area data(ram, con, rel)
+ 001A                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 001A                   .blkb 2
+                        .area idata
+ 001A 1000              .word 16
+                        .area data(ram, con, rel)
+ 001C                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 001C                   .blkb 2
+                        .area idata
+ 001C 0800              .word 8
+                        .area data(ram, con, rel)
+ 001E                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 001E                   .blkb 2
+                        .area idata
+ 001E 0400              .word 4
+                        .area data(ram, con, rel)
+ 0020                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0020                   .blkb 2
+                        .area idata
+ 0020 0200              .word 2
+                        .area data(ram, con, rel)
+ 0022                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0022                   .blkb 2
+                        .area idata
+ 0022 0100              .word 1
+                        .area data(ram, con, rel)
+ 0024                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0024                   .dbsym e b _b A[16:8]I
+ 0024           _time::
+ 0024                   .blkb 2
+                        .area idata
+ 0024 0000              .word 0
+                        .area data(ram, con, rel)
+ 0026                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0026                   .blkb 14
+                        .area idata
+ 0026 00000000000000000000      .word 0,0,0,0,0
+ 0030 00000000          .byte 0,0,0,0
+                        .area data(ram, con, rel)
+ 0034                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0034                   .dbsym e time _time A[16:8]I
+ 0034           _p::
+ 0034                   .blkw 1
+                        .area idata
+ 0034 2400              .word _time
+                        .area data(ram, con, rel)
+ 0036                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0036                   .dbsym e p _p pI
+ 0036           _control::
+ 0036                   .blkb 2
+                        .area idata
+ 0036 0000              .word 0
+                        .area data(ram, con, rel)
+ 0038                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0038                   .blkb 2
+                        .area idata
+ 0038 0100              .word 1
+                        .area data(ram, con, rel)
+ 003A                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 003A                   .dbsym e control _control A[4:2]I
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0000                   .dbfunc e init _init fV
+                        .even
+ 0000           _init::
+ 0000                   .dbline -1
+ 0000                   .dbline 8
+ 0000           ; #include<iom16v.h>
+ 0000           ; 
+ 0000           ; a[10] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90};//数码管0~9数字
+ 0000           ; b[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};//数码管1~8
+ 0000           ; int i,j,time[8]={0},*p=time,control[2]={0,1};//time[8]为3位ms,2位s,2位min,1位h
+ 0000           ; 
+ 0000           ; void init()//初始化
+ 0000           ; {
+ 0000                   .dbline 9
+ 0000           ;     DDRA = 0xff;
+ 0000 8FEF              ldi R24,255
+ 0002 8ABB              out 0x1a,R24
+ 0004                   .dbline 10
+ 0004           ;       DDRC = 0xff;
+ 0004 84BB              out 0x14,R24
+ 0006                   .dbline 11
+ 0006           ;       PORTA = 0xc0;
+ 0006 80EC              ldi R24,192
+ 0008 8BBB              out 0x1b,R24
+ 000A                   .dbline 12
+ 000A           ;       PORTC = 0xff;
+ 000A 8FEF              ldi R24,255
+ 000C 85BB              out 0x15,R24
+ 000E                   .dbline 13
+ 000E           ;       PORTB = 0xff;
+ 000E 88BB              out 0x18,R24
+ 0010                   .dbline -2
+ 0010           L1:
+ 0010                   .dbline 0 ; func end
+ 0010 0895              ret
+ 0012                   .dbend
+ 0012                   .dbfunc e timeinit _timeinit fV
+                        .even
+ 0012           _timeinit::
+ 0012                   .dbline -1
+ 0012                   .dbline 17
+ 0012           ; }
+ 0012           ; 
+ 0012           ; void timeinit()//计时器初始化
+ 0012           ; {
+ 0012                   .dbline 18
+ 0012           ;     TCCR0 = 0x02;
+ 0012 82E0              ldi R24,2
+ 0014 83BF              out 0x33,R24
+ 0016                   .dbline 19
+ 0016           ;       TCNT0 = 0;
+ 0016 2224              clr R2
+ 0018 22BE              out 0x32,R2
+ 001A                   .dbline -2
+ 001A           L2:
+ 001A                   .dbline 0 ; func end
+ 001A 0895              ret
+ 001C                   .dbend
+ 001C                   .dbfunc e forward _forward fV
+ 001C           ;              x -> R18,R19
+ 001C           ;              p -> R16,R17
+                        .even
+ 001C           _forward::
+ 001C                   .dbline -1
+ 001C                   .dbline 23
+ 001C           ; }
+ 001C           ; 
+ 001C           ; void forward(int *p,int x)//进位函数
+ 001C           ; {
+ 001C                   .dbline 24
+ 001C           ;     if(*p == x)
+ 001C F801              movw R30,R16
+ 001E 2080              ldd R2,z+0
+ 0020 3180              ldd R3,z+1
+ 0022 2216              cp R2,R18
+ 0024 3306              cpc R3,R19
+ 0026 61F4              brne L4
+ 0028           X0:
+ 0028                   .dbline 25
+ 0028           ;       {
+ 0028                   .dbline 26
+ 0028           ;           *p = 0;
+ 0028 2224              clr R2
+ 002A 3324              clr R3
+ 002C 3182              std z+1,R3
+ 002E 2082              std z+0,R2
+ 0030                   .dbline 27
+ 0030           ;           *(p+1) = *(p+1) + 1;
+ 0030 CF01              movw R24,R30
+ 0032 0296              adiw R24,2
+ 0034 FC01              movw R30,R24
+ 0036 8081              ldd R24,z+0
+ 0038 9181              ldd R25,z+1
+ 003A 0196              adiw R24,1
+ 003C 9183              std z+1,R25
+ 003E 8083              std z+0,R24
+ 0040                   .dbline 28
+ 0040           ;       }
+ 0040           L4:
+ 0040                   .dbline -2
+ 0040           L3:
+ 0040                   .dbline 0 ; func end
+ 0040 0895              ret
+ 0042                   .dbsym r x 18 I
+ 0042                   .dbsym r p 16 pI
+ 0042                   .dbend
+ 0042                   .dbfunc e delay _delay fV
+ 0042           ;              x -> R16,R17
+                        .even
+ 0042           _delay::
+ 0042                   .dbline -1
+ 0042                   .dbline 32
+ 0042           ; }
+ 0042           ; 
+ 0042           ; void delay(unsigned int x)//延时函数
+ 0042           ; {
+ 0042 08C0              xjmp L8
+ 0044           L7:
+ 0044                   .dbline 34
+ 0044           ;     while(1)
+ 0044           ;       {
+ 0044                   .dbline 35
+ 0044           ;           if(TCNT0 == x)
+ 0044 22B6              in R2,0x32
+ 0046 3324              clr R3
+ 0048 2016              cp R2,R16
+ 004A 3106              cpc R3,R17
+ 004C 19F4              brne L10
+ 004E           X1:
+ 004E                   .dbline 36
+ 004E           ;           {
+ 004E                   .dbline 37
+ 004E           ;                   TCNT0 = 0;
+ 004E 2224              clr R2
+ 0050 22BE              out 0x32,R2
+ 0052                   .dbline 38
+ 0052           ;                       break;
+ 0052 01C0              xjmp L9
+ 0054           L10:
+ 0054                   .dbline 40
+ 0054           ;               }
+ 0054           ;       }
+ 0054           L8:
+ 0054                   .dbline 33
+ 0054 F7CF              xjmp L7
+ 0056           L9:
+ 0056                   .dbline -2
+ 0056           L6:
+ 0056                   .dbline 0 ; func end
+ 0056 0895              ret
+ 0058                   .dbsym r x 16 i
+ 0058                   .dbend
+ 0058                   .dbfunc e delay_ms _delay_ms fV
+                        .even
+ 0058           _delay_ms::
+ 0058                   .dbline -1
+ 0058                   .dbline 44
+ 0058           ; }
+ 0058           ; 
+ 0058           ; void delay_ms()//基于程序修改后的ms延时函数
+ 0058           ; {
+ 0058                   .dbline 45
+ 0058           ;     for(i=0;i<10;i++)
+ 0058 2224              clr R2
+ 005A 3324              clr R3
+ 005C 30920300          sts _i+1,R3
+ 0060 20920200          sts _i,R2
+ 0064                   .dbline 46
+ 0064           ;       {
+ 0064 06C0              xjmp L18
+ 0066           L17:
+ 0066                   .dbline 48
+ 0066           ;           while(1)
+ 0066           ;           {
+ 0066                   .dbline 49
+ 0066           ;               if(TCNT0 == 45)
+ 0066 82B7              in R24,0x32
+ 0068 8D32              cpi R24,45
+ 006A 19F4              brne L20
+ 006C           X2:
+ 006C                   .dbline 50
+ 006C           ;                   {
+ 006C                   .dbline 51
+ 006C           ;                       TCNT0 = 0;
+ 006C 2224              clr R2
+ 006E 22BE              out 0x32,R2
+ 0070                   .dbline 52
+ 0070           ;                       break;
+ 0070 01C0              xjmp L19
+ 0072           L20:
+ 0072                   .dbline 54
+ 0072           ;                       }
+ 0072           ;               }
+ 0072           L18:
+ 0072                   .dbline 47
+ 0072 F9CF              xjmp L17
+ 0074           L19:
+ 0074                   .dbline 55
+ 0074           ;       }
+ 0074           L14:
+ 0074                   .dbline 45
+ 0074 80910200          lds R24,_i
+ 0078 90910300          lds R25,_i+1
+ 007C 0196              adiw R24,1
+ 007E 90930300          sts _i+1,R25
+ 0082 80930200          sts _i,R24
+ 0086                   .dbline 45
+ 0086 8A30              cpi R24,10
+ 0088 E0E0              ldi R30,0
+ 008A 9E07              cpc R25,R30
+ 008C 94F3              brlt L18
+ 008E           X3:
+ 008E                   .dbline -2
+ 008E           L12:
+ 008E                   .dbline 0 ; func end
+ 008E 0895              ret
+ 0090                   .dbend
+ 0090                   .dbfunc e display _display fV
+                        .even
+ 0090           _display::
+ 0090                   .dbline -1
+ 0090                   .dbline 59
+ 0090           ; }
+ 0090           ; 
+ 0090           ; void display()//显示函数
+ 0090           ; {
+ 0090                   .dbline 60
+ 0090           ;     for(i=0;i<8;i++)
+ 0090 2224              clr R2
+ 0092 3324              clr R3
+ 0094 30920300          sts _i+1,R3
+ 0098 20920200          sts _i,R2
+ 009C           L23:
+ 009C                   .dbline 61
+ 009C           ;     {
+ 009C                   .dbline 62
+ 009C           ;               if(i == 7 || i == 5 || i == 3)
+ 009C 20900200          lds R2,_i
+ 00A0 30900300          lds R3,_i+1
+ 00A4 C101              movw R24,R2
+ 00A6 8730              cpi R24,7
+ 00A8 E0E0              ldi R30,0
+ 00AA 9E07              cpc R25,R30
+ 00AC 41F0              breq L30
+ 00AE           X4:
+ 00AE 8530              cpi R24,5
+ 00B0 E0E0              ldi R30,0
+ 00B2 9E07              cpc R25,R30
+ 00B4 21F0              breq L30
+ 00B6           X5:
+ 00B6 8330              cpi R24,3
+ 00B8 E0E0              ldi R30,0
+ 00BA 9E07              cpc R25,R30
+ 00BC 49F5              brne L27
+ 00BE           X6:
+ 00BE           L30:
+ 00BE                   .dbline 63
+ 00BE           ;           {
+ 00BE                   .dbline 64
+ 00BE           ;                   PORTC = b[i];
+ 00BE 80E0              ldi R24,<_b
+ 00C0 90E0              ldi R25,>_b
+ 00C2 E0910200          lds R30,_i
+ 00C6 F0910300          lds R31,_i+1
+ 00CA EE0F              lsl R30
+ 00CC FF1F              rol R31
+ 00CE E80F              add R30,R24
+ 00D0 F91F              adc R31,R25
+ 00D2 2080              ldd R2,z+0
+ 00D4 3180              ldd R3,z+1
+ 00D6 25BA              out 0x15,R2
+ 00D8                   .dbline 65
+ 00D8           ;                   PORTA = a[time[i]] - 0x80;
+ 00D8 80E0              ldi R24,<_time
+ 00DA 90E0              ldi R25,>_time
+ 00DC E0910200          lds R30,_i
+ 00E0 F0910300          lds R31,_i+1
+ 00E4 EE0F              lsl R30
+ 00E6 FF1F              rol R31
+ 00E8 E80F              add R30,R24
+ 00EA F91F              adc R31,R25
+ 00EC 2080              ldd R2,z+0
+ 00EE 3180              ldd R3,z+1
+ 00F0 220C              lsl R2
+ 00F2 331C              rol R3
+ 00F4 80E0              ldi R24,<_a
+ 00F6 90E0              ldi R25,>_a
+ 00F8 F101              movw R30,R2
+ 00FA E80F              add R30,R24
+ 00FC F91F              adc R31,R25
+ 00FE 8081              ldd R24,z+0
+ 0100 9181              ldd R25,z+1
+ 0102 8058              subi R24,128
+ 0104 9040              sbci R25,0
+ 0106 8BBB              out 0x1b,R24
+ 0108                   .dbline 66
+ 0108           ;                       delay(35);
+ 0108 03E2              ldi R16,35
+ 010A 10E0              ldi R17,0
+ 010C 9ADF              xcall _delay
+ 010E                   .dbline 67
+ 010E           ;           }
+ 010E 26C0              xjmp L28
+ 0110           L27:
+ 0110                   .dbline 69
+ 0110           ;               else
+ 0110           ;               {
+ 0110                   .dbline 70
+ 0110           ;                   PORTC = b[i];
+ 0110 80E0              ldi R24,<_b
+ 0112 90E0              ldi R25,>_b
+ 0114 E0910200          lds R30,_i
+ 0118 F0910300          lds R31,_i+1
+ 011C EE0F              lsl R30
+ 011E FF1F              rol R31
+ 0120 E80F              add R30,R24
+ 0122 F91F              adc R31,R25
+ 0124 2080              ldd R2,z+0
+ 0126 3180              ldd R3,z+1
+ 0128 25BA              out 0x15,R2
+ 012A                   .dbline 71
+ 012A           ;                   PORTA = a[time[i]];
+ 012A 80E0              ldi R24,<_time
+ 012C 90E0              ldi R25,>_time
+ 012E E0910200          lds R30,_i
+ 0132 F0910300          lds R31,_i+1
+ 0136 EE0F              lsl R30
+ 0138 FF1F              rol R31
+ 013A E80F              add R30,R24
+ 013C F91F              adc R31,R25
+ 013E 2080              ldd R2,z+0
+ 0140 3180              ldd R3,z+1
+ 0142 220C              lsl R2
+ 0144 331C              rol R3
+ 0146 80E0              ldi R24,<_a
+ 0148 90E0              ldi R25,>_a
+ 014A F101              movw R30,R2
+ 014C E80F              add R30,R24
+ 014E F91F              adc R31,R25
+ 0150 2080              ldd R2,z+0
+ 0152 3180              ldd R3,z+1
+ 0154 2BBA              out 0x1b,R2
+ 0156                   .dbline 72
+ 0156           ;                       delay(35);
+ 0156 03E2              ldi R16,35
+ 0158 10E0              ldi R17,0
+ 015A 73DF              xcall _delay
+ 015C                   .dbline 73
+ 015C           ;           }
+ 015C           L28:
+ 015C                   .dbline 74
+ 015C           ;       }
+ 015C           L24:
+ 015C                   .dbline 60
+ 015C 80910200          lds R24,_i
+ 0160 90910300          lds R25,_i+1
+ 0164 0196              adiw R24,1
+ 0166 90930300          sts _i+1,R25
+ 016A 80930200          sts _i,R24
+ 016E                   .dbline 60
+ 016E 8830              cpi R24,8
+ 0170 E0E0              ldi R30,0
+ 0172 9E07              cpc R25,R30
+ 0174 0CF4              brge X8
+ 0176 92CF              xjmp L23
+ 0178           X8:
+ 0178           X7:
+ 0178                   .dbline -2
+ 0178           L22:
+ 0178                   .dbline 0 ; func end
+ 0178 0895              ret
+ 017A                   .dbend
+ 017A                   .dbfunc e main _main fV
+                        .even
+ 017A           _main::
+ 017A                   .dbline -1
+ 017A                   .dbline 78
+ 017A           ; }
+ 017A           ; 
+ 017A           ; void main()
+ 017A           ; {
+ 017A                   .dbline 79
+ 017A           ;     init();
+ 017A 42DF              xcall _init
+ 017C                   .dbline 80
+ 017C           ;       timeinit();
+ 017C 4ADF              xcall _timeinit
+ 017E 79C0              xjmp L33
+ 0180           L32:
+ 0180                   .dbline 82
+ 0180           ;       while(1)
+ 0180           ;       {
+ 0180                   .dbline 83
+ 0180           ;           if(control[0] == 1 && control[1] == 1)//按钮判断
+ 0180 80913600          lds R24,_control
+ 0184 90913700          lds R25,_control+1
+ 0188 8130              cpi R24,1
+ 018A E0E0              ldi R30,0
+ 018C 9E07              cpc R25,R30
+ 018E 09F0              breq X18
+ 0190 5DC0              xjmp L35
+ 0192           X18:
+ 0192           X9:
+ 0192 80913800          lds R24,_control+2
+ 0196 90913900          lds R25,_control+2+1
+ 019A 8130              cpi R24,1
+ 019C E0E0              ldi R30,0
+ 019E 9E07              cpc R25,R30
+ 01A0 09F0              breq X19
+ 01A2 54C0              xjmp L35
+ 01A4           X19:
+ 01A4           X10:
+ 01A4                   .dbline 84
+ 01A4           ;           {
+ 01A4                   .dbline 85
+ 01A4           ;                   delay_ms();
+ 01A4 59DF              xcall _delay_ms
+ 01A6                   .dbline 86
+ 01A6           ;                   time[0] = time[0] + 1;
+ 01A6 80912400          lds R24,_time
+ 01AA 90912500          lds R25,_time+1
+ 01AE 0196              adiw R24,1
+ 01B0 90932500          sts _time+1,R25
+ 01B4 80932400          sts _time,R24
+ 01B8                   .dbline 87
+ 01B8           ;                   for(i=0;i<7;i++)//进位循环
+ 01B8 2224              clr R2
+ 01BA 3324              clr R3
+ 01BC 30920300          sts _i+1,R3
+ 01C0 20920200          sts _i,R2
+ 01C4           L38:
+ 01C4                   .dbline 88
+ 01C4           ;                   {
+ 01C4                   .dbline 89
+ 01C4           ;                       if(i == 4 || i == 6)
+ 01C4 20900200          lds R2,_i
+ 01C8 30900300          lds R3,_i+1
+ 01CC C101              movw R24,R2
+ 01CE 8430              cpi R24,4
+ 01D0 E0E0              ldi R30,0
+ 01D2 9E07              cpc R25,R30
+ 01D4 21F0              breq L44
+ 01D6           X11:
+ 01D6 8630              cpi R24,6
+ 01D8 E0E0              ldi R30,0
+ 01DA 9E07              cpc R25,R30
+ 01DC 81F4              brne L42
+ 01DE           X12:
+ 01DE           L44:
+ 01DE                   .dbline 90
+ 01DE           ;                               forward(p + i,6);
+ 01DE 26E0              ldi R18,6
+ 01E0 30E0              ldi R19,0
+ 01E2 20903400          lds R2,_p
+ 01E6 30903500          lds R3,_p+1
+ 01EA 00910200          lds R16,_i
+ 01EE 10910300          lds R17,_i+1
+ 01F2 000F              lsl R16
+ 01F4 111F              rol R17
+ 01F6 020D              add R16,R2
+ 01F8 131D              adc R17,R3
+ 01FA 10DF              xcall _forward
+ 01FC 0FC0              xjmp L43
+ 01FE           L42:
+ 01FE                   .dbline 92
+ 01FE           ;                           else
+ 01FE           ;                           forward(p + i,10);
+ 01FE 2AE0              ldi R18,10
+ 0200 30E0              ldi R19,0
+ 0202 20903400          lds R2,_p
+ 0206 30903500          lds R3,_p+1
+ 020A 00910200          lds R16,_i
+ 020E 10910300          lds R17,_i+1
+ 0212 000F              lsl R16
+ 0214 111F              rol R17
+ 0216 020D              add R16,R2
+ 0218 131D              adc R17,R3
+ 021A 00DF              xcall _forward
+ 021C           L43:
+ 021C                   .dbline 93
+ 021C           ;                   }
+ 021C           L39:
+ 021C                   .dbline 87
+ 021C 80910200          lds R24,_i
+ 0220 90910300          lds R25,_i+1
+ 0224 0196              adiw R24,1
+ 0226 90930300          sts _i+1,R25
+ 022A 80930200          sts _i,R24
+ 022E                   .dbline 87
+ 022E 8730              cpi R24,7
+ 0230 E0E0              ldi R30,0
+ 0232 9E07              cpc R25,R30
+ 0234 3CF2              brlt L38
+ 0236           X13:
+ 0236                   .dbline 94
+ 0236           ;                   display();
+ 0236 2CDF              xcall _display
+ 0238                   .dbline 95
+ 0238           ;                       if(PINB == 0xfd)//STOP
+ 0238 86B3              in R24,0x16
+ 023A 8D3F              cpi R24,253
+ 023C D1F4              brne L36
+ 023E           X14:
+ 023E                   .dbline 96
+ 023E           ;                           control[1] = 0;
+ 023E 2224              clr R2
+ 0240 3324              clr R3
+ 0242 30923900          sts _control+2+1,R3
+ 0246 20923800          sts _control+2,R2
+ 024A                   .dbline 97
+ 024A           ;               }
+ 024A 13C0              xjmp L36
+ 024C           L35:
+ 024C                   .dbline 99
+ 024C           ;               else
+ 024C           ;               {
+ 024C                   .dbline 100
+ 024C           ;                   if(PINB == 0xfe)//START
+ 024C 86B3              in R24,0x16
+ 024E 8E3F              cpi R24,254
+ 0250 31F4              brne L48
+ 0252           X15:
+ 0252                   .dbline 101
+ 0252           ;                           control[0] = 1;
+ 0252 81E0              ldi R24,1
+ 0254 90E0              ldi R25,0
+ 0256 90933700          sts _control+1,R25
+ 025A 80933600          sts _control,R24
+ 025E           L48:
+ 025E                   .dbline 102
+ 025E           ;                       if(PINB == 0xfb)//CONTINUE
+ 025E 86B3              in R24,0x16
+ 0260 8B3F              cpi R24,251
+ 0262 31F4              brne L50
+ 0264           X16:
+ 0264                   .dbline 103
+ 0264           ;                           control[1] = 1;
+ 0264 81E0              ldi R24,1
+ 0266 90E0              ldi R25,0
+ 0268 90933900          sts _control+2+1,R25
+ 026C 80933800          sts _control+2,R24
+ 0270           L50:
+ 0270                   .dbline 104
+ 0270           ;                       display();
+ 0270 0FDF              xcall _display
+ 0272                   .dbline 105
+ 0272           ;               }
+ 0272           L36:
+ 0272                   .dbline 106
+ 0272           ;     }
+ 0272           L33:
+ 0272                   .dbline 81
+ 0272 86CF              xjmp L32
+ 0274           X17:
+ 0274                   .dbline -2
+ 0274           L31:
+ 0274                   .dbline 0 ; func end
+ 0274 0895              ret
+ 0276                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile C:\Users\asus\Desktop\机器人182李豪卓---TIMER\Homework\homework.c
+ 0000           _j::
+ 0000                   .blkb 2
+ 0002                   .dbsym e j _j I
+ 0002           _i::
+ 0002                   .blkb 2
+ 0004                   .dbsym e i _i I
+ 0004           ; }

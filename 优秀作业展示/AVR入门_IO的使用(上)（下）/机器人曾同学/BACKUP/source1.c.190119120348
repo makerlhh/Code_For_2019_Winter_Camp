@@ -1,0 +1,20 @@
+#include<iom16v.h>
+#include<stdlib.h>
+#define uint unsigned int
+#define uchar unsigned char
+
+void delay_ms(int z)
+{	 
+	 uint x,y;
+ 	 for(x=0;x<z;x++)
+	 	for(y=0;y<1148;y++);
+}
+
+void main()
+{	 PA=0xfe;
+ 	while(1)
+	{
+	 	
+		PA=_crol_(PA,1);
+	}
+}

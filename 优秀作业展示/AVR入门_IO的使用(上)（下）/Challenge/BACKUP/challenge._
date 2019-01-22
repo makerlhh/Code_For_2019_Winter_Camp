@@ -1,0 +1,11 @@
+#include <iom16v.h>
+
+void delay(unsigned int ms)//ms级延时函数，ms的值代表多少毫秒。
+{
+   int i;
+   for(i=0;i<ms*1148;i++);
+}
+
+void main()
+{
+}

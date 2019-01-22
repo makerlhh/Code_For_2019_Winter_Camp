@@ -1,0 +1,753 @@
+                        .module light_more.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile light_more.c
+ 0000                   .dbfile D:\创客协会\冬令营\lights_more\light_more.c
+ 0000                   .dbfunc e delay_ms _delay_ms fV
+ 0000           ;              i -> R20,R21
+ 0000           ;              j -> R22,R23
+ 0000           ;             ms -> R16,R17
+                        .even
+ 0000           _delay_ms::
+ 0000 0E940000          xcall push_xgsetF000
+ 0004                   .dbline -1
+ 0004                   .dbline 6
+ 0004           ; #include <iom16v.h>
+ 0004           ; #define ON 1<<port
+ 0004           ; #define OFF ~(1<<port)
+ 0004           ; 
+ 0004           ; void delay_ms(int ms)
+ 0004           ; {
+ 0004                   .dbline 8
+ 0004           ;       int i,j;
+ 0004           ;       for(i=0; i<ms; i++)
+ 0004 4427              clr R20
+ 0006 5527              clr R21
+ 0008 0AC0              xjmp L5
+ 000A           L2:
+ 000A                   .dbline 9
+ 000A           ;       {
+ 000A                   .dbline 10
+ 000A           ;               for(j=0; j<1148; j++);
+ 000A 6627              clr R22
+ 000C 7727              clr R23
+ 000E           L6:
+ 000E                   .dbline 10
+ 000E           L7:
+ 000E                   .dbline 10
+ 000E 6F5F              subi R22,255  ; offset = 1
+ 0010 7F4F              sbci R23,255
+ 0012                   .dbline 10
+ 0012 6C37              cpi R22,124
+ 0014 E4E0              ldi R30,4
+ 0016 7E07              cpc R23,R30
+ 0018 D4F3              brlt L6
+ 001A           X0:
+ 001A                   .dbline 11
+ 001A           ;       }
+ 001A           L3:
+ 001A                   .dbline 8
+ 001A 4F5F              subi R20,255  ; offset = 1
+ 001C 5F4F              sbci R21,255
+ 001E           L5:
+ 001E                   .dbline 8
+ 001E 4017              cp R20,R16
+ 0020 5107              cpc R21,R17
+ 0022 9CF3              brlt L2
+ 0024           X1:
+ 0024                   .dbline -2
+ 0024           L1:
+ 0024                   .dbline 0 ; func end
+ 0024 0C940000          xjmp pop_xgsetF000
+ 0028                   .dbsym r i 20 I
+ 0028                   .dbsym r j 22 I
+ 0028                   .dbsym r ms 16 I
+ 0028                   .dbend
+ 0028                   .dbfunc e Light _Light fV
+ 0028           ;         status -> R20,R21
+ 0028           ;           port -> R10,R11
+ 0028           ;            DDR -> R22,R23
+                        .even
+ 0028           _Light::
+ 0028 0E940000          xcall push_xgsetF00C
+ 002C 5901              movw R10,R18
+ 002E B801              movw R22,R16
+ 0030 4E81              ldd R20,y+6
+ 0032 5F81              ldd R21,y+7
+ 0034                   .dbline -1
+ 0034                   .dbline 15
+ 0034           ; }
+ 0034           ; 
+ 0034           ; void Light(int DDR, int port, int status)//单控灯，参数：标号 端口号 状态
+ 0034           ; {
+ 0034                   .dbline 16
+ 0034           ;       switch(DDR)//标号分支(0->A 1->B 2->C 3->D)
+ 0034 6030              cpi R22,0
+ 0036 6707              cpc R22,R23
+ 0038 81F0              breq L13
+ 003A           X2:
+ 003A 6130              cpi R22,1
+ 003C E0E0              ldi R30,0
+ 003E 7E07              cpc R23,R30
+ 0040 09F4              brne X18
+ 0042 5FC0              xjmp L19
+ 0044           X18:
+ 0044           X3:
+ 0044 6230              cpi R22,2
+ 0046 E0E0              ldi R30,0
+ 0048 7E07              cpc R23,R30
+ 004A 09F4              brne X19
+ 004C AEC0              xjmp L25
+ 004E           X19:
+ 004E           X4:
+ 004E 6330              cpi R22,3
+ 0050 E0E0              ldi R30,0
+ 0052 7E07              cpc R23,R30
+ 0054 09F4              brne X20
+ 0056 FDC0              xjmp L31
+ 0058           X20:
+ 0058           X5:
+ 0058 4FC1              xjmp L11
+ 005A           L13:
+ 005A                   .dbline 19
+ 005A           ;       {
+ 005A           ;               case 0:
+ 005A           ;               {
+ 005A                   .dbline 20
+ 005A           ;                       switch(status)//状态分支（高电平1 低电平0 高阻值2）
+ 005A 4030              cpi R20,0
+ 005C 4507              cpc R20,R21
+ 005E F1F0              breq L17
+ 0060           X6:
+ 0060 4130              cpi R20,1
+ 0062 E0E0              ldi R30,0
+ 0064 5E07              cpc R21,R30
+ 0066 29F0              breq L16
+ 0068           X7:
+ 0068 4230              cpi R20,2
+ 006A E0E0              ldi R30,0
+ 006C 5E07              cpc R21,R30
+ 006E 71F1              breq L18
+ 0070           X8:
+ 0070 43C1              xjmp L12
+ 0072           L16:
+ 0072                   .dbline 23
+ 0072           ;                       {
+ 0072           ;                               case 1:
+ 0072           ;                               {
+ 0072                   .dbline 24
+ 0072           ;                                       DDRA |= ON;
+ 0072 01E0              ldi R16,1
+ 0074 10E0              ldi R17,0
+ 0076 9501              movw R18,R10
+ 0078 0E940000          xcall lsl16
+ 007C 2AB2              in R2,0x1a
+ 007E 3324              clr R3
+ 0080 202A              or R2,R16
+ 0082 312A              or R3,R17
+ 0084 2ABA              out 0x1a,R2
+ 0086                   .dbline 25
+ 0086           ;                                       PORTA |= ON;
+ 0086 01E0              ldi R16,1
+ 0088 10E0              ldi R17,0
+ 008A 9501              movw R18,R10
+ 008C 0E940000          xcall lsl16
+ 0090 2BB2              in R2,0x1b
+ 0092 3324              clr R3
+ 0094 202A              or R2,R16
+ 0096 312A              or R3,R17
+ 0098 2BBA              out 0x1b,R2
+ 009A                   .dbline 26
+ 009A           ;                                       break;
+ 009A 2EC1              xjmp L12
+ 009C           L17:
+ 009C                   .dbline 29
+ 009C           ;                               }
+ 009C           ;                               case 0:
+ 009C           ;                               {
+ 009C                   .dbline 30
+ 009C           ;                                       DDRA |= ON;
+ 009C 01E0              ldi R16,1
+ 009E 10E0              ldi R17,0
+ 00A0 9501              movw R18,R10
+ 00A2 0E940000          xcall lsl16
+ 00A6 2AB2              in R2,0x1a
+ 00A8 3324              clr R3
+ 00AA 202A              or R2,R16
+ 00AC 312A              or R3,R17
+ 00AE 2ABA              out 0x1a,R2
+ 00B0                   .dbline 31
+ 00B0           ;                                       PORTA &= OFF;
+ 00B0 01E0              ldi R16,1
+ 00B2 10E0              ldi R17,0
+ 00B4 9501              movw R18,R10
+ 00B6 0E940000          xcall lsl16
+ 00BA 1801              movw R2,R16
+ 00BC 2094              com R2
+ 00BE 3094              com R3
+ 00C0 4BB2              in R4,0x1b
+ 00C2 5524              clr R5
+ 00C4 4220              and R4,R2
+ 00C6 5320              and R5,R3
+ 00C8 4BBA              out 0x1b,R4
+ 00CA                   .dbline 32
+ 00CA           ;                                       break;
+ 00CA 16C1              xjmp L12
+ 00CC           L18:
+ 00CC                   .dbline 35
+ 00CC           ;                               }
+ 00CC           ;                               case 2:
+ 00CC           ;                               {
+ 00CC                   .dbline 36
+ 00CC           ;                                       DDRA &= OFF;
+ 00CC 01E0              ldi R16,1
+ 00CE 10E0              ldi R17,0
+ 00D0 9501              movw R18,R10
+ 00D2 0E940000          xcall lsl16
+ 00D6 1801              movw R2,R16
+ 00D8 2094              com R2
+ 00DA 3094              com R3
+ 00DC 4AB2              in R4,0x1a
+ 00DE 5524              clr R5
+ 00E0 4220              and R4,R2
+ 00E2 5320              and R5,R3
+ 00E4 4ABA              out 0x1a,R4
+ 00E6                   .dbline 37
+ 00E6           ;                                       PORTA &= OFF;
+ 00E6 01E0              ldi R16,1
+ 00E8 10E0              ldi R17,0
+ 00EA 9501              movw R18,R10
+ 00EC 0E940000          xcall lsl16
+ 00F0 1801              movw R2,R16
+ 00F2 2094              com R2
+ 00F4 3094              com R3
+ 00F6 4BB2              in R4,0x1b
+ 00F8 5524              clr R5
+ 00FA 4220              and R4,R2
+ 00FC 5320              and R5,R3
+ 00FE 4BBA              out 0x1b,R4
+ 0100                   .dbline 38
+ 0100           ;                                       break;
+ 0100                   .dbline 41
+ 0100           ;                               }
+ 0100           ;                       }
+ 0100           ;                       break;
+ 0100 FBC0              xjmp L12
+ 0102           L19:
+ 0102                   .dbline 45
+ 0102           ;                       
+ 0102           ;               }
+ 0102           ;               case 1:
+ 0102           ;               {
+ 0102                   .dbline 46
+ 0102           ;                       switch(status)
+ 0102 4030              cpi R20,0
+ 0104 4507              cpc R20,R21
+ 0106 F1F0              breq L23
+ 0108           X9:
+ 0108 4130              cpi R20,1
+ 010A E0E0              ldi R30,0
+ 010C 5E07              cpc R21,R30
+ 010E 29F0              breq L22
+ 0110           X10:
+ 0110 4230              cpi R20,2
+ 0112 E0E0              ldi R30,0
+ 0114 5E07              cpc R21,R30
+ 0116 71F1              breq L24
+ 0118           X11:
+ 0118 EFC0              xjmp L12
+ 011A           L22:
+ 011A                   .dbline 49
+ 011A           ;                       {
+ 011A           ;                               case 1:
+ 011A           ;                               {
+ 011A                   .dbline 50
+ 011A           ;                                       DDRB |= ON;
+ 011A 01E0              ldi R16,1
+ 011C 10E0              ldi R17,0
+ 011E 9501              movw R18,R10
+ 0120 0E940000          xcall lsl16
+ 0124 27B2              in R2,0x17
+ 0126 3324              clr R3
+ 0128 202A              or R2,R16
+ 012A 312A              or R3,R17
+ 012C 27BA              out 0x17,R2
+ 012E                   .dbline 51
+ 012E           ;                                       PORTB |= ON;
+ 012E 01E0              ldi R16,1
+ 0130 10E0              ldi R17,0
+ 0132 9501              movw R18,R10
+ 0134 0E940000          xcall lsl16
+ 0138 28B2              in R2,0x18
+ 013A 3324              clr R3
+ 013C 202A              or R2,R16
+ 013E 312A              or R3,R17
+ 0140 28BA              out 0x18,R2
+ 0142                   .dbline 52
+ 0142           ;                                       break;
+ 0142 DAC0              xjmp L12
+ 0144           L23:
+ 0144                   .dbline 55
+ 0144           ;                               }
+ 0144           ;                               case 0:
+ 0144           ;                               {
+ 0144                   .dbline 56
+ 0144           ;                                       DDRB |= ON;
+ 0144 01E0              ldi R16,1
+ 0146 10E0              ldi R17,0
+ 0148 9501              movw R18,R10
+ 014A 0E940000          xcall lsl16
+ 014E 27B2              in R2,0x17
+ 0150 3324              clr R3
+ 0152 202A              or R2,R16
+ 0154 312A              or R3,R17
+ 0156 27BA              out 0x17,R2
+ 0158                   .dbline 57
+ 0158           ;                                       PORTB &= OFF;
+ 0158 01E0              ldi R16,1
+ 015A 10E0              ldi R17,0
+ 015C 9501              movw R18,R10
+ 015E 0E940000          xcall lsl16
+ 0162 1801              movw R2,R16
+ 0164 2094              com R2
+ 0166 3094              com R3
+ 0168 48B2              in R4,0x18
+ 016A 5524              clr R5
+ 016C 4220              and R4,R2
+ 016E 5320              and R5,R3
+ 0170 48BA              out 0x18,R4
+ 0172                   .dbline 58
+ 0172           ;                                       break;
+ 0172 C2C0              xjmp L12
+ 0174           L24:
+ 0174                   .dbline 61
+ 0174           ;                               }
+ 0174           ;                               case 2:
+ 0174           ;                               {
+ 0174                   .dbline 62
+ 0174           ;                                       DDRB &= OFF;
+ 0174 01E0              ldi R16,1
+ 0176 10E0              ldi R17,0
+ 0178 9501              movw R18,R10
+ 017A 0E940000          xcall lsl16
+ 017E 1801              movw R2,R16
+ 0180 2094              com R2
+ 0182 3094              com R3
+ 0184 47B2              in R4,0x17
+ 0186 5524              clr R5
+ 0188 4220              and R4,R2
+ 018A 5320              and R5,R3
+ 018C 47BA              out 0x17,R4
+ 018E                   .dbline 63
+ 018E           ;                                       PORTB &= OFF;
+ 018E 01E0              ldi R16,1
+ 0190 10E0              ldi R17,0
+ 0192 9501              movw R18,R10
+ 0194 0E940000          xcall lsl16
+ 0198 1801              movw R2,R16
+ 019A 2094              com R2
+ 019C 3094              com R3
+ 019E 48B2              in R4,0x18
+ 01A0 5524              clr R5
+ 01A2 4220              and R4,R2
+ 01A4 5320              and R5,R3
+ 01A6 48BA              out 0x18,R4
+ 01A8                   .dbline 64
+ 01A8           ;                                       break;
+ 01A8                   .dbline 67
+ 01A8           ;                               }
+ 01A8           ;                       }
+ 01A8           ;                       break;
+ 01A8 A7C0              xjmp L12
+ 01AA           L25:
+ 01AA                   .dbline 71
+ 01AA           ;                       
+ 01AA           ;               }
+ 01AA           ;               case 2:
+ 01AA           ;               {
+ 01AA                   .dbline 72
+ 01AA           ;                       switch(status)
+ 01AA 4030              cpi R20,0
+ 01AC 4507              cpc R20,R21
+ 01AE F1F0              breq L29
+ 01B0           X12:
+ 01B0 4130              cpi R20,1
+ 01B2 E0E0              ldi R30,0
+ 01B4 5E07              cpc R21,R30
+ 01B6 29F0              breq L28
+ 01B8           X13:
+ 01B8 4230              cpi R20,2
+ 01BA E0E0              ldi R30,0
+ 01BC 5E07              cpc R21,R30
+ 01BE 71F1              breq L30
+ 01C0           X14:
+ 01C0 9BC0              xjmp L12
+ 01C2           L28:
+ 01C2                   .dbline 75
+ 01C2           ;                       {
+ 01C2           ;                               case 1:
+ 01C2           ;                               {
+ 01C2                   .dbline 76
+ 01C2           ;                                       DDRC |= ON;
+ 01C2 01E0              ldi R16,1
+ 01C4 10E0              ldi R17,0
+ 01C6 9501              movw R18,R10
+ 01C8 0E940000          xcall lsl16
+ 01CC 24B2              in R2,0x14
+ 01CE 3324              clr R3
+ 01D0 202A              or R2,R16
+ 01D2 312A              or R3,R17
+ 01D4 24BA              out 0x14,R2
+ 01D6                   .dbline 77
+ 01D6           ;                                       PORTC |= ON;
+ 01D6 01E0              ldi R16,1
+ 01D8 10E0              ldi R17,0
+ 01DA 9501              movw R18,R10
+ 01DC 0E940000          xcall lsl16
+ 01E0 25B2              in R2,0x15
+ 01E2 3324              clr R3
+ 01E4 202A              or R2,R16
+ 01E6 312A              or R3,R17
+ 01E8 25BA              out 0x15,R2
+ 01EA                   .dbline 78
+ 01EA           ;                                       break;
+ 01EA 86C0              xjmp L12
+ 01EC           L29:
+ 01EC                   .dbline 81
+ 01EC           ;                               }
+ 01EC           ;                               case 0:
+ 01EC           ;                               {
+ 01EC                   .dbline 82
+ 01EC           ;                                       DDRC |= ON;
+ 01EC 01E0              ldi R16,1
+ 01EE 10E0              ldi R17,0
+ 01F0 9501              movw R18,R10
+ 01F2 0E940000          xcall lsl16
+ 01F6 24B2              in R2,0x14
+ 01F8 3324              clr R3
+ 01FA 202A              or R2,R16
+ 01FC 312A              or R3,R17
+ 01FE 24BA              out 0x14,R2
+ 0200                   .dbline 83
+ 0200           ;                                       PORTC &= OFF;
+ 0200 01E0              ldi R16,1
+ 0202 10E0              ldi R17,0
+ 0204 9501              movw R18,R10
+ 0206 0E940000          xcall lsl16
+ 020A 1801              movw R2,R16
+ 020C 2094              com R2
+ 020E 3094              com R3
+ 0210 45B2              in R4,0x15
+ 0212 5524              clr R5
+ 0214 4220              and R4,R2
+ 0216 5320              and R5,R3
+ 0218 45BA              out 0x15,R4
+ 021A                   .dbline 84
+ 021A           ;                                       break;
+ 021A 6EC0              xjmp L12
+ 021C           L30:
+ 021C                   .dbline 87
+ 021C           ;                               }
+ 021C           ;                               case 2:
+ 021C           ;                               {
+ 021C                   .dbline 88
+ 021C           ;                                       DDRC &= OFF;
+ 021C 01E0              ldi R16,1
+ 021E 10E0              ldi R17,0
+ 0220 9501              movw R18,R10
+ 0222 0E940000          xcall lsl16
+ 0226 1801              movw R2,R16
+ 0228 2094              com R2
+ 022A 3094              com R3
+ 022C 44B2              in R4,0x14
+ 022E 5524              clr R5
+ 0230 4220              and R4,R2
+ 0232 5320              and R5,R3
+ 0234 44BA              out 0x14,R4
+ 0236                   .dbline 89
+ 0236           ;                                       PORTC &= OFF;
+ 0236 01E0              ldi R16,1
+ 0238 10E0              ldi R17,0
+ 023A 9501              movw R18,R10
+ 023C 0E940000          xcall lsl16
+ 0240 1801              movw R2,R16
+ 0242 2094              com R2
+ 0244 3094              com R3
+ 0246 45B2              in R4,0x15
+ 0248 5524              clr R5
+ 024A 4220              and R4,R2
+ 024C 5320              and R5,R3
+ 024E 45BA              out 0x15,R4
+ 0250                   .dbline 90
+ 0250           ;                                       break;
+ 0250                   .dbline 93
+ 0250           ;                               }
+ 0250           ;                       }
+ 0250           ;                       break;
+ 0250 53C0              xjmp L12
+ 0252           L31:
+ 0252                   .dbline 97
+ 0252           ;                       
+ 0252           ;               }
+ 0252           ;               case 3:
+ 0252           ;               {
+ 0252                   .dbline 98
+ 0252           ;                       switch(status)
+ 0252 4030              cpi R20,0
+ 0254 4507              cpc R20,R21
+ 0256 F1F0              breq L35
+ 0258           X15:
+ 0258 4130              cpi R20,1
+ 025A E0E0              ldi R30,0
+ 025C 5E07              cpc R21,R30
+ 025E 29F0              breq L34
+ 0260           X16:
+ 0260 4230              cpi R20,2
+ 0262 E0E0              ldi R30,0
+ 0264 5E07              cpc R21,R30
+ 0266 71F1              breq L36
+ 0268           X17:
+ 0268 47C0              xjmp L12
+ 026A           L34:
+ 026A                   .dbline 101
+ 026A           ;                       {
+ 026A           ;                               case 1:
+ 026A           ;                               {
+ 026A                   .dbline 102
+ 026A           ;                                       DDRD |= ON;
+ 026A 01E0              ldi R16,1
+ 026C 10E0              ldi R17,0
+ 026E 9501              movw R18,R10
+ 0270 0E940000          xcall lsl16
+ 0274 21B2              in R2,0x11
+ 0276 3324              clr R3
+ 0278 202A              or R2,R16
+ 027A 312A              or R3,R17
+ 027C 21BA              out 0x11,R2
+ 027E                   .dbline 103
+ 027E           ;                                       PORTD |= ON;
+ 027E 01E0              ldi R16,1
+ 0280 10E0              ldi R17,0
+ 0282 9501              movw R18,R10
+ 0284 0E940000          xcall lsl16
+ 0288 22B2              in R2,0x12
+ 028A 3324              clr R3
+ 028C 202A              or R2,R16
+ 028E 312A              or R3,R17
+ 0290 22BA              out 0x12,R2
+ 0292                   .dbline 104
+ 0292           ;                                       break;
+ 0292 32C0              xjmp L12
+ 0294           L35:
+ 0294                   .dbline 107
+ 0294           ;                               }
+ 0294           ;                               case 0:
+ 0294           ;                               {
+ 0294                   .dbline 108
+ 0294           ;                                       DDRD |= ON;
+ 0294 01E0              ldi R16,1
+ 0296 10E0              ldi R17,0
+ 0298 9501              movw R18,R10
+ 029A 0E940000          xcall lsl16
+ 029E 21B2              in R2,0x11
+ 02A0 3324              clr R3
+ 02A2 202A              or R2,R16
+ 02A4 312A              or R3,R17
+ 02A6 21BA              out 0x11,R2
+ 02A8                   .dbline 109
+ 02A8           ;                                       PORTD &= OFF;
+ 02A8 01E0              ldi R16,1
+ 02AA 10E0              ldi R17,0
+ 02AC 9501              movw R18,R10
+ 02AE 0E940000          xcall lsl16
+ 02B2 1801              movw R2,R16
+ 02B4 2094              com R2
+ 02B6 3094              com R3
+ 02B8 42B2              in R4,0x12
+ 02BA 5524              clr R5
+ 02BC 4220              and R4,R2
+ 02BE 5320              and R5,R3
+ 02C0 42BA              out 0x12,R4
+ 02C2                   .dbline 110
+ 02C2           ;                                       break;
+ 02C2 1AC0              xjmp L12
+ 02C4           L36:
+ 02C4                   .dbline 113
+ 02C4           ;                               }
+ 02C4           ;                               case 2:
+ 02C4           ;                               {
+ 02C4                   .dbline 114
+ 02C4           ;                                       DDRD &= OFF;
+ 02C4 01E0              ldi R16,1
+ 02C6 10E0              ldi R17,0
+ 02C8 9501              movw R18,R10
+ 02CA 0E940000          xcall lsl16
+ 02CE 1801              movw R2,R16
+ 02D0 2094              com R2
+ 02D2 3094              com R3
+ 02D4 41B2              in R4,0x11
+ 02D6 5524              clr R5
+ 02D8 4220              and R4,R2
+ 02DA 5320              and R5,R3
+ 02DC 41BA              out 0x11,R4
+ 02DE                   .dbline 115
+ 02DE           ;                                       PORTD &= OFF;
+ 02DE 01E0              ldi R16,1
+ 02E0 10E0              ldi R17,0
+ 02E2 9501              movw R18,R10
+ 02E4 0E940000          xcall lsl16
+ 02E8 1801              movw R2,R16
+ 02EA 2094              com R2
+ 02EC 3094              com R3
+ 02EE 42B2              in R4,0x12
+ 02F0 5524              clr R5
+ 02F2 4220              and R4,R2
+ 02F4 5320              and R5,R3
+ 02F6 42BA              out 0x12,R4
+ 02F8                   .dbline 116
+ 02F8           ;                                       break;
+ 02F8                   .dbline 119
+ 02F8           ;                               }
+ 02F8           ;                       }
+ 02F8           ;                       break;
+ 02F8                   .dbline 121
+ 02F8           ;               }
+ 02F8           ;               break;
+ 02F8           L11:
+ 02F8           L12:
+ 02F8                   .dbline -2
+ 02F8           L10:
+ 02F8                   .dbline 0 ; func end
+ 02F8 0C940000          xjmp pop_xgsetF00C
+ 02FC                   .dbsym r status 20 I
+ 02FC                   .dbsym r port 10 I
+ 02FC                   .dbsym r DDR 22 I
+ 02FC                   .dbend
+ 02FC                   .dbfunc e main _main fV
+ 02FC           ;          delay -> R22,R23
+ 02FC           ;            DDR -> R20,R21
+ 02FC           ;           port -> R10,R11
+                        .even
+ 02FC           _main::
+ 02FC 2297              sbiw R28,2
+ 02FE                   .dbline -1
+ 02FE                   .dbline 126
+ 02FE           ;       }
+ 02FE           ; }
+ 02FE           ; 
+ 02FE           ; void main()
+ 02FE           ; {
+ 02FE                   .dbline 128
+ 02FE           ;       
+ 02FE           ;       int DDR=0;
+ 02FE 4427              clr R20
+ 0300 5527              clr R21
+ 0302                   .dbline 129
+ 0302           ;       int port=0;
+ 0302 AA24              clr R10
+ 0304 BB24              clr R11
+ 0306                   .dbline 130
+ 0306           ;       int delay=100;
+ 0306 64E6              ldi R22,100
+ 0308 70E0              ldi R23,0
+ 030A 2BC0              xjmp L39
+ 030C           L38:
+ 030C                   .dbline 133
+ 030C           ;       
+ 030C           ;       while(DDR<=3)
+ 030C           ;       {
+ 030C                   .dbline 134
+ 030C           ;               for(port=0; port<8; port++)
+ 030C AA24              clr R10
+ 030E BB24              clr R11
+ 0310           L41:
+ 0310                   .dbline 135
+ 0310           ;               {
+ 0310                   .dbline 136
+ 0310           ;                       Light(DDR, port, 1);
+ 0310 81E0              ldi R24,1
+ 0312 90E0              ldi R25,0
+ 0314 9983              std y+1,R25
+ 0316 8883              std y+0,R24
+ 0318 9501              movw R18,R10
+ 031A 8A01              movw R16,R20
+ 031C 85DE              xcall _Light
+ 031E                   .dbline 137
+ 031E           ;                       delay_ms(delay);
+ 031E 8B01              movw R16,R22
+ 0320 6FDE              xcall _delay_ms
+ 0322                   .dbline 138
+ 0322           ;                       Light(DDR, port, 0);
+ 0322 2224              clr R2
+ 0324 3324              clr R3
+ 0326 3982              std y+1,R3
+ 0328 2882              std y+0,R2
+ 032A 9501              movw R18,R10
+ 032C 8A01              movw R16,R20
+ 032E 7CDE              xcall _Light
+ 0330                   .dbline 139
+ 0330           ;                       delay_ms(delay);
+ 0330 8B01              movw R16,R22
+ 0332 66DE              xcall _delay_ms
+ 0334                   .dbline 140
+ 0334           ;                       Light(DDR, port, 2);
+ 0334 82E0              ldi R24,2
+ 0336 90E0              ldi R25,0
+ 0338 9983              std y+1,R25
+ 033A 8883              std y+0,R24
+ 033C 9501              movw R18,R10
+ 033E 8A01              movw R16,R20
+ 0340 73DE              xcall _Light
+ 0342                   .dbline 141
+ 0342           ;               }
+ 0342           L42:
+ 0342                   .dbline 134
+ 0342 C501              movw R24,R10
+ 0344 0196              adiw R24,1
+ 0346 5C01              movw R10,R24
+ 0348                   .dbline 134
+ 0348 8830              cpi R24,8
+ 034A E0E0              ldi R30,0
+ 034C 9E07              cpc R25,R30
+ 034E 04F3              brlt L41
+ 0350           X21:
+ 0350                   .dbline 142
+ 0350           ;               DDR++;
+ 0350 4F5F              subi R20,255  ; offset = 1
+ 0352 5F4F              sbci R21,255
+ 0354                   .dbline 143
+ 0354           ;               if(DDR>3)
+ 0354 83E0              ldi R24,3
+ 0356 90E0              ldi R25,0
+ 0358 8417              cp R24,R20
+ 035A 9507              cpc R25,R21
+ 035C 14F4              brge L45
+ 035E           X22:
+ 035E                   .dbline 144
+ 035E           ;               {
+ 035E                   .dbline 145
+ 035E           ;                       DDR=0;
+ 035E 4427              clr R20
+ 0360 5527              clr R21
+ 0362                   .dbline 146
+ 0362           ;               }
+ 0362           L45:
+ 0362                   .dbline 147
+ 0362           ;       }
+ 0362           L39:
+ 0362                   .dbline 132
+ 0362 83E0              ldi R24,3
+ 0364 90E0              ldi R25,0
+ 0366 8417              cp R24,R20
+ 0368 9507              cpc R25,R21
+ 036A 84F6              brge L38
+ 036C           X23:
+ 036C                   .dbline -2
+ 036C           L37:
+ 036C                   .dbline 0 ; func end
+ 036C 2296              adiw R28,2
+ 036E 0895              ret
+ 0370                   .dbsym r delay 22 I
+ 0370                   .dbsym r DDR 20 I
+ 0370                   .dbsym r port 10 I
+ 0370                   .dbend
+ 0370           ; }

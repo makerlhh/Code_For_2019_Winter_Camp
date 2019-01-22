@@ -1,0 +1,50 @@
+#include <iom16v.h>
+#pragma interrupt_handler enter_one:9
+unsigned char data[] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+
+int number = 0;
+
+void enter_one()
+{
+ 	 if (number == 10)
+	 number = 0;
+	 number++;
+	 TCNT1H = 0X31;
+	 TCNT1L = 0X29;
+}
+
+void delay(int ms)
+{
+ 	int i,j;
+ 	for(i = 0; i<ms ;i++)
+	{
+	 	  for (j = 0; j<1148; j++);
+	}
+}
+void show_time(int i,int j)
+{
+	 PORTA = 0X00;
+	 PORTB = data[i];
+	 
+	 PORTA &= ~BIT(j);
+	
+	
+}
+
+
+void main ()
+{
+	TCCR1B = 0X09;
+	TCNT1H = 0X31;
+	TCNT1L = 0X29;
+	TIMSK |= (1<<2);
+	SREG  |= (1<<7);
+	
+	DDRA = 0xff;
+	DDRB = 0xff;
+	
+	while (1)
+	{
+	 	show_time(number%10,7);  
+	}
+}

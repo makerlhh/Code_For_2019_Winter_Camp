@@ -1,0 +1,20 @@
+#include <iom16v.h>
+#define ON 1<<n
+#define OFF ~(1<<n)
+
+
+void Light(char PORT, int staus, int delay)
+{
+ 	switch(PORT)
+	{
+	 	case 'A':
+		{
+		 	
+		}
+	}
+}
+
+void main()
+{
+ 	
+}
