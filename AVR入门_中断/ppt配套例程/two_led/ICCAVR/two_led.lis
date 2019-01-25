@@ -1,0 +1,286 @@
+                        .module two_led.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\two_led.c
+                        .area vector(rom, abs)
+                        .org 4
+ 0004 0C940000          jmp _INT
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\two_led.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\two_led.c
+ 0000           _led_flag::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 FFFF              .word -1
+                        .area data(ram, con, rel)
+ 0002                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\two_led.c
+ 0002                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\two_led.c
+ 0002                   .dbsym e led_flag _led_flag I
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\two_led.c
+ 0000                   .dbfunc e INT _INT fV
+                        .even
+ 0000           _INT::
+ 0000 0A92              st -y,R0
+ 0002 1A92              st -y,R1
+ 0004 2A92              st -y,R2
+ 0006 3A92              st -y,R3
+ 0008 4A92              st -y,R4
+ 000A 5A92              st -y,R5
+ 000C 6A92              st -y,R6
+ 000E 7A92              st -y,R7
+ 0010 8A92              st -y,R8
+ 0012 9A92              st -y,R9
+ 0014 0A93              st -y,R16
+ 0016 1A93              st -y,R17
+ 0018 2A93              st -y,R18
+ 001A 3A93              st -y,R19
+ 001C 8A93              st -y,R24
+ 001E 9A93              st -y,R25
+ 0020 AA93              st -y,R26
+ 0022 BA93              st -y,R27
+ 0024 EA93              st -y,R30
+ 0026 FA93              st -y,R31
+ 0028 0FB6              IN R0,63
+ 002A 0A92              st -y,R0
+ 002C                   .dbline -1
+ 002C                   .dbline 10
+ 002C           ; #include "delay.h"
+ 002C           ; #include"usart.h"
+ 002C           ; #pragma interrupt_handler INT:2       //外部中断0
+ 002C           ; 
+ 002C           ; int led_flag = -1 ;
+ 002C           ; //一开始设置led_flag=0,实物现象正常
+ 002C           ; //但是仿真的时候，初始化完毕，led_flag就变为1，证明在没有按下按键时就进入了中断
+ 002C           ; //于是设置led_flag=-1......
+ 002C           ; void INT()
+ 002C           ; {      
+ 002C                   .dbline 11
+ 002C           ;       delay(500);
+ 002C 04EF              ldi R16,500
+ 002E 11E0              ldi R17,1
+ 0030 0E940000          xcall _delay
+ 0034                   .dbline 12
+ 0034           ;       led_flag++ ;
+ 0034 80910000          lds R24,_led_flag
+ 0038 90910100          lds R25,_led_flag+1
+ 003C 0196              adiw R24,1
+ 003E 90930100          sts _led_flag+1,R25
+ 0042 80930000          sts _led_flag,R24
+ 0046                   .dbline 15
+ 0046           ;         //send1(led_flag+48);
+ 0046           ;         
+ 0046           ;       EIFR |= BIT(INTF0) ;//清除中断标志位
+ 0046 88B7              in R24,0x38
+ 0048 8160              ori R24,1
+ 004A 88BF              out 0x38,R24
+ 004C                   .dbline -2
+ 004C           L1:
+ 004C                   .dbline 0 ; func end
+ 004C 0990              ld R0,y+
+ 004E 0FBE              OUT 63,R0
+ 0050 F991              ld R31,y+
+ 0052 E991              ld R30,y+
+ 0054 B991              ld R27,y+
+ 0056 A991              ld R26,y+
+ 0058 9991              ld R25,y+
+ 005A 8991              ld R24,y+
+ 005C 3991              ld R19,y+
+ 005E 2991              ld R18,y+
+ 0060 1991              ld R17,y+
+ 0062 0991              ld R16,y+
+ 0064 9990              ld R9,y+
+ 0066 8990              ld R8,y+
+ 0068 7990              ld R7,y+
+ 006A 6990              ld R6,y+
+ 006C 5990              ld R5,y+
+ 006E 4990              ld R4,y+
+ 0070 3990              ld R3,y+
+ 0072 2990              ld R2,y+
+ 0074 1990              ld R1,y+
+ 0076 0990              ld R0,y+
+ 0078 1895              reti
+ 007A                   .dbend
+ 007A                   .dbfunc e INT0_init _INT0_init fV
+                        .even
+ 007A           _INT0_init::
+ 007A                   .dbline -1
+ 007A                   .dbline 18
+ 007A           ; }
+ 007A           ; void INT0_init()
+ 007A           ; { 
+ 007A                   .dbline 19
+ 007A           ;    EICRA |= BIT(ISC01); //下降沿中断,先配置什么方式中断，再使能中断
+ 007A 80916A00          lds R24,106
+ 007E 8260              ori R24,2
+ 0080 80936A00          sts 106,R24
+ 0084                   .dbline 20
+ 0084           ;    EIMSK |= BIT(INT0);  //配置INT0使能外部中断   
+ 0084 89B7              in R24,0x39
+ 0086 8160              ori R24,1
+ 0088 89BF              out 0x39,R24
+ 008A                   .dbline 21
+ 008A           ;    SREG  |= BIT(7) ;    //开启总中断
+ 008A 7894              bset 7
+ 008C                   .dbline -2
+ 008C           L2:
+ 008C                   .dbline 0 ; func end
+ 008C 0895              ret
+ 008E                   .dbend
+ 008E                   .dbfunc e led_button_init _led_button_init fV
+                        .even
+ 008E           _led_button_init::
+ 008E                   .dbline -1
+ 008E                   .dbline 24
+ 008E           ; }
+ 008E           ; void led_button_init()
+ 008E           ; {
+ 008E                   .dbline 26
+ 008E           ;    /*按键输入高电平*/
+ 008E           ;    DDRD&=~BIT(0);
+ 008E 8898              cbi 0x11,0
+ 0090                   .dbline 27
+ 0090           ;    PORTD|=BIT(0);
+ 0090 909A              sbi 0x12,0
+ 0092                   .dbline 30
+ 0092           ;    
+ 0092           ;    /*led输出低电平*/
+ 0092           ;    DDRE|=BIT(0);
+ 0092 109A              sbi 0x2,0
+ 0094                   .dbline 31
+ 0094           ;    PORTE&=BIT(0);
+ 0094 83B1              in R24,0x3
+ 0096 8170              andi R24,1
+ 0098 83B9              out 0x3,R24
+ 009A                   .dbline 32
+ 009A           ;    DDRE|=BIT(1);
+ 009A 119A              sbi 0x2,1
+ 009C                   .dbline 33
+ 009C           ;    PORTE&=BIT(1);
+ 009C 83B1              in R24,0x3
+ 009E 8270              andi R24,2
+ 00A0 83B9              out 0x3,R24
+ 00A2                   .dbline -2
+ 00A2           L3:
+ 00A2                   .dbline 0 ; func end
+ 00A2 0895              ret
+ 00A4                   .dbend
+ 00A4                   .dbfunc e main _main fV
+                        .even
+ 00A4           _main::
+ 00A4                   .dbline -1
+ 00A4                   .dbline 36
+ 00A4           ; }
+ 00A4           ; void main()
+ 00A4           ; {
+ 00A4                   .dbline 37
+ 00A4           ;    led_button_init() ;
+ 00A4 F4DF              xcall _led_button_init
+ 00A6                   .dbline 38
+ 00A6           ;    INT0_init() ;
+ 00A6 E9DF              xcall _INT0_init
+ 00A8 2EC0              xjmp L6
+ 00AA           L5:
+ 00AA                   .dbline 42
+ 00AA           ;    //usart1_init();
+ 00AA           ;    //send1('a');
+ 00AA           ;    while(1)
+ 00AA           ;    {
+ 00AA                   .dbline 43
+ 00AA           ;        if(led_flag == 1 )
+ 00AA 80910000          lds R24,_led_flag
+ 00AE 90910100          lds R25,_led_flag+1
+ 00B2 8130              cpi R24,1
+ 00B4 E0E0              ldi R30,0
+ 00B6 9E07              cpc R25,R30
+ 00B8 11F4              brne L8
+ 00BA           X0:
+ 00BA                   .dbline 44
+ 00BA           ;       {
+ 00BA                   .dbline 45
+ 00BA           ;          PORTE|=BIT(0);
+ 00BA 189A              sbi 0x3,0
+ 00BC                   .dbline 46
+ 00BC           ;                PORTE&=~BIT(1);
+ 00BC 1998              cbi 0x3,1
+ 00BE                   .dbline 47
+ 00BE           ;       }
+ 00BE           L8:
+ 00BE                   .dbline 48
+ 00BE           ;       if(led_flag == 2)
+ 00BE 80910000          lds R24,_led_flag
+ 00C2 90910100          lds R25,_led_flag+1
+ 00C6 8230              cpi R24,2
+ 00C8 E0E0              ldi R30,0
+ 00CA 9E07              cpc R25,R30
+ 00CC 11F4              brne L10
+ 00CE           X1:
+ 00CE                   .dbline 49
+ 00CE           ;       {
+ 00CE                   .dbline 50
+ 00CE           ;          PORTE|=BIT(0);
+ 00CE 189A              sbi 0x3,0
+ 00D0                   .dbline 51
+ 00D0           ;                PORTE|=BIT(1);
+ 00D0 199A              sbi 0x3,1
+ 00D2                   .dbline 52
+ 00D2           ;       }
+ 00D2           L10:
+ 00D2                   .dbline 53
+ 00D2           ;       if(led_flag == 3)
+ 00D2 80910000          lds R24,_led_flag
+ 00D6 90910100          lds R25,_led_flag+1
+ 00DA 8330              cpi R24,3
+ 00DC E0E0              ldi R30,0
+ 00DE 9E07              cpc R25,R30
+ 00E0 11F4              brne L12
+ 00E2           X2:
+ 00E2                   .dbline 54
+ 00E2           ;       {
+ 00E2                   .dbline 55
+ 00E2           ;            PORTE&=~BIT(0);
+ 00E2 1898              cbi 0x3,0
+ 00E4                   .dbline 56
+ 00E4           ;                PORTE|=BIT(1);
+ 00E4 199A              sbi 0x3,1
+ 00E6                   .dbline 57
+ 00E6           ;         }
+ 00E6           L12:
+ 00E6                   .dbline 58
+ 00E6           ;       if(led_flag == 4)
+ 00E6 80910000          lds R24,_led_flag
+ 00EA 90910100          lds R25,_led_flag+1
+ 00EE 8430              cpi R24,4
+ 00F0 E0E0              ldi R30,0
+ 00F2 9E07              cpc R25,R30
+ 00F4 41F4              brne L14
+ 00F6           X3:
+ 00F6                   .dbline 59
+ 00F6           ;       {
+ 00F6                   .dbline 60
+ 00F6           ;            PORTE&=~BIT(0);
+ 00F6 1898              cbi 0x3,0
+ 00F8                   .dbline 61
+ 00F8           ;                PORTE&=~BIT(1);
+ 00F8 1998              cbi 0x3,1
+ 00FA                   .dbline 62
+ 00FA           ;                led_flag = 0 ;
+ 00FA 2224              clr R2
+ 00FC 3324              clr R3
+ 00FE 30920100          sts _led_flag+1,R3
+ 0102 20920000          sts _led_flag,R2
+ 0106                   .dbline 63
+ 0106           ;         }
+ 0106           L14:
+ 0106                   .dbline 64
+ 0106           ;    }
+ 0106           L6:
+ 0106                   .dbline 41
+ 0106 D1CF              xjmp L5
+ 0108           X4:
+ 0108                   .dbline -2
+ 0108           L4:
+ 0108                   .dbline 0 ; func end
+ 0108 0895              ret
+ 010A                   .dbend
+ 010A           ; }

@@ -1,0 +1,152 @@
+                        .module usart.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\usart.c
+                        .area vector(rom, abs)
+                        .org 120
+ 0078 0C942400          jmp _read1
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\usart.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\usart.c
+ 0000           _flag::
+ 0000                   .blkb 1
+                        .area idata
+ 0000 00                .byte 0
+                        .area data(ram, con, rel)
+ 0001                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\usart.c
+ 0001                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\usart.c
+ 0001                   .dbsym e flag _flag c
+ 0001           _qdata::
+ 0001                   .blkb 1
+                        .area idata
+ 0001 00                .byte 0
+                        .area data(ram, con, rel)
+ 0002                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\usart.c
+ 0002                   .dbsym e qdata _qdata c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\usart.c
+ 0000                   .dbfunc e usart1_init _usart1_init fV
+                        .even
+ 0000           _usart1_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 6
+ 0000           ; //PD0,1
+ 0000           ; #include"usart.h"
+ 0000           ; #pragma interrupt_handler read1:31       //usart1接收结束中断
+ 0000           ; uchar flag=0,qdata=0;  //已经在middle.h里面声明了的全局变量
+ 0000           ; void usart1_init()
+ 0000           ; {
+ 0000                   .dbline 7
+ 0000           ;    DDRD&=~BIT(2);//PD2(RXD)输入
+ 0000 8A98              cbi 0x11,2
+ 0002                   .dbline 8
+ 0002           ;    DDRD|=BIT(3);//PD3(TXD)输出
+ 0002 8B9A              sbi 0x11,3
+ 0004                   .dbline 9
+ 0004           ;    UCSR1A=0;
+ 0004 2224              clr R2
+ 0006 20929B00          sts 155,R2
+ 000A                   .dbline 10
+ 000A           ;    UCSR1B|=BIT(RXCIE1)|BIT(RXEN1)|BIT(TXEN1);    
+ 000A 80919A00          lds R24,154
+ 000E 8869              ori R24,152
+ 0010 80939A00          sts 154,R24
+ 0014                   .dbline 11
+ 0014           ;    UCSR1C|=BIT(UCSZ11)|BIT(UCSZ10);//8位
+ 0014 80919D00          lds R24,157
+ 0018 8660              ori R24,6
+ 001A 80939D00          sts 157,R24
+ 001E                   .dbline 12
+ 001E           ;    UBRR1L=51;      //9600
+ 001E 83E3              ldi R24,51
+ 0020 80939900          sts 153,R24
+ 0024                   .dbline 13
+ 0024           ;    SREG|=BIT(7);
+ 0024 7894              bset 7
+ 0026                   .dbline -2
+ 0026           L1:
+ 0026                   .dbline 0 ; func end
+ 0026 0895              ret
+ 0028                   .dbend
+ 0028                   .dbfunc e send1 _send1 fV
+ 0028           ;           data -> R16
+                        .even
+ 0028           _send1::
+ 0028                   .dbline -1
+ 0028                   .dbline 17
+ 0028           ; }
+ 0028           ; 
+ 0028           ; void send1(uchar data)
+ 0028           ; {
+ 0028           L3:
+ 0028                   .dbline 18
+ 0028           ;     while(!(UCSR1A&BIT(UDRE1)));
+ 0028           L4:
+ 0028                   .dbline 18
+ 0028 20909B00          lds R2,155
+ 002C 25FE              sbrs R2,5
+ 002E FCCF              rjmp L3
+ 0030           X0:
+ 0030                   .dbline 19
+ 0030           ;       UDR1=data;
+ 0030 00939C00          sts 156,R16
+ 0034           L6:
+ 0034                   .dbline 20
+ 0034           ;       while(!(UCSR1A&BIT(TXC1)));
+ 0034           L7:
+ 0034                   .dbline 20
+ 0034 20909B00          lds R2,155
+ 0038 26FE              sbrs R2,6
+ 003A FCCF              rjmp L6
+ 003C           X1:
+ 003C                   .dbline 21
+ 003C           ;       UCSR1A|=BIT(TXC1);
+ 003C 80919B00          lds R24,155
+ 0040 8064              ori R24,64
+ 0042 80939B00          sts 155,R24
+ 0046                   .dbline -2
+ 0046           L2:
+ 0046                   .dbline 0 ; func end
+ 0046 0895              ret
+ 0048                   .dbsym r data 16 c
+ 0048                   .dbend
+ 0048                   .dbfunc e read1 _read1 fc
+                        .even
+ 0048           _read1::
+ 0048 2A92              st -y,R2
+ 004A 8A93              st -y,R24
+ 004C 2FB6              IN R2,63
+ 004E 2A92              st -y,R2
+ 0050                   .dbline -1
+ 0050                   .dbline 25
+ 0050           ; }
+ 0050           ; 
+ 0050           ; uchar read1()
+ 0050           ; {
+ 0050           L10:
+ 0050                   .dbline 26
+ 0050           ;    while(!(UCSR1A&BIT(RXC1)));
+ 0050           L11:
+ 0050                   .dbline 26
+ 0050 20909B00          lds R2,155
+ 0054 27FE              sbrs R2,7
+ 0056 FCCF              rjmp L10
+ 0058           X2:
+ 0058                   .dbline 27
+ 0058           ;    qdata=UDR1;
+ 0058 20909C00          lds R2,156
+ 005C 20920100          sts _qdata,R2
+ 0060                   .dbline 28
+ 0060           ;    flag=1; 
+ 0060 81E0              ldi R24,1
+ 0062 80930000          sts _flag,R24
+ 0066                   .dbline -2
+ 0066           L9:
+ 0066                   .dbline 0 ; func end
+ 0066 2990              ld R2,y+
+ 0068 2FBE              OUT 63,R2
+ 006A 8991              ld R24,y+
+ 006C 2990              ld R2,y+
+ 006E 1895              reti
+ 0070                   .dbend
+ 0070           ; }

@@ -1,0 +1,34 @@
+#include <iom128v.h>
+#include <macros.h>
+#define  uchar unsigned char
+#define  uint  unsigned int
+#pragma interrupt_handler INT0:2       //外部中断0
+
+uchar flag = 0 ;
+void INT0()
+{
+   flag++ ;
+   EIFR |= BIT(IINTF0) ;//清除中断标志位
+}
+void INT0_init()
+{ 
+   EICRA |= BIT(ISCn1); //下降沿中断
+   EIMSK |= BIT(IINT0); //配置INT0使能外部中断
+   SREG  |= BIT(7) ;    //开启总中断
+}
+void led_button_init()
+{
+   /*按键属入高电平*/
+   DDRD&=~BIT(0);
+   PORTD|=BIT(0);
+   
+   /*led输出低电平*/
+   DDRE|=BIT(0);
+   PORTE&=BIT(0);
+   DDRE|=BIT(1);
+   PORTE&=BIT(1);
+}
+void main()
+{
+   
+}

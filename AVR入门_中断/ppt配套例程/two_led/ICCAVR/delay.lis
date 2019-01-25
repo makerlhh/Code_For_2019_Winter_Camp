@@ -1,0 +1,64 @@
+                        .module delay.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ..\..\..\LESSON~1\two_led\ICCAVR\delay.c
+ 0000                   .dbfile C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\delay.c
+ 0000                   .dbfunc e delay _delay fV
+ 0000           ;              i -> R20,R21
+ 0000           ;              j -> R22,R23
+ 0000           ;             ms -> R16,R17
+                        .even
+ 0000           _delay::
+ 0000 0E940000          xcall push_xgsetF000
+ 0004                   .dbline -1
+ 0004                   .dbline 3
+ 0004           ; #include"delay.h"
+ 0004           ; void delay(uint ms)
+ 0004           ; {
+ 0004                   .dbline 5
+ 0004           ;         uint i,j;
+ 0004           ;          for(i=0;i<ms;i++)
+ 0004 4427              clr R20
+ 0006 5527              clr R21
+ 0008 0BC0              xjmp L5
+ 000A           L2:
+ 000A                   .dbline 6
+ 000A           ;          {
+ 000A                   .dbline 7
+ 000A           ;          for(j=0;j<1141;j++);
+ 000A 6627              clr R22
+ 000C 7727              clr R23
+ 000E 02C0              xjmp L9
+ 0010           L6:
+ 0010                   .dbline 7
+ 0010           L7:
+ 0010                   .dbline 7
+ 0010 6F5F              subi R22,255  ; offset = 1
+ 0012 7F4F              sbci R23,255
+ 0014           L9:
+ 0014                   .dbline 7
+ 0014 6537              cpi R22,117
+ 0016 E4E0              ldi R30,4
+ 0018 7E07              cpc R23,R30
+ 001A D0F3              brlo L6
+ 001C           X0:
+ 001C                   .dbline 8
+ 001C           ;        }
+ 001C           L3:
+ 001C                   .dbline 5
+ 001C 4F5F              subi R20,255  ; offset = 1
+ 001E 5F4F              sbci R21,255
+ 0020           L5:
+ 0020                   .dbline 5
+ 0020 4017              cp R20,R16
+ 0022 5107              cpc R21,R17
+ 0024 90F3              brlo L2
+ 0026           X1:
+ 0026                   .dbline -2
+ 0026           L1:
+ 0026                   .dbline 0 ; func end
+ 0026 0C940000          xjmp pop_xgsetF000
+ 002A                   .dbsym r i 20 i
+ 002A                   .dbsym r j 22 i
+ 002A                   .dbsym r ms 16 i
+ 002A                   .dbend
+ 002A           ; }

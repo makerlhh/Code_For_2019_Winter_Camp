@@ -1,0 +1,220 @@
+Interrupt Vectors
+    00000 940C 002A JMP	__text_start|__start
+    00004 940C 007B JMP	_int1_isr
+
+Program Code (text area)
+__text_start|__start:
+    0002A E5CF      LDI	R28,0x5F
+    0002B E0D4      LDI	R29,4
+    0002C BFCD      OUT	0x3D,R28
+    0002D BFDE      OUT	0x3E,R29
+    0002E 51CE      SUBI	R28,0x1E
+    0002F 40D0      SBCI	R29,0
+    00030 EA0A      LDI	R16,0xAA
+    00031 8308      ST	Y,R16
+    00032 2400      CLR	R0
+    00033 E6E0      LDI	R30,0x60
+    00034 E0F0      LDI	R31,0
+    00035 E010      LDI	R17,0
+    00036 36E2      CPI	R30,0x62
+    00037 07F1      CPC	R31,R17
+    00038 F011      BEQ	0x003B
+    00039 9201      ST	Z+,R0
+    0003A CFFB      RJMP	0x0036
+    0003B 8300      ST	Z,R16
+    0003C E5E4      LDI	R30,0x54
+    0003D E0F0      LDI	R31,0
+    0003E E6A0      LDI	R26,0x60
+    0003F E0B0      LDI	R27,0
+    00040 E010      LDI	R17,0
+    00041 E000      LDI	R16,0
+    00042 BF0B      OUT	0x3B,R16
+    00043 35E4      CPI	R30,0x54
+    00044 07F1      CPC	R31,R17
+    00045 F021      BEQ	0x004A
+    00046 95C8      LPM
+    00047 9631      ADIW	R30,1
+    00048 920D      ST	X+,R0
+    00049 CFF9      RJMP	0x0043
+    0004A 940E 0062 CALL	_main
+_exit:
+    0004C CFFF      RJMP	_exit
+_delay:
+  i                    --> R20
+  j                    --> R22
+  k                    --> R16
+    0004D 940E 00C8 CALL	push_xgsetF000
+FILE: D:\学习\创客课程\2019.1.23冬令营中断课程\ppt上的例题\example.c
+(0001) #include<iom16v.h>
+(0002) #include<macros.h>
+(0003) unsigned int shu;
+(0004) /***************************************
+(0005)            延时函数
+(0006) ****************************************/
+(0007) void delay(unsigned  int k)
+(0008) {
+(0009) 	unsigned int i,j;
+(0010) 	for(i=0;i<k;i++)
+    0004F 2744      CLR	R20
+    00050 2755      CLR	R21
+    00051 C00B      RJMP	0x005D
+(0011) 	for(j=0;j<1148;j++);
+    00052 2766      CLR	R22
+    00053 2777      CLR	R23
+    00054 C002      RJMP	0x0057
+    00055 5F6F      SUBI	R22,0xFF
+    00056 4F7F      SBCI	R23,0xFF
+    00057 376C      CPI	R22,0x7C
+    00058 E0E4      LDI	R30,4
+    00059 077E      CPC	R23,R30
+    0005A F3D0      BCS	0x0055
+    0005B 5F4F      SUBI	R20,0xFF
+    0005C 4F5F      SBCI	R21,0xFF
+    0005D 1740      CP	R20,R16
+    0005E 0751      CPC	R21,R17
+    0005F F390      BCS	0x0052
+    00060 940C 00CD JMP	pop_xgsetF000
+(0012) }
+(0013) /****************************************
+(0014)             主函数
+(0015) ****************************************/
+(0016) void main(void)
+(0017) {
+(0018) 	DDRB=0XFF; //将 PB 口设置为输出
+_main:
+    00062 EF8F      LDI	R24,0xFF
+    00063 BB87      OUT	0x17,R24
+(0019) 	PORTB=0XFF; //PB 口输出 11111111,熄灭全部灯
+    00064 BB88      OUT	0x18,R24
+(0020) 	DDRD=0XF7; //PD3 设置为输入，其余设置输出
+    00065 EF87      LDI	R24,0xF7
+    00066 BB81      OUT	0x11,R24
+(0021) 	PORTD=0XFF; //PD3 使能上拉电阻，其余都输出 1
+    00067 EF8F      LDI	R24,0xFF
+    00068 BB82      OUT	0x12,R24
+(0022) 	
+(0023) 	
+(0024) 	MCUCR=0X08; //INT1 设置为下降沿触发
+    00069 E088      LDI	R24,0x8
+    0006A BF85      OUT	0x35,R24
+(0025) 	GICR=0X80; //使能 INT1 中断
+    0006B E880      LDI	R24,0x80
+    0006C BF8B      OUT	0x3B,R24
+(0026) 	SREG=0X80; //使能总中断
+    0006D BF8F      OUT	0x3F,R24
+    0006E C00A      RJMP	0x0079
+(0027) while(1)
+(0028) {
+(0029) 	PORTB=0X00; //PB 口输出全是 0，点亮 8 个灯
+    0006F 2422      CLR	R2
+    00070 BA28      OUT	0x18,R2
+(0030) 	delay(1000); //延时一段时间
+    00071 EE08      LDI	R16,0xE8
+    00072 E013      LDI	R17,3
+    00073 DFD9      RCALL	_delay
+(0031) 	PORTB=0XFF; //PB 口输出全是 1，熄灭 8 个灯
+    00074 EF8F      LDI	R24,0xFF
+    00075 BB88      OUT	0x18,R24
+(0032) 	delay(1000); //延时一段时间
+    00076 EE08      LDI	R16,0xE8
+    00077 E013      LDI	R17,3
+    00078 DFD4      RCALL	_delay
+    00079 CFF5      RJMP	0x006F
+    0007A 9508      RET
+_int1_isr:
+    0007B 920A      ST	-Y,R0
+    0007C 921A      ST	-Y,R1
+    0007D 922A      ST	-Y,R2
+    0007E 923A      ST	-Y,R3
+    0007F 924A      ST	-Y,R4
+    00080 925A      ST	-Y,R5
+    00081 926A      ST	-Y,R6
+    00082 927A      ST	-Y,R7
+    00083 928A      ST	-Y,R8
+    00084 929A      ST	-Y,R9
+    00085 930A      ST	-Y,R16
+    00086 931A      ST	-Y,R17
+    00087 932A      ST	-Y,R18
+    00088 933A      ST	-Y,R19
+    00089 938A      ST	-Y,R24
+    0008A 939A      ST	-Y,R25
+    0008B 93AA      ST	-Y,R26
+    0008C 93BA      ST	-Y,R27
+    0008D 93EA      ST	-Y,R30
+    0008E 93FA      ST	-Y,R31
+    0008F B60F      IN	R0,0x3F
+    00090 920A      ST	-Y,R0
+(0033) }
+(0034) }
+(0035) /***************************************
+(0036)             中断服务程序
+(0037) ***************************************/
+(0038) #pragma interrupt_handler int1_isr:3
+(0039) void int1_isr(void)
+(0040) {
+(0041) for(shu=0;shu<5;shu++)
+    00091 2422      CLR	R2
+    00092 2433      CLR	R3
+    00093 9230 0061 STS	shu+1,R3
+    00095 9220 0060 STS	shu,R2
+    00097 C011      RJMP	0x00A9
+(0042) {
+(0043) 	PORTB|= BIT(7); //PB7 输出 1，熄灭 LED
+    00098 9AC7      SBI	0x18,7
+(0044) 	delay(100); //延时
+    00099 E604      LDI	R16,0x64
+    0009A E010      LDI	R17,0
+    0009B DFB1      RCALL	_delay
+(0045) 	PORTB&=~BIT(7); //PB7 输出 0，点亮 LED
+    0009C 98C7      CBI	0x18,7
+(0046) 	delay(100); //延时
+FILE: <library>
+    0009D E604      LDI	R16,0x64
+    0009E E010      LDI	R17,0
+    0009F DFAD      RCALL	_delay
+    000A0 9180 0060 LDS	R24,shu
+    000A2 9190 0061 LDS	R25,shu+1
+    000A4 9601      ADIW	R24,1
+    000A5 9390 0061 STS	shu+1,R25
+    000A7 9380 0060 STS	shu,R24
+    000A9 9180 0060 LDS	R24,shu
+    000AB 9190 0061 LDS	R25,shu+1
+    000AD 3085      CPI	R24,5
+    000AE E0E0      LDI	R30,0
+    000AF 079E      CPC	R25,R30
+    000B0 F338      BCS	0x0098
+    000B1 9009      LD	R0,Y+
+    000B2 BE0F      OUT	0x3F,R0
+    000B3 91F9      LD	R31,Y+
+    000B4 91E9      LD	R30,Y+
+    000B5 91B9      LD	R27,Y+
+    000B6 91A9      LD	R26,Y+
+    000B7 9199      LD	R25,Y+
+    000B8 9189      LD	R24,Y+
+    000B9 9139      LD	R19,Y+
+    000BA 9129      LD	R18,Y+
+    000BB 9119      LD	R17,Y+
+    000BC 9109      LD	R16,Y+
+    000BD 9099      LD	R9,Y+
+    000BE 9089      LD	R8,Y+
+    000BF 9079      LD	R7,Y+
+    000C0 9069      LD	R6,Y+
+    000C1 9059      LD	R5,Y+
+    000C2 9049      LD	R4,Y+
+    000C3 9039      LD	R3,Y+
+    000C4 9029      LD	R2,Y+
+    000C5 9019      LD	R1,Y+
+    000C6 9009      LD	R0,Y+
+    000C7 9518      RETI
+push_xgsetF000:
+    000C8 937A      ST	-Y,R23
+    000C9 936A      ST	-Y,R22
+    000CA 935A      ST	-Y,R21
+    000CB 934A      ST	-Y,R20
+    000CC 9508      RET
+pop_xgsetF000:
+    000CD 9149      LD	R20,Y+
+    000CE 9159      LD	R21,Y+
+    000CF 9169      LD	R22,Y+
+    000D0 9179      LD	R23,Y+
+    000D1 9508      RET

@@ -1,0 +1,343 @@
+Interrupt Vectors
+    00000 940C 0048 JMP	__start|__text_start
+    00002 940C 006B JMP	_INT
+    0003C 940C 0129 JMP	_read1
+
+Program Code (text area)
+__start|__text_start:
+    00048 EFCF      LDI	R28,0xFF
+    00049 E1D0      LDI	R29,0x10
+    0004A BFCD      OUT	0x3D,R28
+    0004B BFDE      OUT	0x3E,R29
+    0004C 51CE      SUBI	R28,0x1E
+    0004D 40D0      SBCI	R29,0
+    0004E EA0A      LDI	R16,0xAA
+    0004F 8308      ST	Y,R16
+    00050 2400      CLR	R0
+    00051 E0E4      LDI	R30,4
+    00052 E0F1      LDI	R31,1
+    00053 E011      LDI	R17,1
+    00054 30E4      CPI	R30,4
+    00055 07F1      CPC	R31,R17
+    00056 F011      BEQ	0x0059
+    00057 9201      ST	Z+,R0
+    00058 CFFB      RJMP	0x0054
+    00059 8300      ST	Z,R16
+    0005A E8EC      LDI	R30,0x8C
+    0005B E0F0      LDI	R31,0
+    0005C E0A0      LDI	R26,0
+    0005D E0B1      LDI	R27,1
+    0005E E010      LDI	R17,0
+    0005F E000      LDI	R16,0
+    00060 BF0B      OUT	0x3B,R16
+    00061 39E0      CPI	R30,0x90
+    00062 07F1      CPC	R31,R17
+    00063 F021      BEQ	0x0068
+    00064 95C8      LPM
+    00065 9631      ADIW	R30,1
+    00066 920D      ST	X+,R0
+    00067 CFF9      RJMP	0x0061
+    00068 940E 00BD CALL	_main
+_exit:
+    0006A CFFF      RJMP	_exit
+_INT:
+    0006B 920A      ST	-Y,R0
+    0006C 921A      ST	-Y,R1
+    0006D 922A      ST	-Y,R2
+    0006E 923A      ST	-Y,R3
+    0006F 924A      ST	-Y,R4
+    00070 925A      ST	-Y,R5
+    00071 926A      ST	-Y,R6
+    00072 927A      ST	-Y,R7
+    00073 928A      ST	-Y,R8
+    00074 929A      ST	-Y,R9
+    00075 930A      ST	-Y,R16
+    00076 931A      ST	-Y,R17
+    00077 932A      ST	-Y,R18
+    00078 933A      ST	-Y,R19
+    00079 938A      ST	-Y,R24
+    0007A 939A      ST	-Y,R25
+    0007B 93AA      ST	-Y,R26
+    0007C 93BA      ST	-Y,R27
+    0007D 93EA      ST	-Y,R30
+    0007E 93FA      ST	-Y,R31
+    0007F B60F      IN	R0,0x3F
+    00080 920A      ST	-Y,R0
+FILE: C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\two_led.c
+(0001) #include "delay.h"
+(0002) #include"usart.h"
+(0003) #pragma interrupt_handler INT:2       //外部中断0
+(0004) 
+(0005) int led_flag = -1 ;
+(0006) //一开始设置led_flag=0,实物现象正常
+(0007) //但是仿真的时候，初始化完毕，led_flag就变为1，证明在没有按下按键时就进入了中断
+(0008) //于是设置led_flag=-1......
+(0009) void INT()
+(0010) {      
+(0011)       delay(500);
+    00081 EF04      LDI	R16,0xF4
+    00082 E011      LDI	R17,1
+    00083 940E 00F0 CALL	_delay
+(0012)       led_flag++ ;
+    00085 9180 0100 LDS	R24,led_flag
+    00087 9190 0101 LDS	R25,led_flag+1
+    00089 9601      ADIW	R24,1
+    0008A 9390 0101 STS	led_flag+1,R25
+    0008C 9380 0100 STS	led_flag,R24
+(0013) 	  //send1(led_flag+48);
+(0014) 	  
+(0015)       EIFR |= BIT(INTF0) ;//清除中断标志位
+    0008E B788      IN	R24,0x38
+    0008F 6081      ORI	R24,1
+    00090 BF88      OUT	0x38,R24
+    00091 9009      LD	R0,Y+
+    00092 BE0F      OUT	0x3F,R0
+    00093 91F9      LD	R31,Y+
+    00094 91E9      LD	R30,Y+
+    00095 91B9      LD	R27,Y+
+    00096 91A9      LD	R26,Y+
+    00097 9199      LD	R25,Y+
+    00098 9189      LD	R24,Y+
+    00099 9139      LD	R19,Y+
+    0009A 9129      LD	R18,Y+
+    0009B 9119      LD	R17,Y+
+    0009C 9109      LD	R16,Y+
+    0009D 9099      LD	R9,Y+
+    0009E 9089      LD	R8,Y+
+    0009F 9079      LD	R7,Y+
+    000A0 9069      LD	R6,Y+
+    000A1 9059      LD	R5,Y+
+    000A2 9049      LD	R4,Y+
+    000A3 9039      LD	R3,Y+
+    000A4 9029      LD	R2,Y+
+    000A5 9019      LD	R1,Y+
+    000A6 9009      LD	R0,Y+
+    000A7 9518      RETI
+(0016) }
+(0017) void INT0_init()
+(0018) { 
+(0019)    EICRA |= BIT(ISC01); //下降沿中断,先配置什么方式中断，再使能中断
+_INT0_init:
+    000A8 9180 006A LDS	R24,0x6A
+    000AA 6082      ORI	R24,2
+    000AB 9380 006A STS	0x6A,R24
+(0020)    EIMSK |= BIT(INT0);  //配置INT0使能外部中断   
+    000AD B789      IN	R24,0x39
+    000AE 6081      ORI	R24,1
+    000AF BF89      OUT	0x39,R24
+(0021)    SREG  |= BIT(7) ;    //开启总中断
+    000B0 9478      BSET	7
+    000B1 9508      RET
+(0022) }
+(0023) void led_button_init()
+(0024) {
+(0025)    /*按键输入高电平*/
+(0026)    DDRD&=~BIT(0);
+_led_button_init:
+    000B2 9888      CBI	0x11,0
+(0027)    PORTD|=BIT(0);
+    000B3 9A90      SBI	0x12,0
+(0028)    
+(0029)    /*led输出低电平*/
+(0030)    DDRE|=BIT(0);
+    000B4 9A10      SBI	0x02,0
+(0031)    PORTE&=BIT(0);
+    000B5 B183      IN	R24,0x03
+    000B6 7081      ANDI	R24,1
+    000B7 B983      OUT	0x03,R24
+(0032)    DDRE|=BIT(1);
+    000B8 9A11      SBI	0x02,1
+(0033)    PORTE&=BIT(1);
+    000B9 B183      IN	R24,0x03
+    000BA 7082      ANDI	R24,2
+    000BB B983      OUT	0x03,R24
+    000BC 9508      RET
+(0034) }
+(0035) void main()
+(0036) {
+(0037)    led_button_init() ;
+_main:
+    000BD DFF4      RCALL	_led_button_init
+(0038)    INT0_init() ;
+    000BE DFE9      RCALL	_INT0_init
+    000BF C02E      RJMP	0x00EE
+(0039)    //usart1_init();
+(0040)    //send1('a');
+(0041)    while(1)
+(0042)    {
+(0043)        if(led_flag == 1 )
+    000C0 9180 0100 LDS	R24,led_flag
+    000C2 9190 0101 LDS	R25,led_flag+1
+    000C4 3081      CPI	R24,1
+    000C5 E0E0      LDI	R30,0
+    000C6 079E      CPC	R25,R30
+    000C7 F411      BNE	0x00CA
+(0044)       {
+(0045)          PORTE|=BIT(0);
+    000C8 9A18      SBI	0x03,0
+(0046) 		 PORTE&=~BIT(1);
+    000C9 9819      CBI	0x03,1
+(0047)       }
+(0048)       if(led_flag == 2)
+    000CA 9180 0100 LDS	R24,led_flag
+    000CC 9190 0101 LDS	R25,led_flag+1
+    000CE 3082      CPI	R24,2
+    000CF E0E0      LDI	R30,0
+    000D0 079E      CPC	R25,R30
+    000D1 F411      BNE	0x00D4
+(0049)       {
+(0050)          PORTE|=BIT(0);
+    000D2 9A18      SBI	0x03,0
+(0051) 		 PORTE|=BIT(1);
+    000D3 9A19      SBI	0x03,1
+(0052)       }
+(0053)       if(led_flag == 3)
+    000D4 9180 0100 LDS	R24,led_flag
+    000D6 9190 0101 LDS	R25,led_flag+1
+    000D8 3083      CPI	R24,3
+    000D9 E0E0      LDI	R30,0
+    000DA 079E      CPC	R25,R30
+    000DB F411      BNE	0x00DE
+(0054)       {
+(0055) 	     PORTE&=~BIT(0);
+    000DC 9818      CBI	0x03,0
+(0056) 		 PORTE|=BIT(1);
+    000DD 9A19      SBI	0x03,1
+(0057) 	  }
+(0058)       if(led_flag == 4)
+    000DE 9180 0100 LDS	R24,led_flag
+    000E0 9190 0101 LDS	R25,led_flag+1
+    000E2 3084      CPI	R24,4
+    000E3 E0E0      LDI	R30,0
+    000E4 079E      CPC	R25,R30
+    000E5 F441      BNE	0x00EE
+(0059)       {
+(0060) 	     PORTE&=~BIT(0);
+    000E6 9818      CBI	0x03,0
+(0061) 		 PORTE&=~BIT(1);
+    000E7 9819      CBI	0x03,1
+(0062) 		 led_flag = 0 ;
+    000E8 2422      CLR	R2
+    000E9 2433      CLR	R3
+    000EA 9230 0101 STS	led_flag+1,R3
+    000EC 9220 0100 STS	led_flag,R2
+    000EE CFD1      RJMP	0x00C0
+    000EF 9508      RET
+_delay:
+  i                    --> R20
+  j                    --> R22
+  ms                   --> R16
+    000F0 940E 013D CALL	push_xgsetF000
+FILE: C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\delay.c
+(0001) #include"delay.h"
+(0002) void delay(uint ms)
+(0003) {
+(0004)         uint i,j;
+(0005) 	   for(i=0;i<ms;i++)
+    000F2 2744      CLR	R20
+    000F3 2755      CLR	R21
+    000F4 C00B      RJMP	0x0100
+(0006) 	   {
+(0007) 	   for(j=0;j<1141;j++);
+    000F5 2766      CLR	R22
+    000F6 2777      CLR	R23
+    000F7 C002      RJMP	0x00FA
+    000F8 5F6F      SUBI	R22,0xFF
+    000F9 4F7F      SBCI	R23,0xFF
+    000FA 3765      CPI	R22,0x75
+    000FB E0E4      LDI	R30,4
+    000FC 077E      CPC	R23,R30
+    000FD F3D0      BCS	0x00F8
+    000FE 5F4F      SUBI	R20,0xFF
+    000FF 4F5F      SBCI	R21,0xFF
+    00100 1740      CP	R20,R16
+    00101 0751      CPC	R21,R17
+    00102 F390      BCS	0x00F5
+    00103 940C 0142 JMP	pop_xgsetF000
+FILE: C:\Users\123\Desktop\LESSON~1\two_led\ICCAVR\usart.c
+(0001) //PD0,1
+(0002) #include"usart.h"
+(0003) #pragma interrupt_handler read1:31       //usart1接收结束中断
+(0004) uchar flag=0,qdata=0;  //已经在middle.h里面声明了的全局变量
+(0005) void usart1_init()
+(0006) {
+(0007)    DDRD&=~BIT(2);//PD2(RXD)输入
+_usart1_init:
+    00105 988A      CBI	0x11,2
+(0008)    DDRD|=BIT(3);//PD3(TXD)输出
+    00106 9A8B      SBI	0x11,3
+(0009)    UCSR1A=0;
+    00107 2422      CLR	R2
+    00108 9220 009B STS	0x9B,R2
+(0010)    UCSR1B|=BIT(RXCIE1)|BIT(RXEN1)|BIT(TXEN1);    
+    0010A 9180 009A LDS	R24,0x9A
+    0010C 6988      ORI	R24,0x98
+    0010D 9380 009A STS	0x9A,R24
+(0011)    UCSR1C|=BIT(UCSZ11)|BIT(UCSZ10);//8位
+    0010F 9180 009D LDS	R24,0x9D
+    00111 6086      ORI	R24,6
+    00112 9380 009D STS	0x9D,R24
+(0012)    UBRR1L=51;      //9600
+    00114 E383      LDI	R24,0x33
+    00115 9380 0099 STS	0x99,R24
+(0013)    SREG|=BIT(7);
+    00117 9478      BSET	7
+    00118 9508      RET
+(0014) }
+(0015) 
+(0016) void send1(uchar data)
+(0017) {
+(0018)     while(!(UCSR1A&BIT(UDRE1)));
+_send1:
+  data                 --> R16
+    00119 9020 009B LDS	R2,0x9B
+    0011B FE25      SBRS	R2,5
+    0011C CFFC      RJMP	_send1
+(0019) 	UDR1=data;
+    0011D 9300 009C STS	0x9C,R16
+(0020) 	while(!(UCSR1A&BIT(TXC1)));
+    0011F 9020 009B LDS	R2,0x9B
+    00121 FE26      SBRS	R2,6
+    00122 CFFC      RJMP	0x011F
+(0021) 	UCSR1A|=BIT(TXC1);
+    00123 9180 009B LDS	R24,0x9B
+    00125 6480      ORI	R24,0x40
+    00126 9380 009B STS	0x9B,R24
+    00128 9508      RET
+_read1:
+    00129 922A      ST	-Y,R2
+    0012A 938A      ST	-Y,R24
+    0012B B62F      IN	R2,0x3F
+    0012C 922A      ST	-Y,R2
+(0022) }
+(0023) 
+(0024) uchar read1()
+(0025) {
+(0026)    while(!(UCSR1A&BIT(RXC1)));
+    0012D 9020 009B LDS	R2,0x9B
+    0012F FE27      SBRS	R2,7
+    00130 CFFC      RJMP	0x012D
+(0027)    qdata=UDR1;
+    00131 9020 009C LDS	R2,0x9C
+    00133 9220 0103 STS	qdata,R2
+(0028)    flag=1; 
+FILE: <library>
+    00135 E081      LDI	R24,1
+    00136 9380 0102 STS	flag,R24
+    00138 9029      LD	R2,Y+
+    00139 BE2F      OUT	0x3F,R2
+    0013A 9189      LD	R24,Y+
+    0013B 9029      LD	R2,Y+
+    0013C 9518      RETI
+push_xgsetF000:
+    0013D 937A      ST	-Y,R23
+    0013E 936A      ST	-Y,R22
+    0013F 935A      ST	-Y,R21
+    00140 934A      ST	-Y,R20
+    00141 9508      RET
+pop_xgsetF000:
+    00142 9149      LD	R20,Y+
+    00143 9159      LD	R21,Y+
+    00144 9169      LD	R22,Y+
+    00145 9179      LD	R23,Y+
+    00146 9508      RET

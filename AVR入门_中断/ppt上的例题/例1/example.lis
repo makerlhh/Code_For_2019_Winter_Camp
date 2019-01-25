@@ -1,0 +1,253 @@
+                        .module example.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile example.c
+ 0000                   .dbfile D:\学习\创客课程\2019.1.23冬令营中断课程\ppt上的例题\example.c
+ 0000                   .dbfunc e delay _delay fV
+ 0000           ;              i -> R20,R21
+ 0000           ;              j -> R22,R23
+ 0000           ;              k -> R16,R17
+                        .even
+ 0000           _delay::
+ 0000 0E940000          xcall push_xgsetF000
+ 0004                   .dbline -1
+ 0004                   .dbline 8
+ 0004           ; #include<iom16v.h>
+ 0004           ; #include<macros.h>
+ 0004           ; unsigned int shu;
+ 0004           ; /***************************************
+ 0004           ;            延时函数
+ 0004           ; ****************************************/
+ 0004           ; void delay(unsigned  int k)
+ 0004           ; {
+ 0004                   .dbline 10
+ 0004           ;       unsigned int i,j;
+ 0004           ;       for(i=0;i<k;i++)
+ 0004 4427              clr R20
+ 0006 5527              clr R21
+ 0008 0BC0              xjmp L5
+ 000A           L2:
+ 000A                   .dbline 11
+ 000A           ;       for(j=0;j<1148;j++);
+ 000A 6627              clr R22
+ 000C 7727              clr R23
+ 000E 02C0              xjmp L9
+ 0010           L6:
+ 0010                   .dbline 11
+ 0010           L7:
+ 0010                   .dbline 11
+ 0010 6F5F              subi R22,255  ; offset = 1
+ 0012 7F4F              sbci R23,255
+ 0014           L9:
+ 0014                   .dbline 11
+ 0014 6C37              cpi R22,124
+ 0016 E4E0              ldi R30,4
+ 0018 7E07              cpc R23,R30
+ 001A D0F3              brlo L6
+ 001C           X0:
+ 001C           L3:
+ 001C                   .dbline 10
+ 001C 4F5F              subi R20,255  ; offset = 1
+ 001E 5F4F              sbci R21,255
+ 0020           L5:
+ 0020                   .dbline 10
+ 0020 4017              cp R20,R16
+ 0022 5107              cpc R21,R17
+ 0024 90F3              brlo L2
+ 0026           X1:
+ 0026                   .dbline -2
+ 0026           L1:
+ 0026                   .dbline 0 ; func end
+ 0026 0C940000          xjmp pop_xgsetF000
+ 002A                   .dbsym r i 20 i
+ 002A                   .dbsym r j 22 i
+ 002A                   .dbsym r k 16 i
+ 002A                   .dbend
+ 002A                   .dbfunc e main _main fV
+                        .even
+ 002A           _main::
+ 002A                   .dbline -1
+ 002A                   .dbline 17
+ 002A           ; }
+ 002A           ; /****************************************
+ 002A           ;             主函数
+ 002A           ; ****************************************/
+ 002A           ; void main(void)
+ 002A           ; {
+ 002A                   .dbline 18
+ 002A           ;       DDRB=0XFF; //将 PB 口设置为输出
+ 002A 8FEF              ldi R24,255
+ 002C 87BB              out 0x17,R24
+ 002E                   .dbline 19
+ 002E           ;       PORTB=0XFF; //PB 口输出 11111111,熄灭全部灯
+ 002E 88BB              out 0x18,R24
+ 0030                   .dbline 20
+ 0030           ;       DDRD=0XF7; //PD3 设置为输入，其余设置输出
+ 0030 87EF              ldi R24,247
+ 0032 81BB              out 0x11,R24
+ 0034                   .dbline 21
+ 0034           ;       PORTD=0XFF; //PD3 使能上拉电阻，其余都输出 1
+ 0034 8FEF              ldi R24,255
+ 0036 82BB              out 0x12,R24
+ 0038                   .dbline 24
+ 0038           ;       
+ 0038           ;       
+ 0038           ;       MCUCR=0X08; //INT1 设置为下降沿触发
+ 0038 88E0              ldi R24,8
+ 003A 85BF              out 0x35,R24
+ 003C                   .dbline 25
+ 003C           ;       GICR=0X80; //使能 INT1 中断
+ 003C 80E8              ldi R24,128
+ 003E 8BBF              out 0x3b,R24
+ 0040                   .dbline 26
+ 0040           ;       SREG=0X80; //使能总中断
+ 0040 8FBF              out 0x3f,R24
+ 0042 0AC0              xjmp L12
+ 0044           L11:
+ 0044                   .dbline 28
+ 0044           ; while(1)
+ 0044           ; {
+ 0044                   .dbline 29
+ 0044           ;       PORTB=0X00; //PB 口输出全是 0，点亮 8 个灯
+ 0044 2224              clr R2
+ 0046 28BA              out 0x18,R2
+ 0048                   .dbline 30
+ 0048           ;       delay(1000); //延时一段时间
+ 0048 08EE              ldi R16,1000
+ 004A 13E0              ldi R17,3
+ 004C D9DF              xcall _delay
+ 004E                   .dbline 31
+ 004E           ;       PORTB=0XFF; //PB 口输出全是 1，熄灭 8 个灯
+ 004E 8FEF              ldi R24,255
+ 0050 88BB              out 0x18,R24
+ 0052                   .dbline 32
+ 0052           ;       delay(1000); //延时一段时间
+ 0052 08EE              ldi R16,1000
+ 0054 13E0              ldi R17,3
+ 0056 D4DF              xcall _delay
+ 0058                   .dbline 33
+ 0058           ; }
+ 0058           L12:
+ 0058                   .dbline 27
+ 0058 F5CF              xjmp L11
+ 005A           X2:
+ 005A                   .dbline -2
+ 005A           L10:
+ 005A                   .dbline 0 ; func end
+ 005A 0895              ret
+ 005C                   .dbend
+                        .area vector(rom, abs)
+                        .org 8
+ 0008 0C942E00          jmp _int1_isr
+                        .area text(rom, con, rel)
+ 005C                   .dbfile D:\学习\创客课程\2019.1.23冬令营中断课程\ppt上的例题\example.c
+ 005C                   .dbfunc e int1_isr _int1_isr fV
+                        .even
+ 005C           _int1_isr::
+ 005C 0A92              st -y,R0
+ 005E 1A92              st -y,R1
+ 0060 2A92              st -y,R2
+ 0062 3A92              st -y,R3
+ 0064 4A92              st -y,R4
+ 0066 5A92              st -y,R5
+ 0068 6A92              st -y,R6
+ 006A 7A92              st -y,R7
+ 006C 8A92              st -y,R8
+ 006E 9A92              st -y,R9
+ 0070 0A93              st -y,R16
+ 0072 1A93              st -y,R17
+ 0074 2A93              st -y,R18
+ 0076 3A93              st -y,R19
+ 0078 8A93              st -y,R24
+ 007A 9A93              st -y,R25
+ 007C AA93              st -y,R26
+ 007E BA93              st -y,R27
+ 0080 EA93              st -y,R30
+ 0082 FA93              st -y,R31
+ 0084 0FB6              IN R0,63
+ 0086 0A92              st -y,R0
+ 0088                   .dbline -1
+ 0088                   .dbline 40
+ 0088           ; }
+ 0088           ; /***************************************
+ 0088           ;             中断服务程序
+ 0088           ; ***************************************/
+ 0088           ; #pragma interrupt_handler int1_isr:3
+ 0088           ; void int1_isr(void)
+ 0088           ; {
+ 0088                   .dbline 41
+ 0088           ; for(shu=0;shu<5;shu++)
+ 0088 2224              clr R2
+ 008A 3324              clr R3
+ 008C 30920100          sts _shu+1,R3
+ 0090 20920000          sts _shu,R2
+ 0094 11C0              xjmp L18
+ 0096           L15:
+ 0096                   .dbline 42
+ 0096           ; {
+ 0096                   .dbline 43
+ 0096           ;       PORTB|= BIT(7); //PB7 输出 1，熄灭 LED
+ 0096 C79A              sbi 0x18,7
+ 0098                   .dbline 44
+ 0098           ;       delay(100); //延时
+ 0098 04E6              ldi R16,100
+ 009A 10E0              ldi R17,0
+ 009C B1DF              xcall _delay
+ 009E                   .dbline 45
+ 009E           ;       PORTB&=~BIT(7); //PB7 输出 0，点亮 LED
+ 009E C798              cbi 0x18,7
+ 00A0                   .dbline 46
+ 00A0           ;       delay(100); //延时
+ 00A0 04E6              ldi R16,100
+ 00A2 10E0              ldi R17,0
+ 00A4 ADDF              xcall _delay
+ 00A6                   .dbline 47
+ 00A6           ; }
+ 00A6           L16:
+ 00A6                   .dbline 41
+ 00A6 80910000          lds R24,_shu
+ 00AA 90910100          lds R25,_shu+1
+ 00AE 0196              adiw R24,1
+ 00B0 90930100          sts _shu+1,R25
+ 00B4 80930000          sts _shu,R24
+ 00B8           L18:
+ 00B8                   .dbline 41
+ 00B8 80910000          lds R24,_shu
+ 00BC 90910100          lds R25,_shu+1
+ 00C0 8530              cpi R24,5
+ 00C2 E0E0              ldi R30,0
+ 00C4 9E07              cpc R25,R30
+ 00C6 38F3              brlo L15
+ 00C8           X3:
+ 00C8                   .dbline -2
+ 00C8           L14:
+ 00C8                   .dbline 0 ; func end
+ 00C8 0990              ld R0,y+
+ 00CA 0FBE              OUT 63,R0
+ 00CC F991              ld R31,y+
+ 00CE E991              ld R30,y+
+ 00D0 B991              ld R27,y+
+ 00D2 A991              ld R26,y+
+ 00D4 9991              ld R25,y+
+ 00D6 8991              ld R24,y+
+ 00D8 3991              ld R19,y+
+ 00DA 2991              ld R18,y+
+ 00DC 1991              ld R17,y+
+ 00DE 0991              ld R16,y+
+ 00E0 9990              ld R9,y+
+ 00E2 8990              ld R8,y+
+ 00E4 7990              ld R7,y+
+ 00E6 6990              ld R6,y+
+ 00E8 5990              ld R5,y+
+ 00EA 4990              ld R4,y+
+ 00EC 3990              ld R3,y+
+ 00EE 2990              ld R2,y+
+ 00F0 1990              ld R1,y+
+ 00F2 0990              ld R0,y+
+ 00F4 1895              reti
+ 00F6                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile D:\学习\创客课程\2019.1.23冬令营中断课程\ppt上的例题\example.c
+ 0000           _shu::
+ 0000                   .blkb 2
+ 0002                   .dbsym e shu _shu i
+ 0002           ; }
