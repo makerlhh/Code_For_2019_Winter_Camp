@@ -1,0 +1,47 @@
+#include<iom16v.h>
+#include<macros.h>
+
+unsigned int adcc()
+{
+    unsigned int data;
+	
+	DDRA&=~BIT(PA0);//
+	PORTA&=~BIT(PA0);
+	
+	ADMUX=0;
+	ADCSR|=BIT(ADEN);
+	ADCSR|=BIT(ADSC);
+	
+	while(!(ADSC&BIT(ADIF)));
+	
+	data = ADCL;
+	data = data + ADCH*256;
+    return data;
+}
+
+int main()
+{
+    unsigned int redata;
+	DDRC|=BIT(PC0);
+	
+	while(1)
+	{
+	    redata = adcc();
+		if(redata>512)
+		{
+		    PORTC&=~BIT(PC0);
+		}
+		else
+		{
+		    PORTC|=BIT(PC0);
+		}
+	}
+	
+	
+    return 0;
+}
+	
+	
+	
+	
+	

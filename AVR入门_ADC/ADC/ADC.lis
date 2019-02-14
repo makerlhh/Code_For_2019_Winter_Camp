@@ -1,0 +1,139 @@
+                        .module ADC.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ADC.c
+ 0000                   .dbfile C:\Users\HP\Desktop\1.25ADC课程\课上例程\ADC\ADC.c
+ 0000                   .dbfunc e adcc _adcc fi
+ 0000           ;           data -> R10,R11
+                        .even
+ 0000           _adcc::
+ 0000 AA92              st -y,R10
+ 0002 BA92              st -y,R11
+ 0004                   .dbline -1
+ 0004                   .dbline 5
+ 0004           ; #include<iom16v.h>
+ 0004           ; #include<macros.h>
+ 0004           ; 
+ 0004           ; unsigned int adcc()
+ 0004           ; {
+ 0004                   .dbline 8
+ 0004           ;     unsigned int data;
+ 0004           ;       
+ 0004           ;       DDRA&=~BIT(PA0);//
+ 0004 D098              cbi 0x1a,0
+ 0006                   .dbline 9
+ 0006           ;       PORTA&=~BIT(PA0);
+ 0006 D898              cbi 0x1b,0
+ 0008                   .dbline 11
+ 0008           ;       
+ 0008           ;       ADMUX=0;
+ 0008 2224              clr R2
+ 000A 27B8              out 0x7,R2
+ 000C                   .dbline 12
+ 000C           ;       ADCSRA|=BIT(ADEN);
+ 000C 379A              sbi 0x6,7
+ 000E                   .dbline 13
+ 000E           ;       ADCSRA|=BIT(ADSC);//配置ADC
+ 000E 369A              sbi 0x6,6
+ 0010           L2:
+ 0010                   .dbline 15
+ 0010           ;       
+ 0010           ;       while(!(ADCSRA&(BIT(ADIF))));//判断转换是否结束（中断标志置位）
+ 0010           L3:
+ 0010                   .dbline 15
+ 0010 349B              sbis 0x6,4
+ 0012 FECF              rjmp L2
+ 0014           X0:
+ 0014                   .dbline 17
+ 0014           ;       
+ 0014           ;       data = ADCL;
+ 0014 A4B0              in R10,0x4
+ 0016 BB24              clr R11
+ 0018                   .dbline 18
+ 0018           ;       data = data + ADCH*256;//读出转换的数据
+ 0018 25B1              in R18,0x5
+ 001A 3327              clr R19
+ 001C 00E0              ldi R16,256
+ 001E 11E0              ldi R17,1
+ 0020 0E940000          xcall empy16s
+ 0024 A00E              add R10,R16
+ 0026 B11E              adc R11,R17
+ 0028                   .dbline 19
+ 0028           ;     return data;
+ 0028 8501              movw R16,R10
+ 002A                   .dbline -2
+ 002A           L1:
+ 002A                   .dbline 0 ; func end
+ 002A B990              ld R11,y+
+ 002C A990              ld R10,y+
+ 002E 0895              ret
+ 0030                   .dbsym r data 10 i
+ 0030                   .dbend
+ 0030                   .dbfunc e main _main fI
+ 0030           ;         redata -> R10,R11
+                        .even
+ 0030           _main::
+ 0030                   .dbline -1
+ 0030                   .dbline 23
+ 0030           ; }
+ 0030           ; 
+ 0030           ; int main()
+ 0030           ; {
+ 0030                   .dbline 25
+ 0030           ;     unsigned int redata;
+ 0030           ;       DDRC|=BIT(PC0);
+ 0030 A09A              sbi 0x14,0
+ 0032 0AC0              xjmp L7
+ 0034           L6:
+ 0034                   .dbline 28
+ 0034           ;       
+ 0034           ;       while(1)
+ 0034           ;       {
+ 0034                   .dbline 29
+ 0034           ;           redata = adcc();
+ 0034 E5DF              xcall _adcc
+ 0036 5801              movw R10,R16
+ 0038                   .dbline 30
+ 0038           ;               if(redata>512)
+ 0038 80E0              ldi R24,512
+ 003A 92E0              ldi R25,2
+ 003C 8017              cp R24,R16
+ 003E 9107              cpc R25,R17
+ 0040 10F4              brsh L9
+ 0042           X1:
+ 0042                   .dbline 31
+ 0042           ;               {
+ 0042                   .dbline 32
+ 0042           ;                   PORTC&=~BIT(PC0);
+ 0042 A898              cbi 0x15,0
+ 0044                   .dbline 33
+ 0044           ;               }
+ 0044 01C0              xjmp L10
+ 0046           L9:
+ 0046                   .dbline 35
+ 0046           ;               else
+ 0046           ;               {
+ 0046                   .dbline 36
+ 0046           ;                   PORTC|=BIT(PC0);
+ 0046 A89A              sbi 0x15,0
+ 0048                   .dbline 37
+ 0048           ;               }
+ 0048           L10:
+ 0048                   .dbline 38
+ 0048           ;       }
+ 0048           L7:
+ 0048                   .dbline 27
+ 0048 F5CF              xjmp L6
+ 004A           X2:
+ 004A                   .dbline -2
+ 004A           L5:
+ 004A                   .dbline 0 ; func end
+ 004A 0895              ret
+ 004C                   .dbsym r redata 10 i
+ 004C                   .dbend
+ 004C           ;       return 0;
+ 004C           ; }
+ 004C           ;       
+ 004C           ;       
+ 004C           ;       
+ 004C           ;       
+ 004C           ;       
