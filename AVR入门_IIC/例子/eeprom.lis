@@ -1,0 +1,144 @@
+                        .module eeprom.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile eeprom.c
+ 0000                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\eeprom.c
+ 0000                   .dbfunc e eeprom_write _eeprom_write fV
+ 0000           ;           data -> R18,R19
+ 0000           ;        address -> R16,R17
+                        .even
+ 0000           _eeprom_write::
+ 0000                   .dbline -1
+ 0000                   .dbline 4
+ 0000           ; #include "eeprom.h"
+ 0000           ; 
+ 0000           ; void eeprom_write(uint address,uint data)
+ 0000           ; {
+ 0000                   .dbline 5
+ 0000           ;       SREG &= ~BIT(7);           //最好关闭总中断，避免打扰。
+ 0000 F894              bclr 7
+ 0002           L2:
+ 0002                   .dbline 6
+ 0002           ;       while(EECR&BIT(EEWE));     //等待上一次写结束
+ 0002           L3:
+ 0002                   .dbline 6
+ 0002 E199              sbic 0x1c,1
+ 0004 FECF              rjmp L2
+ 0006           X0:
+ 0006                   .dbline 7
+ 0006           ;       EEAR = address;
+ 0006 1FBB              out 0x1f,R17
+ 0008 0EBB              out 0x1e,R16
+ 000A                   .dbline 8
+ 000A           ;       EEDR = data;
+ 000A 2DBB              out 0x1d,R18
+ 000C                   .dbline 9
+ 000C           ;       EECR |= BIT(EEMWE);       //开总写使能
+ 000C E29A              sbi 0x1c,2
+ 000E                   .dbline 10
+ 000E           ;       EECR |= BIT(EEWE);       //写使能
+ 000E E19A              sbi 0x1c,1
+ 0010                   .dbline 11
+ 0010           ;       SREG |= BIT(7);         //开总中断
+ 0010 7894              bset 7
+ 0012                   .dbline -2
+ 0012           L1:
+ 0012                   .dbline 0 ; func end
+ 0012 0895              ret
+ 0014                   .dbsym r data 18 i
+ 0014                   .dbsym r address 16 i
+ 0014                   .dbend
+ 0014                   .dbfunc e eeprom_read _eeprom_read fc
+ 0014           ;           data -> R10
+ 0014           ;        address -> R16,R17
+                        .even
+ 0014           _eeprom_read::
+ 0014 AA92              st -y,R10
+ 0016                   .dbline -1
+ 0016                   .dbline 14
+ 0016           ; }
+ 0016           ; uchar eeprom_read(uint address)
+ 0016           ; {
+ 0016           L6:
+ 0016                   .dbline 17
+ 0016           ;       uchar data;
+ 0016           ;       //SREG &= ~BIT(7);         //没必要吧？
+ 0016           ;       while(EECR&BIT(EEWE));     //等待上一次写结束
+ 0016           L7:
+ 0016                   .dbline 17
+ 0016 E199              sbic 0x1c,1
+ 0018 FECF              rjmp L6
+ 001A           X1:
+ 001A                   .dbline 18
+ 001A           ;       EEAR = address;
+ 001A 1FBB              out 0x1f,R17
+ 001C 0EBB              out 0x1e,R16
+ 001E                   .dbline 19
+ 001E           ;       EECR |= BIT(EERE);
+ 001E E09A              sbi 0x1c,0
+ 0020                   .dbline 20
+ 0020           ;       data = EEDR;
+ 0020 ADB2              in R10,0x1d
+ 0022                   .dbline 22
+ 0022           ;       //SREG |= BIT(7);
+ 0022           ;       return data;
+ 0022 0A2D              mov R16,R10
+ 0024                   .dbline -2
+ 0024           L5:
+ 0024                   .dbline 0 ; func end
+ 0024 A990              ld R10,y+
+ 0026 0895              ret
+ 0028                   .dbsym r data 10 c
+ 0028                   .dbsym r address 16 i
+ 0028                   .dbend
+ 0028                   .dbfunc e eeprom_write_str _eeprom_write_str fV
+ 0028           ;           data -> R20,R21
+ 0028           ;              i -> R22,R23
+                        .even
+ 0028           _eeprom_write_str::
+ 0028 0E940000          xcall push_xgsetF000
+ 002C A901              movw R20,R18
+ 002E B801              movw R22,R16
+ 0030                   .dbline -1
+ 0030                   .dbline 25
+ 0030           ; }
+ 0030           ; void eeprom_write_str(uint i,uchar *data)
+ 0030           ; {
+ 0030 09C0              xjmp L11
+ 0032           L10:
+ 0032                   .dbline 27
+ 0032           ;       while (*data) 
+ 0032           ;       {
+ 0032                   .dbline 28
+ 0032           ;       eeprom_write(i,*data);
+ 0032 FA01              movw R30,R20
+ 0034 2081              ldd R18,z+0
+ 0036 3327              clr R19
+ 0038 8B01              movw R16,R22
+ 003A E2DF              xcall _eeprom_write
+ 003C                   .dbline 29
+ 003C           ;       data++;
+ 003C 4F5F              subi R20,255  ; offset = 1
+ 003E 5F4F              sbci R21,255
+ 0040                   .dbline 30
+ 0040           ;               i++;
+ 0040 6F5F              subi R22,255  ; offset = 1
+ 0042 7F4F              sbci R23,255
+ 0044                   .dbline 31
+ 0044           ;       }       
+ 0044           L11:
+ 0044                   .dbline 26
+ 0044 FA01              movw R30,R20
+ 0046 2080              ldd R2,z+0
+ 0048 2220              tst R2
+ 004A 99F7              brne L10
+ 004C           X2:
+ 004C                   .dbline -2
+ 004C           L9:
+ 004C                   .dbline 0 ; func end
+ 004C 0C940000          xjmp pop_xgsetF000
+ 0050                   .dbsym r data 20 pc
+ 0050                   .dbsym r i 22 i
+ 0050                   .dbend
+ 0050           ; }
+ 0050           ; 
+ 0050           ; 

@@ -1,0 +1,578 @@
+                        .module main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile main.c
+ 0000                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0000                   .dbfunc e time1_init _time1_init fV
+                        .even
+ 0000           _time1_init::
+ 0000                   .dbline -1
+ 0000                   .dbline 11
+ 0000           ; #include<iom16v.h>
+ 0000           ; #include<macros.h>
+ 0000           ; 
+ 0000           ; #include"delay.h"
+ 0000           ; #include"eeprom.h"
+ 0000           ; #include"usart.h"
+ 0000           ; #include"iic_hard.h"
+ 0000           ; 
+ 0000           ; 
+ 0000           ; void time1_init(void)   //1s        定时器1初始化
+ 0000           ; {
+ 0000                   .dbline 12
+ 0000           ;       TCCR1B|=BIT(CS12);    //256分频
+ 0000 8EB5              in R24,0x2e
+ 0002 8460              ori R24,4
+ 0004 8EBD              out 0x2e,R24
+ 0006                   .dbline 13
+ 0006           ;       TCNT1H=(65536-31250)/256;
+ 0006 85E8              ldi R24,133
+ 0008 8DBD              out 0x2d,R24
+ 000A                   .dbline 14
+ 000A           ;       TCNT1L=(65536-31250)%256;
+ 000A 8EEE              ldi R24,238
+ 000C 8CBD              out 0x2c,R24
+ 000E                   .dbline 15
+ 000E           ;       TIMSK|=BIT(2);      //计时小开关
+ 000E 89B7              in R24,0x39
+ 0010 8460              ori R24,4
+ 0012 89BF              out 0x39,R24
+ 0014                   .dbline 16
+ 0014           ;       SREG|=BIT(7);
+ 0014 7894              bset 7
+ 0016                   .dbline -2
+ 0016           L1:
+ 0016                   .dbline 0 ; func end
+ 0016 0895              ret
+ 0018                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0000           _sec::
+ 0000                   .blkb 2
+                        .area idata
+ 0000 0000              .word 0
+                        .area data(ram, con, rel)
+ 0002                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0002                   .dbsym e sec _sec i
+ 0002           _min::
+ 0002                   .blkb 2
+                        .area idata
+ 0002 0000              .word 0
+                        .area data(ram, con, rel)
+ 0004                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0004                   .dbsym e min _min i
+ 0004           _hour::
+ 0004                   .blkb 2
+                        .area idata
+ 0004 0000              .word 0
+                        .area data(ram, con, rel)
+ 0006                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0006                   .dbsym e hour _hour i
+ 0006           _day::
+ 0006                   .blkb 2
+                        .area idata
+ 0006 0000              .word 0
+                        .area data(ram, con, rel)
+ 0008                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0008                   .dbsym e day _day i
+ 0008           L3:
+ 0008                   .blkb 7
+                        .area idata
+ 0008 20202020202000    .byte 32,32,32,32,32,32,0
+                        .area data(ram, con, rel)
+ 000F                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+                        .area text(rom, con, rel)
+ 0018                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0018                   .dbfunc e main _main fV
+ 0018           ;       left_sec -> <dead>
+ 0018           ;      time_temp -> <dead>
+ 0018           ;  key_try_times -> R20
+ 0018           ;              j -> R10
+ 0018           ;          enter -> y+0
+ 0018           ;              i -> R20
+                        .even
+ 0018           _main::
+ 0018 2797              sbiw R28,7
+ 001A                   .dbline -1
+ 001A                   .dbline 23
+ 001A           ; }
+ 001A           ; uint sec=0,min=0,hour=0,day=0;
+ 001A           ; 
+ 001A           ; 
+ 001A           ; 
+ 001A           ; void main(void)
+ 001A           ; {
+ 001A                   .dbline 24
+ 001A           ;       char enter[]="      ";
+ 001A 80E0              ldi R24,<L3
+ 001C 90E0              ldi R25,>L3
+ 001E FE01              movw R30,R28
+ 0020 07E0              ldi R16,7
+ 0022 10E0              ldi R17,0
+ 0024 FA93              st -y,R31
+ 0026 EA93              st -y,R30
+ 0028 9A93              st -y,R25
+ 002A 8A93              st -y,R24
+ 002C 0E940000          xcall asgnblk
+ 0030                   .dbline 25
+ 0030           ;       uchar i,j=0,key_try_times=3,time_temp;
+ 0030 AA24              clr R10
+ 0032                   .dbline 25
+ 0032 43E0              ldi R20,3
+ 0034                   .dbline 27
+ 0034           ;       uint left_sec;
+ 0034           ;       usart_init();
+ 0034 0E940000          xcall _usart_init
+ 0038                   .dbline 28
+ 0038           ;       TWI_init();
+ 0038 0E940000          xcall _TWI_init
+ 003C                   .dbline 29
+ 003C           ;       time1_init();
+ 003C E1DF              xcall _time1_init
+ 003E                   .dbline 32
+ 003E           ; 
+ 003E           ;               
+ 003E           ;       eeprom_write_str(0,"123456");   //eeprom写密码  
+ 003E 20E0              ldi R18,<L4
+ 0040 30E0              ldi R19,>L4
+ 0042 0027              clr R16
+ 0044 1127              clr R17
+ 0046 0E940000          xcall _eeprom_write_str
+ 004A                   .dbline 33
+ 004A           ;       TWI_Write_str(0,"Please enter PIN");    //0~15    16
+ 004A 20E0              ldi R18,<L5
+ 004C 30E0              ldi R19,>L5
+ 004E 0027              clr R16
+ 0050 0E940000          xcall _TWI_Write_str
+ 0054                   .dbline 34
+ 0054           ;       TWI_Write_str(16,"welcome ^0^");        //16~26   11
+ 0054 20E0              ldi R18,<L6
+ 0056 30E0              ldi R19,>L6
+ 0058 00E1              ldi R16,16
+ 005A 0E940000          xcall _TWI_Write_str
+ 005E                   .dbline 35
+ 005E           ;       TWI_Write_str(27,"choose function~");   //27~42   16
+ 005E 20E0              ldi R18,<L7
+ 0060 30E0              ldi R19,>L7
+ 0062 0BE1              ldi R16,27
+ 0064 0E940000          xcall _TWI_Write_str
+ 0068                   .dbline 36
+ 0068           ;       TWI_Write_str(43,"enter old PIN");      //43~55   13
+ 0068 20E0              ldi R18,<L8
+ 006A 30E0              ldi R19,>L8
+ 006C 0BE2              ldi R16,43
+ 006E 0E940000          xcall _TWI_Write_str
+ 0072                   .dbline 37
+ 0072           ;       TWI_Write_str(56,"wrong old PIN!");     //69      14
+ 0072 20E0              ldi R18,<L9
+ 0074 30E0              ldi R19,>L9
+ 0076 08E3              ldi R16,56
+ 0078 0E940000          xcall _TWI_Write_str
+ 007C                   .dbline 38
+ 007C           ;       TWI_Write_str(70,"enter new PIN");      //82      13
+ 007C 20E0              ldi R18,<L10
+ 007E 30E0              ldi R19,>L10
+ 0080 06E4              ldi R16,70
+ 0082 0E940000          xcall _TWI_Write_str
+ 0086                   .dbline 39
+ 0086           ;       TWI_Write_str(83,"new PIN finish");     //96      14
+ 0086 20E0              ldi R18,<L11
+ 0088 30E0              ldi R19,>L11
+ 008A 03E5              ldi R16,83
+ 008C 0E940000          xcall _TWI_Write_str
+ 0090 0EC0              xjmp L13
+ 0092           L12:
+ 0092                   .dbline 42
+ 0092           ;       
+ 0092           ;       while(1)
+ 0092           ;       {               
+ 0092                   .dbline 44
+ 0092           ; 
+ 0092           ;               for(i=0;i<16;i++)  usart_send_char(TWI_Read(i));                //24c02读取字符串
+ 0092 4427              clr R20
+ 0094 06C0              xjmp L18
+ 0096           L15:
+ 0096                   .dbline 44
+ 0096 042F              mov R16,R20
+ 0098 0E940000          xcall _TWI_Read
+ 009C 0E940000          xcall _usart_send_char
+ 00A0           L16:
+ 00A0                   .dbline 44
+ 00A0 4395              inc R20
+ 00A2           L18:
+ 00A2                   .dbline 44
+ 00A2 4031              cpi R20,16
+ 00A4 C0F3              brlo L15
+ 00A6           X0:
+ 00A6                   .dbline 45
+ 00A6           ;               delay_ms(2000);
+ 00A6 00ED              ldi R16,2000
+ 00A8 17E0              ldi R17,7
+ 00AA 0E940000          xcall _delay_ms
+ 00AE                   .dbline 46
+ 00AE           ;       }
+ 00AE           L13:
+ 00AE                   .dbline 41
+ 00AE F1CF              xjmp L12
+ 00B0           X1:
+ 00B0                   .dbline -2
+ 00B0           L2:
+ 00B0                   .dbline 0 ; func end
+ 00B0 2796              adiw R28,7
+ 00B2 0895              ret
+ 00B4                   .dbsym l left_sec 1 i
+ 00B4                   .dbsym l time_temp 1 c
+ 00B4                   .dbsym r key_try_times 20 c
+ 00B4                   .dbsym r j 10 c
+ 00B4                   .dbsym l enter 0 A[7:7]c
+ 00B4                   .dbsym r i 20 c
+ 00B4                   .dbend
+                        .area vector(rom, abs)
+                        .org 32
+ 0020 0C945A00          jmp _time1
+                        .area text(rom, con, rel)
+ 00B4                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 00B4                   .dbfunc e time1 _time1 fV
+                        .even
+ 00B4           _time1::
+ 00B4 0A92              st -y,R0
+ 00B6 1A92              st -y,R1
+ 00B8 2A92              st -y,R2
+ 00BA 3A92              st -y,R3
+ 00BC 4A92              st -y,R4
+ 00BE 5A92              st -y,R5
+ 00C0 6A92              st -y,R6
+ 00C2 7A92              st -y,R7
+ 00C4 8A92              st -y,R8
+ 00C6 9A92              st -y,R9
+ 00C8 0A93              st -y,R16
+ 00CA 1A93              st -y,R17
+ 00CC 2A93              st -y,R18
+ 00CE 3A93              st -y,R19
+ 00D0 8A93              st -y,R24
+ 00D2 9A93              st -y,R25
+ 00D4 AA93              st -y,R26
+ 00D6 BA93              st -y,R27
+ 00D8 EA93              st -y,R30
+ 00DA FA93              st -y,R31
+ 00DC 0FB6              IN R0,63
+ 00DE 0A92              st -y,R0
+ 00E0                   .dbline -1
+ 00E0                   .dbline 50
+ 00E0           ; }
+ 00E0           ; #pragma interrupt_handler time1:9             //定时器1   中断
+ 00E0           ; void time1(void)
+ 00E0           ; {
+ 00E0                   .dbline 51
+ 00E0           ;       TCNT1H=(65536-31250)/256;
+ 00E0 85E8              ldi R24,133
+ 00E2 8DBD              out 0x2d,R24
+ 00E4                   .dbline 52
+ 00E4           ;       TCNT1L=(65536-31250)%256;
+ 00E4 8EEE              ldi R24,238
+ 00E6 8CBD              out 0x2c,R24
+ 00E8                   .dbline 53
+ 00E8           ;       sec++;
+ 00E8 80910000          lds R24,_sec
+ 00EC 90910100          lds R25,_sec+1
+ 00F0 0196              adiw R24,1
+ 00F2 90930100          sts _sec+1,R25
+ 00F6 80930000          sts _sec,R24
+ 00FA                   .dbline 54
+ 00FA           ;       if(sec==60)
+ 00FA 8C33              cpi R24,60
+ 00FC E0E0              ldi R30,0
+ 00FE 9E07              cpc R25,R30
+ 0100 79F4              brne L20
+ 0102           X2:
+ 0102                   .dbline 55
+ 0102           ;       {
+ 0102                   .dbline 56
+ 0102           ;               sec=0;
+ 0102 2224              clr R2
+ 0104 3324              clr R3
+ 0106 30920100          sts _sec+1,R3
+ 010A 20920000          sts _sec,R2
+ 010E                   .dbline 57
+ 010E           ;               min++;
+ 010E 80910200          lds R24,_min
+ 0112 90910300          lds R25,_min+1
+ 0116 0196              adiw R24,1
+ 0118 90930300          sts _min+1,R25
+ 011C 80930200          sts _min,R24
+ 0120                   .dbline 58
+ 0120           ;       }
+ 0120           L20:
+ 0120                   .dbline 59
+ 0120           ;       if(min==60)
+ 0120 80910200          lds R24,_min
+ 0124 90910300          lds R25,_min+1
+ 0128 8C33              cpi R24,60
+ 012A E0E0              ldi R30,0
+ 012C 9E07              cpc R25,R30
+ 012E 79F4              brne L22
+ 0130           X3:
+ 0130                   .dbline 60
+ 0130           ;       {
+ 0130                   .dbline 61
+ 0130           ;               min=0;
+ 0130 2224              clr R2
+ 0132 3324              clr R3
+ 0134 30920300          sts _min+1,R3
+ 0138 20920200          sts _min,R2
+ 013C                   .dbline 62
+ 013C           ;               hour++;
+ 013C 80910400          lds R24,_hour
+ 0140 90910500          lds R25,_hour+1
+ 0144 0196              adiw R24,1
+ 0146 90930500          sts _hour+1,R25
+ 014A 80930400          sts _hour,R24
+ 014E                   .dbline 63
+ 014E           ;       }
+ 014E           L22:
+ 014E                   .dbline 64
+ 014E           ;       if(hour==24)
+ 014E 80910400          lds R24,_hour
+ 0152 90910500          lds R25,_hour+1
+ 0156 8831              cpi R24,24
+ 0158 E0E0              ldi R30,0
+ 015A 9E07              cpc R25,R30
+ 015C 79F4              brne L24
+ 015E           X4:
+ 015E                   .dbline 65
+ 015E           ;       {
+ 015E                   .dbline 66
+ 015E           ;               hour=0;
+ 015E 2224              clr R2
+ 0160 3324              clr R3
+ 0162 30920500          sts _hour+1,R3
+ 0166 20920400          sts _hour,R2
+ 016A                   .dbline 67
+ 016A           ;               day++;          
+ 016A 80910600          lds R24,_day
+ 016E 90910700          lds R25,_day+1
+ 0172 0196              adiw R24,1
+ 0174 90930700          sts _day+1,R25
+ 0178 80930600          sts _day,R24
+ 017C                   .dbline 68
+ 017C           ;       }
+ 017C           L24:
+ 017C                   .dbline 70
+ 017C           ;       
+ 017C           ;       TWI_Write(200,day/1000%10+48);        //向24c02储存day,hour,min,sec数值的字符，函数已加延时
+ 017C 28EE              ldi R18,1000
+ 017E 33E0              ldi R19,3
+ 0180 00910600          lds R16,_day
+ 0184 10910700          lds R17,_day+1
+ 0188 0E940000          xcall div16u
+ 018C 2AE0              ldi R18,10
+ 018E 30E0              ldi R19,0
+ 0190 0E940000          xcall mod16u
+ 0194 9801              movw R18,R16
+ 0196 205D              subi R18,208  ; offset = 48
+ 0198 3F4F              sbci R19,255
+ 019A 08EC              ldi R16,200
+ 019C 0E940000          xcall _TWI_Write
+ 01A0                   .dbline 71
+ 01A0           ;       TWI_Write(201,day/100%10+48);
+ 01A0 24E6              ldi R18,100
+ 01A2 30E0              ldi R19,0
+ 01A4 00910600          lds R16,_day
+ 01A8 10910700          lds R17,_day+1
+ 01AC 0E940000          xcall div16u
+ 01B0 2AE0              ldi R18,10
+ 01B2 30E0              ldi R19,0
+ 01B4 0E940000          xcall mod16u
+ 01B8 9801              movw R18,R16
+ 01BA 205D              subi R18,208  ; offset = 48
+ 01BC 3F4F              sbci R19,255
+ 01BE 09EC              ldi R16,201
+ 01C0 0E940000          xcall _TWI_Write
+ 01C4                   .dbline 72
+ 01C4           ;       TWI_Write(202,day/10%10+48);
+ 01C4 2AE0              ldi R18,10
+ 01C6 30E0              ldi R19,0
+ 01C8 00910600          lds R16,_day
+ 01CC 10910700          lds R17,_day+1
+ 01D0 0E940000          xcall div16u
+ 01D4 2AE0              ldi R18,10
+ 01D6 30E0              ldi R19,0
+ 01D8 0E940000          xcall mod16u
+ 01DC 9801              movw R18,R16
+ 01DE 205D              subi R18,208  ; offset = 48
+ 01E0 3F4F              sbci R19,255
+ 01E2 0AEC              ldi R16,202
+ 01E4 0E940000          xcall _TWI_Write
+ 01E8                   .dbline 73
+ 01E8           ;       TWI_Write(203,day%10+48);
+ 01E8 2AE0              ldi R18,10
+ 01EA 30E0              ldi R19,0
+ 01EC 00910600          lds R16,_day
+ 01F0 10910700          lds R17,_day+1
+ 01F4 0E940000          xcall mod16u
+ 01F8 9801              movw R18,R16
+ 01FA 205D              subi R18,208  ; offset = 48
+ 01FC 3F4F              sbci R19,255
+ 01FE 0BEC              ldi R16,203
+ 0200 0E940000          xcall _TWI_Write
+ 0204                   .dbline 74
+ 0204           ;       TWI_Write(204,hour/10%10+48);
+ 0204 2AE0              ldi R18,10
+ 0206 30E0              ldi R19,0
+ 0208 00910400          lds R16,_hour
+ 020C 10910500          lds R17,_hour+1
+ 0210 0E940000          xcall div16u
+ 0214 2AE0              ldi R18,10
+ 0216 30E0              ldi R19,0
+ 0218 0E940000          xcall mod16u
+ 021C 9801              movw R18,R16
+ 021E 205D              subi R18,208  ; offset = 48
+ 0220 3F4F              sbci R19,255
+ 0222 0CEC              ldi R16,204
+ 0224 0E940000          xcall _TWI_Write
+ 0228                   .dbline 75
+ 0228           ;       TWI_Write(205,hour%10+48);
+ 0228 2AE0              ldi R18,10
+ 022A 30E0              ldi R19,0
+ 022C 00910400          lds R16,_hour
+ 0230 10910500          lds R17,_hour+1
+ 0234 0E940000          xcall mod16u
+ 0238 9801              movw R18,R16
+ 023A 205D              subi R18,208  ; offset = 48
+ 023C 3F4F              sbci R19,255
+ 023E 0DEC              ldi R16,205
+ 0240 0E940000          xcall _TWI_Write
+ 0244                   .dbline 76
+ 0244           ;       TWI_Write(206,min/10%10+48);
+ 0244 2AE0              ldi R18,10
+ 0246 30E0              ldi R19,0
+ 0248 00910200          lds R16,_min
+ 024C 10910300          lds R17,_min+1
+ 0250 0E940000          xcall div16u
+ 0254 2AE0              ldi R18,10
+ 0256 30E0              ldi R19,0
+ 0258 0E940000          xcall mod16u
+ 025C 9801              movw R18,R16
+ 025E 205D              subi R18,208  ; offset = 48
+ 0260 3F4F              sbci R19,255
+ 0262 0EEC              ldi R16,206
+ 0264 0E940000          xcall _TWI_Write
+ 0268                   .dbline 77
+ 0268           ;       TWI_Write(207,min%10+48);
+ 0268 2AE0              ldi R18,10
+ 026A 30E0              ldi R19,0
+ 026C 00910200          lds R16,_min
+ 0270 10910300          lds R17,_min+1
+ 0274 0E940000          xcall mod16u
+ 0278 9801              movw R18,R16
+ 027A 205D              subi R18,208  ; offset = 48
+ 027C 3F4F              sbci R19,255
+ 027E 0FEC              ldi R16,207
+ 0280 0E940000          xcall _TWI_Write
+ 0284                   .dbline 78
+ 0284           ;       TWI_Write(208,sec/10%10+48);
+ 0284 2AE0              ldi R18,10
+ 0286 30E0              ldi R19,0
+ 0288 00910000          lds R16,_sec
+ 028C 10910100          lds R17,_sec+1
+ 0290 0E940000          xcall div16u
+ 0294 2AE0              ldi R18,10
+ 0296 30E0              ldi R19,0
+ 0298 0E940000          xcall mod16u
+ 029C 9801              movw R18,R16
+ 029E 205D              subi R18,208  ; offset = 48
+ 02A0 3F4F              sbci R19,255
+ 02A2 00ED              ldi R16,208
+ 02A4 0E940000          xcall _TWI_Write
+ 02A8                   .dbline 79
+ 02A8           ;       TWI_Write(209,sec%10+48);       
+ 02A8 2AE0              ldi R18,10
+ 02AA 30E0              ldi R19,0
+ 02AC 00910000          lds R16,_sec
+ 02B0 10910100          lds R17,_sec+1
+ 02B4 0E940000          xcall mod16u
+ 02B8 9801              movw R18,R16
+ 02BA 205D              subi R18,208  ; offset = 48
+ 02BC 3F4F              sbci R19,255
+ 02BE 01ED              ldi R16,209
+ 02C0 0E940000          xcall _TWI_Write
+ 02C4                   .dbline -2
+ 02C4           L19:
+ 02C4                   .dbline 0 ; func end
+ 02C4 0990              ld R0,y+
+ 02C6 0FBE              OUT 63,R0
+ 02C8 F991              ld R31,y+
+ 02CA E991              ld R30,y+
+ 02CC B991              ld R27,y+
+ 02CE A991              ld R26,y+
+ 02D0 9991              ld R25,y+
+ 02D2 8991              ld R24,y+
+ 02D4 3991              ld R19,y+
+ 02D6 2991              ld R18,y+
+ 02D8 1991              ld R17,y+
+ 02DA 0991              ld R16,y+
+ 02DC 9990              ld R9,y+
+ 02DE 8990              ld R8,y+
+ 02E0 7990              ld R7,y+
+ 02E2 6990              ld R6,y+
+ 02E4 5990              ld R5,y+
+ 02E6 4990              ld R4,y+
+ 02E8 3990              ld R3,y+
+ 02EA 2990              ld R2,y+
+ 02EC 1990              ld R1,y+
+ 02EE 0990              ld R0,y+
+ 02F0 1895              reti
+ 02F2                   .dbend
+                        .area data(ram, con, rel)
+ 000F                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 000F           L11:
+ 000F                   .blkb 15
+                        .area idata
+ 000F 6E65772050494E2066696E69736800    .byte 'n,'e,'w,32,'P,'I,'N,32,'f,'i,'n,'i,'s,'h,0
+                        .area data(ram, con, rel)
+ 001E                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 001E           L10:
+ 001E                   .blkb 14
+                        .area idata
+ 001E 656E746572206E65772050494E00      .byte 'e,'n,'t,'e,'r,32,'n,'e,'w,32,'P,'I,'N,0
+                        .area data(ram, con, rel)
+ 002C                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 002C           L9:
+ 002C                   .blkb 15
+                        .area idata
+ 002C 77726F6E67206F6C642050494E2100    .byte 'w,'r,'o,'n,'g,32,'o,'l,'d,32,'P,'I,'N,33,0
+                        .area data(ram, con, rel)
+ 003B                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 003B           L8:
+ 003B                   .blkb 14
+                        .area idata
+ 003B 656E746572206F6C642050494E00      .byte 'e,'n,'t,'e,'r,32,'o,'l,'d,32,'P,'I,'N,0
+                        .area data(ram, con, rel)
+ 0049                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0049           L7:
+ 0049                   .blkb 17
+                        .area idata
+ 0049 63686F6F73652066756E6374696F6E7E  .byte 'c,'h,'o,'o,'s,'e,32,'f,'u,'n,'c,'t,'i,'o,'n,126
+ 0059 00                .byte 0
+                        .area data(ram, con, rel)
+ 005A                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 005A           L6:
+ 005A                   .blkb 12
+                        .area idata
+ 005A 77656C636F6D65205E305E00  .byte 'w,'e,'l,'c,'o,'m,'e,32,94,48,94,0
+                        .area data(ram, con, rel)
+ 0066                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0066           L5:
+ 0066                   .blkb 17
+                        .area idata
+ 0066 506C6561736520656E7465722050494E  .byte 'P,'l,'e,'a,'s,'e,32,'e,'n,'t,'e,'r,32,'P,'I,'N
+ 0076 00                .byte 0
+                        .area data(ram, con, rel)
+ 0077                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 0077           L4:
+ 0077                   .blkb 7
+                        .area idata
+ 0077 31323334353600    .byte 49,50,51,52,53,54,0
+                        .area data(ram, con, rel)
+ 007E                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\main.c
+ 007E           ;       
+ 007E           ; }

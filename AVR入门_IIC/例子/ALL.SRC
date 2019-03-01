@@ -1,0 +1,12 @@
+[Files]
+main.c
+delay.c
+eeprom.c
+iic_hard.c
+usart.c
+[Headers]
+delay.h
+eeprom.h
+iic_hard.h
+usart.h
+[Documents]

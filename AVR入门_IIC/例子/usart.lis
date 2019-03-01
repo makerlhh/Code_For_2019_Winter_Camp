@@ -1,0 +1,260 @@
+                        .module usart.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile usart.c
+ 0000                   .dbfile C:\Users\Administrator\Desktop\2019冬令营iic课程\例子\usart.c
+ 0000                   .dbfunc e usart_init _usart_init fV
+ 0000           ;           baud -> R10,R11
+                        .even
+ 0000           _usart_init::
+ 0000 0E940000          xcall push_xgsetF00C
+ 0004                   .dbline -1
+ 0004                   .dbline 4
+ 0004           ; #include"usart.h"
+ 0004           ; #include"delay.h"
+ 0004           ; void usart_init(void)    //    9600,8,1停止位,无奇偶校验          初始化
+ 0004           ; {
+ 0004                   .dbline 5
+ 0004           ;       uint baud=9600;     //波特率
+ 0004 80E8              ldi R24,9600
+ 0006 95E2              ldi R25,37
+ 0008 5C01              movw R10,R24
+ 000A                   .dbline 6
+ 000A           ;       DDRD|= BIT(1);    
+ 000A 899A              sbi 0x11,1
+ 000C                   .dbline 7
+ 000C           ;       UCSRA =0;           
+ 000C 2224              clr R2
+ 000E 2BB8              out 0xb,R2
+ 0010                   .dbline 8
+ 0010           ;       UCSRB |=BIT(RXCIE)|BIT(RXEN)|BIT(TXEN);        //发送和接收使能
+ 0010 8AB1              in R24,0xa
+ 0012 8869              ori R24,152
+ 0014 8AB9              out 0xa,R24
+ 0016                   .dbline 9
+ 0016           ;       UCSRC |=BIT(URSEL)|BIT(UCSZ1)|BIT(UCSZ0);       //URSEL不用理？？（去掉也能用）
+ 0016 80B5              in R24,0x20
+ 0018 8668              ori R24,134
+ 001A 80BD              out 0x20,R24
+ 001C                   .dbline 12
+ 001C           ;       //UBRRH =0X00;
+ 001C           ;       //UBRRL =0X33;           //51
+ 001C           ;       UBRR =8000000/16/baud-1;       //波特率设置，8M晶振
+ 001C 1501              movw R2,R10
+ 001E 4424              clr R4
+ 0020 5524              clr R5
+ 0022 40E2              ldi R20,32
+ 0024 51EA              ldi R21,161
+ 0026 67E0              ldi R22,7
+ 0028 70E0              ldi R23,0
+ 002A 5A92              st -y,R5
+ 002C 4A92              st -y,R4
+ 002E 3A92              st -y,R3
+ 0030 2A92              st -y,R2
+ 0032 8A01              movw R16,R20
+ 0034 9B01              movw R18,R22
+ 0036 0E940000          xcall div32s
+ 003A 41E0              ldi R20,1
+ 003C 50E0              ldi R21,0
+ 003E 60E0              ldi R22,0
+ 0040 70E0              ldi R23,0
+ 0042 1801              movw R2,R16
+ 0044 2901              movw R4,R18
+ 0046 241A              sub R2,R20
+ 0048 350A              sbc R3,R21
+ 004A 460A              sbc R4,R22
+ 004C 570A              sbc R5,R23
+ 004E 29B8              out 0x9,R2
+ 0050                   .dbline 13
+ 0050           ;       SREG |=BIT(7);    //+++++++++++++++++++开总中断
+ 0050 7894              bset 7
+ 0052                   .dbline -2
+ 0052           L1:
+ 0052                   .dbline 0 ; func end
+ 0052 0C940000          xjmp pop_xgsetF00C
+ 0056                   .dbsym r baud 10 i
+ 0056                   .dbend
+ 0056                   .dbfunc e usart_send_char _usart_send_char fV
+ 0056           ;              i -> R10
+                        .even
+ 0056           _usart_send_char::
+ 0056 0E940000          xcall push_xgset300C
+ 005A A02E              mov R10,R16
+ 005C                   .dbline -1
+ 005C                   .dbline 16
+ 005C           ; }
+ 005C           ; void usart_send_char(uchar i)          //发送字符
+ 005C           ; {
+ 005C           L3:
+ 005C                   .dbline 17
+ 005C           ;       while(!UCSRA&BIT(UDRE));
+ 005C           L4:
+ 005C                   .dbline 17
+ 005C 2BB0              in R2,0xb
+ 005E 2220              tst R2
+ 0060 19F4              brne L6
+ 0062           X0:
+ 0062 41E0              ldi R20,1
+ 0064 50E0              ldi R21,0
+ 0066 02C0              xjmp L7
+ 0068           L6:
+ 0068 4427              clr R20
+ 006A 5527              clr R21
+ 006C           L7:
+ 006C 45FD              sbrc R20,5
+ 006E F6CF              rjmp L3
+ 0070           X1:
+ 0070                   .dbline 18
+ 0070           ;       UDR =i;
+ 0070 ACB8              out 0xc,R10
+ 0072           L8:
+ 0072                   .dbline 19
+ 0072           ;       while(!UCSRA&BIT(TXC)); 
+ 0072           L9:
+ 0072                   .dbline 19
+ 0072 2BB0              in R2,0xb
+ 0074 2220              tst R2
+ 0076 19F4              brne L11
+ 0078           X2:
+ 0078 41E0              ldi R20,1
+ 007A 50E0              ldi R21,0
+ 007C 02C0              xjmp L12
+ 007E           L11:
+ 007E 4427              clr R20
+ 0080 5527              clr R21
+ 0082           L12:
+ 0082 46FD              sbrc R20,6
+ 0084 F6CF              rjmp L8
+ 0086           X3:
+ 0086                   .dbline 20
+ 0086           ;       delay_ms(1);                //好像需要??????? 
+ 0086 01E0              ldi R16,1
+ 0088 10E0              ldi R17,0
+ 008A 0E940000          xcall _delay_ms
+ 008E                   .dbline -2
+ 008E           L2:
+ 008E                   .dbline 0 ; func end
+ 008E 0C940000          xjmp pop_xgset300C
+ 0092                   .dbsym r i 10 c
+ 0092                   .dbend
+ 0092                   .dbfunc e usart_send_str _usart_send_str fV
+ 0092           ;              i -> R20,R21
+ 0092           ;           zifu -> R10,R11
+                        .even
+ 0092           _usart_send_str::
+ 0092 0E940000          xcall push_xgset300C
+ 0096 5801              movw R10,R16
+ 0098                   .dbline -1
+ 0098                   .dbline 24
+ 0098           ;       //UCSRA |=BIT(TXC);                //没有对应中断时要手动清零?当有新数据进入缓冲区该位会置零。
+ 0098           ; }
+ 0098           ; void usart_send_str(char *zifu)        //发送 字符串
+ 0098           ; {
+ 0098                   .dbline 25
+ 0098           ;       int i=0;
+ 0098 4427              clr R20
+ 009A 5527              clr R21
+ 009C 07C0              xjmp L15
+ 009E           L14:
+ 009E                   .dbline 27
+ 009E           ;       while(zifu[i]!='\0' )
+ 009E           ;       {
+ 009E                   .dbline 28
+ 009E           ;               usart_send_char(zifu[i]);
+ 009E FA01              movw R30,R20
+ 00A0 EA0D              add R30,R10
+ 00A2 FB1D              adc R31,R11
+ 00A4 0081              ldd R16,z+0
+ 00A6 D7DF              xcall _usart_send_char
+ 00A8                   .dbline 30
+ 00A8           ;               //delay_ms(1);                //好像需要???????
+ 00A8           ;               i++;
+ 00A8 4F5F              subi R20,255  ; offset = 1
+ 00AA 5F4F              sbci R21,255
+ 00AC                   .dbline 31
+ 00AC           ;       }
+ 00AC           L15:
+ 00AC                   .dbline 26
+ 00AC FA01              movw R30,R20
+ 00AE EA0D              add R30,R10
+ 00B0 FB1D              adc R31,R11
+ 00B2 2080              ldd R2,z+0
+ 00B4 2220              tst R2
+ 00B6 99F7              brne L14
+ 00B8           X4:
+ 00B8                   .dbline -2
+ 00B8           L13:
+ 00B8                   .dbline 0 ; func end
+ 00B8 0C940000          xjmp pop_xgset300C
+ 00BC                   .dbsym r i 20 I
+ 00BC                   .dbsym r zifu 10 pc
+ 00BC                   .dbend
+ 00BC                   .dbfunc e usart_send _usart_send fV
+ 00BC           ;            num -> R10,R11
+                        .even
+ 00BC           _usart_send::
+ 00BC AA92              st -y,R10
+ 00BE BA92              st -y,R11
+ 00C0 5801              movw R10,R16
+ 00C2                   .dbline -1
+ 00C2                   .dbline 34
+ 00C2           ; }
+ 00C2           ; void usart_send(int num)    //发送4位数字
+ 00C2           ; {
+ 00C2                   .dbline 35
+ 00C2           ;       usart_send_char(num/1000%10+48);
+ 00C2 28EE              ldi R18,1000
+ 00C4 33E0              ldi R19,3
+ 00C6 8501              movw R16,R10
+ 00C8 0E940000          xcall div16s
+ 00CC 2AE0              ldi R18,10
+ 00CE 30E0              ldi R19,0
+ 00D0 0E940000          xcall mod16s
+ 00D4 005D              subi R16,208  ; offset = 48
+ 00D6 1F4F              sbci R17,255
+ 00D8 BEDF              xcall _usart_send_char
+ 00DA                   .dbline 36
+ 00DA           ;       usart_send_char(num/100%10+48);
+ 00DA 24E6              ldi R18,100
+ 00DC 30E0              ldi R19,0
+ 00DE 8501              movw R16,R10
+ 00E0 0E940000          xcall div16s
+ 00E4 2AE0              ldi R18,10
+ 00E6 30E0              ldi R19,0
+ 00E8 0E940000          xcall mod16s
+ 00EC 005D              subi R16,208  ; offset = 48
+ 00EE 1F4F              sbci R17,255
+ 00F0 B2DF              xcall _usart_send_char
+ 00F2                   .dbline 37
+ 00F2           ;       usart_send_char(num/10%10+48);
+ 00F2 2AE0              ldi R18,10
+ 00F4 30E0              ldi R19,0
+ 00F6 8501              movw R16,R10
+ 00F8 0E940000          xcall div16s
+ 00FC 2AE0              ldi R18,10
+ 00FE 30E0              ldi R19,0
+ 0100 0E940000          xcall mod16s
+ 0104 005D              subi R16,208  ; offset = 48
+ 0106 1F4F              sbci R17,255
+ 0108 A6DF              xcall _usart_send_char
+ 010A                   .dbline 38
+ 010A           ;       usart_send_char(num%10+48);
+ 010A 2AE0              ldi R18,10
+ 010C 30E0              ldi R19,0
+ 010E 8501              movw R16,R10
+ 0110 0E940000          xcall mod16s
+ 0114 005D              subi R16,208  ; offset = 48
+ 0116 1F4F              sbci R17,255
+ 0118 9EDF              xcall _usart_send_char
+ 011A                   .dbline 39
+ 011A           ;       usart_send_char(13);
+ 011A 0DE0              ldi R16,13
+ 011C 9CDF              xcall _usart_send_char
+ 011E                   .dbline -2
+ 011E           L17:
+ 011E                   .dbline 0 ; func end
+ 011E B990              ld R11,y+
+ 0120 A990              ld R10,y+
+ 0122 0895              ret
+ 0124                   .dbsym r num 10 I
+ 0124                   .dbend
+ 0124           ; }
