@@ -1,23 +1,23 @@
 # Code_For_2019_Winter_Camp
 ***
-### 概述
+### Overview
 
-这是广州大学机械与电气工程学院“冬令营”电类课程示例目录，由创客协会提供支持。
+This is an example of all the codes and simulations for the 2019 E&E College "Winter Camp" Electrical course.
 
 ***
-### 电类课程列表
-- [x] AVR入门-I/O的使用上（开发与仿真环境）
-- [x] AVR入门-I/O的使用下（流水灯与数码管）
-- [x] AVR入门-定时器/计数器（数码秒表）
-- [x] AVR入门-中断（抢答器设计）
-- [x] AVR入门-ADC（光控灯制作）
-- [x] C语言编程范式
-- [x] AVR入门-串口通信
-- [x] AVR入门-SPI通信
-- [x] AVR入门-TWI通信
+### Course List
+- [x] Getting Started with AVR - Using I/O (Development and Simulation Environment)
+- [x] Getting Started with AVR - I/O Usage Down (Running Lights and Digital Pipes)
+- [x] Getting Started with AVR - Timer/Counter (Digital Stopwatch)
+- [x] Getting Started with AVR - Interrupts (robocaller design)
+- [x] Getting Started with AVR - ADC (Light Controlled Lamp Production)
+- [x] C Programming Paradigm
+- [x] Getting Started with AVR - Serial Communication
+- [x] Getting Started with AVR - SPI Communication
+- [x] Getting Started with AVR - TWI Communication
 ***
-欢迎同学们下载、讨论或提交自己的代码。
+Free to download, discuss or submit your own code.
 ***
-开源协议为GNU GPLv3
+The open source protocol is GNU GPLv3.
 ***
    
